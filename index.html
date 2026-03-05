@@ -1933,6 +1933,39 @@ function getKSTDateStr() {
   var kst = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 32400000);
   return kst.getFullYear() + '-' + pad2(kst.getMonth()+1) + '-' + pad2(kst.getDate());
 }
+function renderPomoLog() {
+  var log = loadPomoLog();
+  var keys = Object.keys(log).sort().reverse();
+  var el = document.getElementById('pomo-log-list');
+  if (!el) return;
+  if (keys.length === 0) {
+    el.innerHTML = '<div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>';
+    return;
+  }
+  el.innerHTML = keys.map(function(k) {
+    var d = log[k];
+    var h = Math.floor(d.minutes / 60);
+    var m = d.minutes % 60;
+    var timeStr = h > 0 ? h + '시간' + (m > 0 ? ' ' + m + '분' : '') : m + '분';
+    var parts = k.split('-');
+    var dateShort = parseInt(parts[1]) + '월 ' + parseInt(parts[2]) + '일';
+    return '<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; background:#f5f2ee; border-radius:7px; font-size:12px; gap:8px;">'
+      + '<span style="color:#5a4a3a; font-weight:500; min-width:32px;">' + dateShort + '</span>'
+      + '<span style="color:var(--text-muted); flex:1;">🍅 ' + d.sessions + '세션&nbsp;·&nbsp;⏱ ' + timeStr + '</span>'
+      + '<button class="pomo-del-btn" data-key="' + k + '" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:0 2px; line-height:1;" title="삭제">✕</button>'
+      + '</div>';
+  }).join('');
+  el.querySelectorAll('.pomo-del-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var key = this.getAttribute('data-key');
+      var log = loadPomoLog();
+      delete log[key];
+      savePomoLog(log);
+      renderPomoLog();
+    });
+  });
+}
+
 function recordFocusDone() {
   var log = loadPomoLog();
   var key = getKSTDateStr();
@@ -1940,7 +1973,7 @@ function recordFocusDone() {
   log[key].sessions++;
   log[key].minutes += pomoConfig.focus;
   savePomoLog(log);
-  if (typeof renderPomoLog === "function") renderPomoLog();
+  renderPomoLog();
 }
 
 function nextMode() {
@@ -1990,6 +2023,11 @@ function tick() {
 }
 
 function initPomo() {
+  // 오늘 기록 기반으로 focusDone 초기값 설정
+  var todayLog = loadPomoLog()[getKSTDateStr()];
+  if (todayLog && todayLog.sessions > 0) {
+    pomoState.focusDone = todayLog.sessions % pomoConfig.sessions;
+  }
   pomoState.timeLeft = getDuration('focus');
   updateDisplay();
 
@@ -2068,40 +2106,6 @@ function initPomo() {
   });
 
   // 인라인 기록 렌더
-  function renderPomoLog() {
-    var log = loadPomoLog();
-    var keys = Object.keys(log).sort().reverse();
-    var el = document.getElementById('pomo-log-list');
-    if (!el) return;
-    if (keys.length === 0) {
-      el.innerHTML = '<div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>';
-      return;
-    }
-    el.innerHTML = keys.map(function(k) {
-      var d = log[k];
-      var h = Math.floor(d.minutes / 60);
-      var m = d.minutes % 60;
-      var timeStr = h > 0 ? h + '시간' + (m > 0 ? ' ' + m + '분' : '') : m + '분';
-      var parts = k.split('-');
-      var dateShort = parseInt(parts[1]) + '월 ' + parseInt(parts[2]) + '일';
-      return '<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; background:#f5f2ee; border-radius:7px; font-size:12px; gap:8px;">'
-        + '<span style="color:#5a4a3a; font-weight:500; min-width:32px;">' + dateShort + '</span>'
-        + '<span style="color:var(--text-muted); flex:1;">🍅 ' + d.sessions + '세션&nbsp;·&nbsp;⏱ ' + timeStr + '</span>'
-        + '<button class="pomo-del-btn" data-key="' + k + '" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:0 2px; line-height:1;" title="삭제">✕</button>'
-        + '</div>';
-    }).join('');
-    // 삭제 버튼 이벤트 위임
-    el.querySelectorAll('.pomo-del-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var key = this.getAttribute('data-key');
-        var log = loadPomoLog();
-        delete log[key];
-        savePomoLog(log);
-        renderPomoLog();
-      });
-    });
-  }
-
   renderPomoLog();
 
   // 수동 추가 - 오늘 날짜에 세션 1회 추가
