@@ -2177,6 +2177,7 @@ function renderChecklist(items) {
       memos[currentMemoDate][idx].checked = this.checked;
       saveMemos(memos);
       renderChecklist(memos[currentMemoDate]);
+      updateMemoBadges();
     });
   });
 
