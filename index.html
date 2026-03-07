@@ -497,6 +497,11 @@
     border-color: var(--accent3);
   }
 
+  .custom-cb.type-wip input[type="checkbox"]:checked {
+    background: #c9a96e;
+    border-color: #c9a96e;
+  }
+
   .custom-cb input[type="checkbox"]:checked::after {
     content: '';
     position: absolute;
@@ -511,12 +516,12 @@
 
   @media (max-width: 700px) {
     .week-grid { grid-template-columns: repeat(4, 1fr); }
-    .col-labels, .book-item { grid-template-columns: 1fr 90px 60px 68px; }
+    .col-labels, .book-item { grid-template-columns: 1fr 90px 44px 52px 52px; }
   }
 
   @media (max-width: 480px) {
     .week-grid { grid-template-columns: repeat(2, 1fr); }
-    .col-labels, .book-item { grid-template-columns: 1fr 80px 54px 60px; }
+    .col-labels, .book-item { grid-template-columns: 1fr 80px 40px 48px 48px; }
     .book-title { font-size: 11px; }
     .booklist-section { padding: 16px 12px; }
     .col-labels, .book-item { gap: 4px; }
@@ -657,15 +662,31 @@
       <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-bottom:6px;">
         <span>3/2 시작</span><span>3/24 완료 목표</span>
       </div>
-      <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:5px;">
-        <span>📗 읽음 <strong id="bar-read">0</strong> / 38</span>
-        <span>📝 이력서 완성 <strong id="bar-history">0</strong> / 38</span>
-      </div>
-      <div class="progress-bar-wrap" style="height:7px; margin-bottom:5px;">
-        <div id="bar-read-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent2),#6dbf8a); transition:width 0.4s ease;"></div>
-      </div>
-      <div class="progress-bar-wrap" style="height:7px;">
-        <div id="bar-history-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent3),#c47a98); transition:width 0.4s ease;"></div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:5px;">
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>읽음</span><strong id="bar-read">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-read-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent2),#6dbf8a); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>진행중</span><strong id="bar-wip">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-wip-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#c9a96e,#e0c080); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>완성</span><strong id="bar-history">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-history-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent3),#c47a98); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
       </div>
       <div style="margin-top:8px; font-size:11px; color:var(--text-muted);">
         주중 2~3권 × 40분 = 하루 80~120분 / 주 목요일·일요일 3권 집중
@@ -1011,7 +1032,8 @@
     <div class="booklist-title">📚 독서이력서 리스트</div>
     <div class="booklist-stats">
       <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 38 읽음</div>
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-history">0</span> / 38 이력서 완성</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 38 진행중</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 38 완성</div>
     </div>
   </div>
 
@@ -1019,7 +1041,8 @@
     <div class="col-label">도서 / 저자</div>
     <div class="col-label">출판사</div>
     <div class="col-label">읽음</div>
-    <div class="col-label">이력서 완성</div>
+    <div class="col-label">진행중</div>
+    <div class="col-label">완성</div>
   </div>
 
   <div id="book-list">
@@ -1031,24 +1054,12 @@
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">민음사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
-          <input type="checkbox" data-i="0" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="0" data-type="history">
-        </label>
-      </div>
-    </div>
-    <div class="book-item" data-index="1">
-      <div class="book-info">
-        <div class="book-title">공정하다는 착각</div>
-        <div class="book-author">마이클 샌델</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">동아시아</div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
           <input type="checkbox" data-i="1" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="1" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1057,15 +1068,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="2">
+    <div class="book-item" data-index="1">
       <div class="book-info">
-        <div class="book-title">깻잎 투쟁기</div>
-        <div class="book-author">우춘희</div>
+        <div class="book-title">계속해보겠습니다</div>
+        <div class="book-author">황정은</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">교양인</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">창비</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="2" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="2" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1074,15 +1090,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="3">
+    <div class="book-item" data-index="2">
       <div class="book-info">
-        <div class="book-title">나인</div>
-        <div class="book-author">천선란</div>
+        <div class="book-title">공정하다는 착각</div>
+        <div class="book-author">마이클 샌델</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">창비</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">동아시아</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="3" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="3" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1091,15 +1112,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="4">
+    <div class="book-item" data-index="3">
       <div class="book-info">
-        <div class="book-title">난장이가 쏘아올린 작은 공</div>
-        <div class="book-author">조세희</div>
+        <div class="book-title">깻잎 투쟁기</div>
+        <div class="book-author">우춘희</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">이성의힘</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">교양인</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="4" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="4" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1108,15 +1134,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="5">
+    <div class="book-item" data-index="4">
       <div class="book-info">
-        <div class="book-title">댈러웨이 부인</div>
-        <div class="book-author">버지니아 울프</div>
+        <div class="book-title">나인</div>
+        <div class="book-author">천선란</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">솔</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">창비</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="5" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="5" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1125,15 +1156,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="6">
+    <div class="book-item" data-index="5">
       <div class="book-info">
-        <div class="book-title">도파민네이션</div>
-        <div class="book-author">애나 램키</div>
+        <div class="book-title">난장이가 쏘아올린 작은 공</div>
+        <div class="book-author">조세희</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">흐름출판</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">이성의힘</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="6" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="6" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1142,15 +1178,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="7">
+    <div class="book-item" data-index="6">
       <div class="book-info">
-        <div class="book-title">돌이킬 수 있는</div>
-        <div class="book-author">문목하</div>
+        <div class="book-title">댈러웨이 부인</div>
+        <div class="book-author">버지니아 울프</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아작</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">솔</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="7" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="7" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1159,15 +1200,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="8">
+    <div class="book-item" data-index="7">
       <div class="book-info">
-        <div class="book-title">마음 가면</div>
-        <div class="book-author">브레네 브라운</div>
+        <div class="book-title">도파민네이션</div>
+        <div class="book-author">애나 램키</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">웅진지식하우스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">흐름출판</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="8" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="8" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1176,15 +1222,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="9">
+    <div class="book-item" data-index="8">
       <div class="book-info">
-        <div class="book-title">매끄러운 세계와 그 적들</div>
-        <div class="book-author">한나 렌</div>
+        <div class="book-title">돌이킬 수 있는</div>
+        <div class="book-author">문목하</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">엘리</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아작</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="9" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="9" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1193,15 +1244,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="10">
+    <div class="book-item" data-index="9">
       <div class="book-info">
-        <div class="book-title">물욕의 세계</div>
-        <div class="book-author">누누 칼러</div>
+        <div class="book-title">마음 가면</div>
+        <div class="book-author">브레네 브라운</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">현암사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">웅진지식하우스</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="10" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="10" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1210,15 +1266,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="11">
+    <div class="book-item" data-index="10">
       <div class="book-info">
-        <div class="book-title">병원탐험기</div>
-        <div class="book-author">최준혁</div>
+        <div class="book-title">매끄러운 세계와 그 적들</div>
+        <div class="book-author">한나 렌</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">고트</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">엘리</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="11" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="11" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1227,15 +1288,20 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="12">
+    <div class="book-item" data-index="11">
       <div class="book-info">
-        <div class="book-title">빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!</div>
-        <div class="book-author">코니 윌리스</div>
+        <div class="book-title">물욕의 세계</div>
+        <div class="book-author">누누 칼러</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아작</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">현암사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="12" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="12" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1244,32 +1310,42 @@
         </label>
       </div>
     </div>
-        <div class="book-item" data-index="37">
+    <div class="book-item" data-index="12">
       <div class="book-info">
-        <div class="book-title">사람, 장소, 환대</div>
-        <div class="book-author">김현경</div>
+        <div class="book-title">병원탐험기</div>
+        <div class="book-author">최준혁</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">고트</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
-          <input type="checkbox" data-i="NEW" data-type="read">
+          <input type="checkbox" data-i="13" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="13" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
         <label class="custom-cb type-history">
-          <input type="checkbox" data-i="NEW" data-type="history">
+          <input type="checkbox" data-i="13" data-type="history">
         </label>
       </div>
     </div>
-<div class="book-item" data-index="13">
+    <div class="book-item" data-index="13">
       <div class="book-info">
-        <div class="book-title">사라진 세계</div>
-        <div class="book-author">톰 스웨터리치</div>
+        <div class="book-title">빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!</div>
+        <div class="book-author">코니 윌리스</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">허블</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아작</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="14" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="14" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1280,13 +1356,18 @@
     </div>
     <div class="book-item" data-index="14">
       <div class="book-info">
-        <div class="book-title">서사학강의</div>
-        <div class="book-author">H. 포터 에벗</div>
+        <div class="book-title">사라진 세계</div>
+        <div class="book-author">톰 스웨터리치</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">허블</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="15" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="15" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1297,13 +1378,18 @@
     </div>
     <div class="book-item" data-index="15">
       <div class="book-info">
-        <div class="book-title">세상은 이야기로 만들어졌다</div>
-        <div class="book-author">자마리 엘 우아실, 프리데만 카릭 / 김현정 역</div>
+        <div class="book-title">사람, 장소, 환대</div>
+        <div class="book-author">김현경</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">원더박스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="16" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="16" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1314,13 +1400,18 @@
     </div>
     <div class="book-item" data-index="16">
       <div class="book-info">
-        <div class="book-title">소설은 어떻게 작동하는가</div>
-        <div class="book-author">제임스 우드</div>
+        <div class="book-title">서사학강의</div>
+        <div class="book-author">H. 포터 에벗</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">창비</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="17" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="17" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1331,13 +1422,18 @@
     </div>
     <div class="book-item" data-index="17">
       <div class="book-info">
-        <div class="book-title">시녀 이야기와 증언들</div>
-        <div class="book-author">마거릿 애트우드</div>
+        <div class="book-title">세상은 이야기로 만들어졌다</div>
+        <div class="book-author">자마리 엘 우아실, 프리데만 카릭 / 김현정 역</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">황금가지</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">원더박스</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="18" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="18" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1348,13 +1444,18 @@
     </div>
     <div class="book-item" data-index="18">
       <div class="book-info">
-        <div class="book-title">아직 멀었다는 말</div>
-        <div class="book-author">권여선</div>
+        <div class="book-title">소설은 어떻게 작동하는가</div>
+        <div class="book-author">제임스 우드</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">창비</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="19" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="19" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1365,13 +1466,18 @@
     </div>
     <div class="book-item" data-index="19">
       <div class="book-info">
-        <div class="book-title">안나 카레니나</div>
-        <div class="book-author">레프 톨스토이</div>
+        <div class="book-title">시녀 이야기와 증언들</div>
+        <div class="book-author">마거릿 애트우드</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">민음사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">황금가지</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="20" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="20" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1382,13 +1488,18 @@
     </div>
     <div class="book-item" data-index="20">
       <div class="book-info">
-        <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
-        <div class="book-author">루시 쿡</div>
+        <div class="book-title">안나 카레니나</div>
+        <div class="book-author">레프 톨스토이</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">웅진지식하우스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">민음사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="21" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="21" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1399,13 +1510,18 @@
     </div>
     <div class="book-item" data-index="21">
       <div class="book-info">
-        <div class="book-title">어린이라는 세계</div>
-        <div class="book-author">김소영</div>
+        <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
+        <div class="book-author">루시 쿡</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">사계절</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">웅진지식하우스</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="22" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="22" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1416,13 +1532,18 @@
     </div>
     <div class="book-item" data-index="22">
       <div class="book-info">
-        <div class="book-title">위대한 개츠비</div>
-        <div class="book-author">F. 스콧 피츠제럴드</div>
+        <div class="book-title">어린이라는 세계</div>
+        <div class="book-author">김소영</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">사계절</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="23" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="23" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1433,13 +1554,18 @@
     </div>
     <div class="book-item" data-index="23">
       <div class="book-info">
-        <div class="book-title">이방인</div>
-        <div class="book-author">알베르 카뮈</div>
+        <div class="book-title">위대한 개츠비</div>
+        <div class="book-author">F. 스콧 피츠제럴드</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">민음사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="24" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="24" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1450,13 +1576,18 @@
     </div>
     <div class="book-item" data-index="24">
       <div class="book-info">
-        <div class="book-title">인공지능은 나의 읽기·쓰기를 어떻게 바꿀까</div>
-        <div class="book-author">김성우</div>
+        <div class="book-title">음악의 사물들: 악보, 자동 악기, 음반</div>
+        <div class="book-author">신예슬</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">유유</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">워크룸프레스</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="25" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="25" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1467,13 +1598,18 @@
     </div>
     <div class="book-item" data-index="25">
       <div class="book-info">
-        <div class="book-title">자연에 이름 붙이기</div>
-        <div class="book-author">캐럴 계속 윤</div>
+        <div class="book-title">이방인</div>
+        <div class="book-author">알베르 카뮈</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">윌북</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">민음사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="26" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="26" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1484,13 +1620,18 @@
     </div>
     <div class="book-item" data-index="26">
       <div class="book-info">
-        <div class="book-title">절창</div>
-        <div class="book-author">구병모</div>
+        <div class="book-title">인공지능은 나의 읽기·쓰기를 어떻게 바꿀까</div>
+        <div class="book-author">김성우</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">유유</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="27" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="27" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1501,13 +1642,18 @@
     </div>
     <div class="book-item" data-index="27">
       <div class="book-info">
-        <div class="book-title">지구 생물체는 항복하라</div>
-        <div class="book-author">정보라</div>
+        <div class="book-title">자연에 이름 붙이기</div>
+        <div class="book-author">캐럴 계속 윤</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">래빗홀</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">윌북</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="28" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="28" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1518,13 +1664,18 @@
     </div>
     <div class="book-item" data-index="28">
       <div class="book-info">
-        <div class="book-title">지금 우리 곁의 쓰레기</div>
-        <div class="book-author">홍수열</div>
+        <div class="book-title">절창</div>
+        <div class="book-author">구병모</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">슬로비</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="29" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="29" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1535,13 +1686,18 @@
     </div>
     <div class="book-item" data-index="29">
       <div class="book-info">
-        <div class="book-title">진짜 게으른 사람이 쓴 게으름 탈출법</div>
-        <div class="book-author">지이</div>
+        <div class="book-title">지구 생물체는 항복하라</div>
+        <div class="book-author">정보라</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">마인드빌딩</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">래빗홀</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="30" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="30" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1552,13 +1708,18 @@
     </div>
     <div class="book-item" data-index="30">
       <div class="book-info">
-        <div class="book-title">촉진하는 밤</div>
-        <div class="book-author">김소연</div>
+        <div class="book-title">지금 우리 곁의 쓰레기</div>
+        <div class="book-author">홍수열</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">슬로비</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="31" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="31" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1569,13 +1730,18 @@
     </div>
     <div class="book-item" data-index="31">
       <div class="book-info">
-        <div class="book-title">컬티시 — 광신의 언어학</div>
-        <div class="book-author">어맨다 몬텔</div>
+        <div class="book-title">진짜 게으른 사람이 쓴 게으름 탈출법</div>
+        <div class="book-author">지이</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아르테</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">마인드빌딩</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="32" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="32" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1586,13 +1752,18 @@
     </div>
     <div class="book-item" data-index="32">
       <div class="book-info">
-        <div class="book-title">트릭 미러</div>
-        <div class="book-author">지아 톨렌티노</div>
+        <div class="book-title">촉진하는 밤</div>
+        <div class="book-author">김소연</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">생각의힘</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학과지성사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="33" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="33" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1603,13 +1774,18 @@
     </div>
     <div class="book-item" data-index="33">
       <div class="book-info">
-        <div class="book-title">편집자란 무엇인가</div>
-        <div class="book-author">김학원</div>
+        <div class="book-title">컬티시 — 광신의 언어학</div>
+        <div class="book-author">어맨다 몬텔</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">휴머니스트</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">아르테</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="34" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="34" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1620,13 +1796,18 @@
     </div>
     <div class="book-item" data-index="34">
       <div class="book-info">
-        <div class="book-title">포르노랜드</div>
-        <div class="book-author">게일 다인스</div>
+        <div class="book-title">트릭 미러</div>
+        <div class="book-author">지아 톨렌티노</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">열다북스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">생각의힘</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="35" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="35" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1637,13 +1818,18 @@
     </div>
     <div class="book-item" data-index="35">
       <div class="book-info">
-        <div class="book-title">포지셔닝</div>
-        <div class="book-author">잭 트라우트 & 앨 리스 / 안진환 역</div>
+        <div class="book-title">편집자란 무엇인가</div>
+        <div class="book-author">김학원</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">을유문화사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">휴머니스트</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="36" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="36" data-type="wip">
         </label>
       </div>
       <div class="check-cell">
@@ -1654,18 +1840,45 @@
     </div>
     <div class="book-item" data-index="36">
       <div class="book-info">
-        <div class="book-title">희랍어 시간</div>
-        <div class="book-author">한강</div>
+        <div class="book-title">포지셔닝</div>
+        <div class="book-author">잭 트라우트 & 앨 리스 / 안진환 역</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">을유문화사</div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="37" data-type="read">
         </label>
       </div>
       <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="37" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
         <label class="custom-cb type-history">
           <input type="checkbox" data-i="37" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="37">
+      <div class="book-info">
+        <div class="book-title">희랍어 시간</div>
+        <div class="book-author">한강</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">문학동네</div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="38" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="38" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="38" data-type="history">
         </label>
       </div>
     </div>
@@ -1675,6 +1888,7 @@
 <script>
 const books = [
   { title: "거짓말 게임", author: "조무원", publisher: "민음사" },
+  { title: "계속해보겠습니다", author: "황정은", publisher: "창비" },
   { title: "공정하다는 착각", author: "마이클 샌델", publisher: "동아시아" },
   { title: "깻잎 투쟁기", author: "우춘희", publisher: "교양인" },
   { title: "나인", author: "천선란", publisher: "창비" },
@@ -1687,17 +1901,17 @@ const books = [
   { title: "물욕의 세계", author: "누누 칼러", publisher: "현암사" },
   { title: "병원탐험기", author: "최준혁", publisher: "고트" },
   { title: "빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!", author: "코니 윌리스", publisher: "아작" },
-  { title: "사람, 장소, 환대", author: "김현경", publisher: "문학과지성사" },
   { title: "사라진 세계", author: "톰 스웨터리치", publisher: "허블" },
+  { title: "사람, 장소, 환대", author: "김현경", publisher: "문학과지성사" },
   { title: "서사학강의", author: "H. 포터 에벗", publisher: "문학과지성사" },
   { title: "세상은 이야기로 만들어졌다", author: "자마리 엘 우아실, 프리데만 카릭 / 김현정 역", publisher: "원더박스" },
   { title: "소설은 어떻게 작동하는가", author: "제임스 우드", publisher: "창비" },
   { title: "시녀 이야기와 증언들", author: "마거릿 애트우드", publisher: "황금가지" },
-  { title: "아직 멀었다는 말", author: "권여선", publisher: "문학동네" },
   { title: "안나 카레니나", author: "레프 톨스토이", publisher: "민음사" },
   { title: "암컷들 — 방탕하고 쟁취하며 군림하는", author: "루시 쿡", publisher: "웅진지식하우스" },
   { title: "어린이라는 세계", author: "김소영", publisher: "사계절" },
   { title: "위대한 개츠비", author: "F. 스콧 피츠제럴드", publisher: "문학동네" },
+  { title: "음악의 사물들: 악보, 자동 악기, 음반", author: "신예슬", publisher: "워크룸프레스" },
   { title: "이방인", author: "알베르 카뮈", publisher: "민음사" },
   { title: "인공지능은 나의 읽기·쓰기를 어떻게 바꿀까", author: "김성우", publisher: "유유" },
   { title: "자연에 이름 붙이기", author: "캐럴 계속 윤", publisher: "윌북" },
@@ -1709,7 +1923,6 @@ const books = [
   { title: "컬티시 — 광신의 언어학", author: "어맨다 몬텔", publisher: "아르테" },
   { title: "트릭 미러", author: "지아 톨렌티노", publisher: "생각의힘" },
   { title: "편집자란 무엇인가", author: "김학원", publisher: "휴머니스트" },
-  { title: "포르노랜드", author: "게일 다인스", publisher: "열다북스" },
   { title: "포지셔닝", author: "잭 트라우트 & 앨 리스 / 안진환 역", publisher: "을유문화사" },
   { title: "희랍어 시간", author: "한강", publisher: "문학동네" },
 ];
@@ -1811,24 +2024,23 @@ function saveBookState(s) {
 
 function updateBookStats() {
   var cbs = document.querySelectorAll('#book-list input[type="checkbox"]');
-  var readCount = 0, histCount = 0;
+  var readCount = 0, wipCount = 0, histCount = 0;
   cbs.forEach(function(cb) {
     if (cb.dataset.type === 'read' && cb.checked) readCount++;
+    if (cb.dataset.type === 'wip' && cb.checked) wipCount++;
     if (cb.dataset.type === 'history' && cb.checked) histCount++;
   });
   var total = document.querySelectorAll('#book-list .book-item').length;
-  var statRead = document.getElementById('stat-read');
-  var statHist = document.getElementById('stat-history');
-  var barRead = document.getElementById('bar-read');
-  var barHist = document.getElementById('bar-history');
-  var barReadFill = document.getElementById('bar-read-fill');
-  var barHistFill = document.getElementById('bar-history-fill');
-  if (statRead) statRead.textContent = readCount;
-  if (statHist) statHist.textContent = histCount;
-  if (barRead) barRead.textContent = readCount;
-  if (barHist) barHist.textContent = histCount;
-  if (barReadFill) barReadFill.style.width = (total ? readCount/total*100 : 0) + '%';
-  if (barHistFill) barHistFill.style.width = (total ? histCount/total*100 : 0) + '%';
+  var el = function(id) { return document.getElementById(id); };
+  if (el('stat-read')) el('stat-read').textContent = readCount;
+  if (el('stat-wip')) el('stat-wip').textContent = wipCount;
+  if (el('stat-history')) el('stat-history').textContent = histCount;
+  if (el('bar-read')) el('bar-read').textContent = readCount;
+  if (el('bar-wip')) el('bar-wip').textContent = wipCount;
+  if (el('bar-history')) el('bar-history').textContent = histCount;
+  if (el('bar-read-fill')) el('bar-read-fill').style.width = (total ? readCount/total*100 : 0) + '%';
+  if (el('bar-wip-fill')) el('bar-wip-fill').style.width = (total ? wipCount/total*100 : 0) + '%';
+  if (el('bar-history-fill')) el('bar-history-fill').style.width = (total ? histCount/total*100 : 0) + '%';
 }
 
 function initBookChecks() {
