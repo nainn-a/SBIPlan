@@ -412,7 +412,7 @@
 
   .col-labels {
     display: grid;
-    grid-template-columns: 1fr 100px 1fr 128px 128px 128px;
+    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
     gap: 8px;
     padding: 0 10px 8px;
     border-bottom: 1px solid var(--border);
@@ -431,7 +431,7 @@
 
   .book-item {
     display: grid;
-    grid-template-columns: 1fr 100px 1fr 128px 128px 128px;
+    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
     gap: 8px;
     align-items: center;
     padding: 7px 10px;
@@ -522,12 +522,12 @@
 
   @media (max-width: 700px) {
     .week-grid { grid-template-columns: repeat(4, 1fr); }
-    .col-labels, .book-item { grid-template-columns: 1fr 100px 1fr 128px 128px 128px; }
+    .col-labels, .book-item { grid-template-columns: 340px 120px 1fr 128px 128px 128px; }
   }
 
   @media (max-width: 480px) {
     .week-grid { grid-template-columns: repeat(2, 1fr); }
-    .col-labels, .book-item { grid-template-columns: 1fr 100px 1fr 128px 128px 128px; }
+    .col-labels, .book-item { grid-template-columns: 340px 120px 1fr 128px 128px 128px; }
     .book-title { font-size: 11px; }
     .booklist-section { padding: 16px 12px; }
     .col-labels, .book-item { gap: 4px; }
@@ -1513,29 +1513,7 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="20">
-      <div class="book-info">
-        <div class="book-title">안나 카레니나</div>
-        <div class="book-author">레프 톨스토이</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
-      <div></div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
-          <input type="checkbox" data-i="21" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-wip">
-          <input type="checkbox" data-i="21" data-type="wip">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="21" data-type="history">
-        </label>
-      </div>
-    </div>
+
     <div class="book-item" data-index="21">
       <div class="book-info">
         <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
@@ -1625,6 +1603,29 @@
       <div class="check-cell">
         <label class="custom-cb type-history">
           <input type="checkbox" data-i="25" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="ivan">
+      <div class="book-info">
+        <div class="book-title">이반 일리치의 죽음</div>
+        <div class="book-author">레프 니콜라예비치 톨스토이</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문예출판사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="ivan" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="ivan" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="ivan" data-type="history">
         </label>
       </div>
     </div>
@@ -1952,11 +1953,11 @@ const books = [
   { title: "세상은 이야기로 만들어졌다", author: "자마리 엘 우아실, 프리데만 카릭 / 김현정 역", publisher: "원더박스" },
   { title: "소설은 어떻게 작동하는가", author: "제임스 우드", publisher: "창비" },
   { title: "시녀 이야기와 증언들", author: "마거릿 애트우드", publisher: "황금가지" },
-  { title: "안나 카레니나", author: "레프 톨스토이", publisher: "민음사" },
   { title: "암컷들 — 방탕하고 쟁취하며 군림하는", author: "루시 쿡", publisher: "웅진지식하우스" },
   { title: "어린이라는 세계", author: "김소영", publisher: "사계절" },
   { title: "위대한 개츠비", author: "F. 스콧 피츠제럴드", publisher: "문학동네" },
   { title: "음악의 사물들: 악보, 자동 악기, 음반", author: "신예슬", publisher: "워크룸프레스" },
+  { title: "이반 일리치의 죽음", author: "레프 니콜라예비치 톨스토이", publisher: "문예출판사" },
   { title: "이방인", author: "알베르 카뮈", publisher: "민음사" },
   { title: "인공지능은 나의 읽기·쓰기를 어떻게 바꿀까", author: "김성우", publisher: "유유" },
   { title: "자연에 이름 붙이기", author: "캐럴 계속 윤", publisher: "윌북" },
