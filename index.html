@@ -632,7 +632,7 @@
         <input id="cfg-longbreak" type="number" min="1" max="120" value="30" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
       </label>
       <label style="font-size:12px; color:var(--text-muted);">총 세션 수
-        <input id="cfg-sessions" type="number" min="1" max="99" value="6" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+        <input id="cfg-sessions" type="number" min="1" max="99" value="9" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
       </label>
       <label style="font-size:12px; color:var(--text-muted);">긴 휴식 간격 (집중 N회 후)
         <input id="cfg-interval" type="number" min="1" max="10" value="3" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
@@ -2091,7 +2091,7 @@ function initBookChecks() {
 
 
 // ===== 포모도로 타이머 =====
-var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 6, interval: 3 };
+var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 9, interval: 3 };
 var pomoState = { mode: 'focus', running: false, timeLeft: 50*60, session: 0, focusDone: 0, endTime: null };
 var pomoTimer = null;
 
@@ -2160,8 +2160,9 @@ function updateDisplay() {
   var status = document.getElementById('pomo-status');
   if (status) {
     var modeLabel = pomoState.mode === 'focus' ? '집중' : (pomoState.mode === 'break' ? '휴식' : '긴 휴식');
+    var currentSession = (pomoState.mode === 'focus' && pomoState.running) ? pomoState.focusDone + 1 : pomoState.focusDone;
     status.textContent = modeLabel + ' ' + (pomoState.running ? '중' : '준비') +
-      ' · ' + (pomoState.focusDone) + '/' + pomoConfig.sessions + ' 세션';
+      ' · ' + currentSession + '/' + pomoConfig.sessions + ' 세션';
   }
 
   // 탭 활성화
