@@ -607,7 +607,7 @@
       <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted);">일별 기록</div>
       <button id="pomo-manual-btn" style="background:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:11px; cursor:pointer; color:var(--text-muted);">+ 세션 추가</button>
     </div>
-    <div id="pomo-log-list" style="display:grid; gap:6px; max-height:180px; overflow-y:auto;">
+    <div id="pomo-log-list" style="display:grid; gap:6px;">
       <div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>
     </div>
   </div>
@@ -2098,20 +2098,35 @@ var pomoTimer = null;
 function beep(type) {
   try {
     var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    var count = type === 'end' ? 3 : 1;
-    for (var i = 0; i < count; i++) {
-      (function(idx) {
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 880;
-        osc.type = 'sine';
-        gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.35);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.35 + 0.2);
-        osc.start(ctx.currentTime + idx * 0.35);
-        osc.stop(ctx.currentTime + idx * 0.35 + 0.25);
-      })(i);
+    if (type === 'start') {
+      // 집중 시작: 낮은 단음 한 번 (둔탁하게)
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 440;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.55);
+    } else {
+      // 휴식 시작(end): 높은 3연음 (경쾌하게)
+      var freqs = [880, 1100, 1320];
+      for (var i = 0; i < 3; i++) {
+        (function(idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freqs[idx];
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.2 + 0.15);
+          osc.start(ctx.currentTime + idx * 0.2);
+          osc.stop(ctx.currentTime + idx * 0.2 + 0.18);
+        })(i);
+      }
     }
   } catch(e) {}
 }
