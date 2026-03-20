@@ -2583,7 +2583,7 @@ function initBookChecks() {
 
 
 // ===== 포모도로 타이머 =====
-var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 6, interval: 3 };
+var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 9, interval: 3 };
 var pomoState = { mode: 'focus', running: false, timeLeft: 50*60, session: 0, focusDone: 0, endTime: null };
 var pomoTimer = null;
 
@@ -2820,12 +2820,14 @@ function initPomo() {
     pomoConfig.focus = parseInt(document.getElementById('cfg-focus').value) || 50;
     pomoConfig.breakT = parseInt(document.getElementById('cfg-break').value) || 10;
     pomoConfig.longBreak = parseInt(document.getElementById('cfg-longbreak').value) || 30;
-    pomoConfig.sessions = parseInt(document.getElementById('cfg-sessions').value) || 6;
+    pomoConfig.sessions = parseInt(document.getElementById('cfg-sessions').value) || 9;
     pomoConfig.interval = parseInt(document.getElementById('cfg-interval').value) || 3;
     clearInterval(pomoTimer);
     pomoState.running = false;
     pomoState.mode = 'focus';
-    pomoState.focusDone = 0;
+    // focusDone: 오늘 기록 기반 유지 (세션 수 변경해도 리셋 안 함)
+    var todayLogSave = loadPomoLog()[getKSTDateStr()];
+    pomoState.focusDone = todayLogSave ? (todayLogSave.sessions || 0) % pomoConfig.sessions : 0;
     pomoState.timeLeft = getDuration('focus');
     document.getElementById('pomo-start').textContent = '시작';
     document.getElementById('pomo-settings-overlay').style.display = 'none';
