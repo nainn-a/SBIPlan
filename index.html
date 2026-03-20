@@ -217,18 +217,30 @@
   ];
 
   window.onload = async () => {
-    // 1. 실시간 시계 시작
+    // 1. 실시간 시계 시작 (초 단위 포함)
     setInterval(() => {
       const now = new Date();
-      document.getElementById('pomo-clock').innerText = `현재 시각 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      const clockEl = document.getElementById('pomo-clock');
+      if (clockEl) {
+        clockEl.innerText = `현재 시각 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+      }
     }, 1000);
 
-    // 2. 독서 리스트 생성
+    // 2. 독서 리스트 생성 (출판사 서체 및 정렬 복원)
     const root = document.getElementById('book-list-root');
     books.forEach((b, i) => {
       const item = document.createElement('div');
       item.className = 'book-item';
-      item.innerHTML = `<div class="book-info"><div class="book-title" style="font-size:12px;font-weight:500;">${b.t}</div><div style="font-size:10px;color:#999">${b.a}</div></div><div class="book-publisher">${b.p}</div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`;
+      item.innerHTML = `
+        <div class="book-info">
+          <div class="book-title" style="font-size:12px;font-weight:500;">${b.t}</div>
+          <div style="font-size:10px;color:#999">${b.a}</div>
+        </div>
+        <div class="book-publisher" style="font-family:'Noto Sans KR', sans-serif; font-size:11px; color:var(--text-muted); text-align:center; display:flex; align-items:center; justify-content:center; height:100%;">${b.p}</div>
+        <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>
+        <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>
+        <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>
+      `;
       root.appendChild(item);
     });
 
@@ -246,26 +258,35 @@
     // 4. 마이그레이션 로직 (기존 PC 로컬 기록 강제 업로드)
     const oldPomo = JSON.parse(localStorage.getItem('pomo_log_v1') || '{}');
     for (const [d, v] of Object.entries(oldPomo)) await window.dbSync('pomoLogs', d, v);
+    
     const oldTasks = JSON.parse(localStorage.getItem('task_checks_v1') || '{}');
     for (const [id, v] of Object.entries(oldTasks)) await window.dbSync('syncData', id, {checked: true});
+
     const oldBooks = JSON.parse(localStorage.getItem('book_checks_v1') || '{}');
     for (const [id, v] of Object.entries(oldBooks)) {
-      const p = id.split('_');
-      await window.dbSync('syncData', `book_${p[0]}_${p[1] === 'history' ? 'hist' : p[1]}`, {checked: true});
+       const p = id.split('_'); 
+       const type = p[1] === 'history' ? 'hist' : p[1];
+       await window.dbSync('syncData', `book_${p[0]}_${type}`, {checked: true});
     }
+
     const oldMemos = JSON.parse(localStorage.getItem('day_memos_v1') || '{}');
     for (const [date, list] of Object.entries(oldMemos)) {
-      for (const m of list) {
-        await window.dbSync('dayMemos', `${date}_${Math.random().toString(36).substr(2,5)}`, {date, text: m.text, checked: m.checked});
-      }
+       for (const m of list) {
+          const mId = `${date}_${Math.random().toString(36).substr(2, 5)}`;
+          await window.dbSync('dayMemos', mId, {date, text: m.text, checked: m.checked});
+       }
     }
   };
 
+  // 실시간 동기화 리스너들
   onSnapshot(collection(db, "syncData"), (snap) => {
     snap.docChanges().forEach(c => {
       const d = c.doc.data(), id = c.doc.id;
       const el = document.querySelector(`[data-task-id="${id}"]`) || document.querySelector(`input[data-sync-id="${id}"]`);
-      if(el) el.type === 'checkbox' ? el.checked = d.checked : (d.checked ? el.classList.add('done') : el.classList.remove('done'));
+      if(el) {
+        if(el.type === 'checkbox') el.checked = d.checked;
+        else d.checked ? el.classList.add('done') : el.classList.remove('done');
+      }
     });
     const total = 37;
     const r = document.querySelectorAll('input[data-sync-id*="_read"]:checked').length;
