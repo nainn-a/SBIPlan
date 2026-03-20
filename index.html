@@ -2229,6 +2229,7 @@ function _renderTask(id, data, append) {
         iconEl2.textContent = '☑️';
       }
     }
+    updateExecTotal(el.closest('.day-card'));
     onFbReady(function() { window.dbSync('dailyTasks', id, { checked: el.classList.contains('done') }); });
   };
   el.addEventListener('dragstart', function(e) {
@@ -2312,6 +2313,7 @@ function initFbBookSync() {
                 var d2 = loadDeletedTasks(); delete d2[id]; saveDeletedTasks(d2);
                 if (data.checked !== undefined) {
                   el.classList.toggle('done', !!data.checked);
+                  updateExecTotal(el.closest('.day-card'));
                 }
               }
             }
@@ -3108,6 +3110,10 @@ window.addEventListener('DOMContentLoaded', function() {
   applyToday();
   applyDeletedTasks();
   initTaskChecks();
+  // 페이지 로드 시 이미 done인 태스크 실행합계 반영
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    updateExecTotal(card);
+  });
   initBookChecks();
   initMemoModal();
   initPomo();
