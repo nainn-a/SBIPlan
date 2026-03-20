@@ -25,6 +25,19 @@
   .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; margin-bottom: 15px; }
   .progress-bar-fill { height: 100%; width: 0%; transition: width 0.6s ease; }
 
+  /* 주차 라벨 스타일 수정 */
+  .week-label {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #2a2724;
+    margin: 50px 0 15px 0;
+    padding-left: 10px;
+    border-left: 4px solid var(--accent);
+    display: block;
+  }
+  .week-label:first-of-type { margin-top: 20px; }
+
   .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
   .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; min-height: 180px; cursor: pointer; position: relative; transition: 0.2s; }
   .day-card.today { border: 3px solid #7a9ab5; background: #f0f7ff; }
@@ -39,7 +52,6 @@
   .task.book { background: #5a3e1a12; border-left: 2px solid #8b6914; color: #5a3e1a; }
   .task.milestone { background: #a0484012; border-left: 2px solid var(--red); color: var(--red); font-weight: 600; }
 
-  /* 독서 리스트 컬럼 고정 */
   .col-labels, .book-item { display: grid; grid-template-columns: 2.5fr 1fr 60px 60px 60px; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
   .col-label { font-size: 10px; color: var(--text-dim); text-align: center; font-weight: 600; }
   .memo-badge { position: absolute; top: 5px; right: 5px; background: #7a9ab5; color: white; font-size: 9px; padding: 1px 5px; border-radius: 10px; }
@@ -57,7 +69,6 @@
     <p style="color:var(--text-muted); margin-top:8px;">2026. 03. 02 — 03. 30</p>
   </header>
 
-  <!-- 포모도로 -->
   <section class="section">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 style="font-family:'Noto Serif KR'; font-size:22px;">🍅 포모도로 타이머</h2>
@@ -79,7 +90,6 @@
     </div>
   </section>
 
-  <!-- 진행바 -->
   <section class="section">
     <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
       <span>📖 독서 이력서 (읽음)</span><span id="txt-read">0 / 37</span>
@@ -91,8 +101,7 @@
     </div>
     <div class="progress-bar-wrap"><div id="bar-hist" class="progress-bar-fill" style="background:var(--accent3);"></div></div>
   </section>
-<div id="calendar-root">
-    <!-- 1주차 -->
+  <div id="calendar-root">
     <div class="week-label">WEEK 01 (3/2 - 3/8)</div>
     <div class="week-grid">
       <div class="day-card" data-date="0302"><div class="day-date">02</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📡 칼럼분석① 화상 (2시간)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
@@ -104,7 +113,6 @@
       <div class="day-card" data-date="0308"><div class="day-date" style="color:#c04848;">08</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권 (120분)</div><div class="task cover">✏️ 자소서 1시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
     </div>
     
-    <!-- 2주차 -->
     <div class="week-label">WEEK 02 (3/9 - 3/15)</div>
     <div class="week-grid">
       <div class="day-card" data-date="0309"><div class="day-date">09</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📡 칼럼분석① 화상 (2시간)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
@@ -116,11 +124,10 @@
       <div class="day-card" data-date="0315"><div class="day-date" style="color:#c04848;">15</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권 (120분)</div><div class="task cover">✏️ 자소서 1시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
     </div>
 
-    <!-- 3주차 -->
     <div class="week-label">WEEK 03 (3/16 - 3/22)</div>
     <div class="week-grid">
       <div class="day-card" data-date="0316"><div class="day-date">16</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📡 칼럼분석① 화상 (2시간)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0317"><div class="day-date">17</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📝 칼럼② 과제 제출 (110분)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
+      <div class="day-card" data-date="0317"><div class="day-date">17</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
       <div class="day-card" data-date="0318"><div class="day-date">18</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">💬 칼럼① 피드백 (30분)</div><div class="task study">💬 칼럼② 피드백 (30분)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
       <div class="day-card" data-date="0319"><div class="day-date">19</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권 (120분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
       <div class="day-card" data-date="0320"><div class="day-date">20</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📝 칼럼② 과제 제출 (110분)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
@@ -128,20 +135,18 @@
       <div class="day-card" data-date="0322"><div class="day-date" style="color:#c04848;">22</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권 (120분)</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
     </div>
 
-    <!-- 4주차 -->
-    <div class="week-label">WEEK 04 (3/23 - 3/25)</div>
+    <div class="week-label">WEEK 04 (3/23 - 3/30)</div>
     <div class="week-grid">
-      <div class="day-card" data-date="0323"><div class="day-date">23</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📡 칼럼분석① 화상 (2시간)</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0324"><div class="day-date">24</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task milestone">📖 이력서 2권 — 완주 🎯</div><div class="task cover">✏️ 자소서 2시간</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📝 칼럼② 과제 제출 (110분)</div><div class="task milestone">🏁 이력서 전체 완료!</div><div class="task book">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0325"><div class="day-of-week">Wed</div><div class="tasks"><div class="task milestone">🚀 자소서 마무리 시작</div><div class="task study">💬 칼럼① 피드백 (30분)</div><div class="task study">💬 칼럼② 피드백 (30분)</div></div></div>
-      <div class="day-card empty"></div>
-      <div class="day-card empty"></div>
-      <div class="day-card empty"></div>
-      <div class="day-card empty"></div>
+      <div class="day-card" data-date="0323"><div class="day-date">23</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task milestone">🏁 완주 목표</div></div></div>
+      <div class="day-card" data-date="0324"><div class="day-date">24</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task milestone">📖 이력서 2권 — 완주 🎯</div><div class="task cover">✏️ 자소서 2시간</div><div class="task milestone">🏁 이력서 전체 완료!</div><div class="task book">📚 책읽기 1권</div></div></div>
+      <div class="day-card" data-date="0325"><div class="day-date">25</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task milestone">🚀 최종 제출</div></div></div>
+      <div class="day-card" data-date="0326"><div class="day-date">26</div></div>
+      <div class="day-card" data-date="0327"><div class="day-date">27</div></div>
+      <div class="day-card" data-date="0328"><div class="day-date">28</div></div>
+      <div class="day-card" data-date="0329"><div class="day-date">29</div></div>
     </div>
 </div>
-
-  <section class="section">
+<section class="section">
     <div class="col-labels">
       <div class="col-label" style="text-align:left;">제목 / 저자</div>
       <div class="col-label">출판사</div>
@@ -152,6 +157,7 @@
     <div id="book-list-root"></div>
   </section>
 </div>
+
 <div id="memo-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">
   <div style="background:white; padding:24px; border-radius:12px; width:90%; max-width:400px;">
     <h3 id="memo-title" style="margin-bottom:15px; font-family:'Noto Serif KR';">메모</h3>
@@ -192,7 +198,7 @@
     {t: "병원탐험기", a: "최준혁", p: "고트"}, {t: "빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!", a: "코니 윌리스", p: "아작"},
     {t: "사라진 세계", a: "톰 스웨터리치", p: "허블"}, {t: "사람, 장소, 환대", a: "김현경", p: "문학과지성사"},
     {t: "사랑에 관하여", a: "안톤 체호프(안지영)", p: "펭귄클래식코리아"},
-    {t: "세상은 이야기로 만들어졌다", a: "자마리 엘 우아실, 프리데만 카릭 / 김현정 역", p: "원더박스"},
+    {t: "세상은 이야기로 만들어졌다", a: "자마리 엘 우아실 & 프리데만 카릭 / 김현정 역", p: "원더박스"},
     {t: "소설은 어떻게 작동하는가", a: "제임스 우드", p: "창비"},
     {t: "시녀 이야기와 증언들", a: "마거릿 애트우드", p: "황금가지"},
     {t: "암컷들 — 방탕하고 쟁취하며 군림하는", a: "루시 쿡", p: "웅진지식하우스"},
@@ -214,7 +220,7 @@
     // 1. 실시간 시계 시작
     setInterval(() => {
       const now = new Date();
-      document.getElementById('pomo-clock').innerText = `현재 시각 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      document.getElementById('pomo-clock').innerText = `현재 시각 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
     }, 1000);
 
     // 2. 독서 리스트 생성
@@ -222,7 +228,7 @@
     books.forEach((b, i) => {
       const item = document.createElement('div');
       item.className = 'book-item';
-      item.innerHTML = `<div style="font-size:12px;font-weight:500;">${b.t}<div style="font-size:10px;color:#999">${b.a}</div></div><div style="font-size:11px;text-align:center;color:#666">${b.p}</div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`;
+      item.innerHTML = `<div class="book-info"><div class="book-title" style="font-size:12px;font-weight:500;">${b.t}</div><div style="font-size:10px;color:#999">${b.a}</div></div><div class="book-publisher">${b.p}</div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`;
       root.appendChild(item);
     });
 
@@ -230,35 +236,31 @@
     document.querySelectorAll('.day-card').forEach(card => {
       const date = card.dataset.date;
       card.querySelectorAll('.task').forEach((task, idx) => {
-        task.dataset.taskId = `task_${date}_${idx}`;
-        task.onclick = (e) => { e.stopPropagation(); window.dbSync('syncData', task.dataset.taskId, {checked:!task.classList.contains('done')}); };
+        const taskId = `task_${date}_${idx}`;
+        task.dataset.taskId = taskId;
+        task.onclick = (e) => { e.stopPropagation(); window.dbSync('syncData', taskId, {checked:!task.classList.contains('done')}); };
       });
       card.onclick = () => openMemo(date);
     });
 
-    // ★ 4. 중요: 기존 PC LocalStorage 데이터 Firebase로 강제 마이그레이션 로직 ★
+    // 4. 마이그레이션 로직 (기존 PC 로컬 기록 강제 업로드)
     const oldPomo = JSON.parse(localStorage.getItem('pomo_log_v1') || '{}');
     for (const [d, v] of Object.entries(oldPomo)) await window.dbSync('pomoLogs', d, v);
-    
     const oldTasks = JSON.parse(localStorage.getItem('task_checks_v1') || '{}');
     for (const [id, v] of Object.entries(oldTasks)) await window.dbSync('syncData', id, {checked: true});
-
     const oldBooks = JSON.parse(localStorage.getItem('book_checks_v1') || '{}');
     for (const [id, v] of Object.entries(oldBooks)) {
-       const parts = id.split('_'); // i_type
-       await window.dbSync('syncData', `book_${parts[0]}_${parts[1]}`, {checked: true});
+      const p = id.split('_');
+      await window.dbSync('syncData', `book_${p[0]}_${p[1] === 'history' ? 'hist' : p[1]}`, {checked: true});
     }
-
     const oldMemos = JSON.parse(localStorage.getItem('day_memos_v1') || '{}');
     for (const [date, list] of Object.entries(oldMemos)) {
-       for (const m of list) {
-          const mId = `${date}_${Math.random().toString(36).substr(2, 9)}`;
-          await window.dbSync('dayMemos', mId, {date: date, text: m.text, checked: m.checked});
-       }
+      for (const m of list) {
+        await window.dbSync('dayMemos', `${date}_${Math.random().toString(36).substr(2,5)}`, {date, text: m.text, checked: m.checked});
+      }
     }
   };
 
-  // 실시간 수신 리스너들
   onSnapshot(collection(db, "syncData"), (snap) => {
     snap.docChanges().forEach(c => {
       const d = c.doc.data(), id = c.doc.id;
@@ -279,7 +281,7 @@
     const logs = []; snap.forEach(doc => logs.push({id:doc.id, ...doc.data()}));
     logs.sort((a,b) => b.id.localeCompare(a.id)).forEach(d => {
       const h = Math.floor((d.sessions*50)/60), m = (d.sessions*50)%60;
-      list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px;background:#f9f9f9;border-radius:6px;margin-bottom:4px"><span>📅 ${d.id}</span><span>🍅 ${d.sessions}세션 (${h}시간 ${m}분)</span></div>`;
+      list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px;background:#f9f9f9;border-radius:6px;margin-bottom:4px"><span>📅 ${d.id}</span><span>🍅 ${d.sessions}세션 (${h}시간 ${m}분)</span><button onclick="window.dbDel('pomoLogs','${d.id}')" style="background:none;border:none;color:#ccc;cursor:pointer">✕</button></div>`;
     });
   });
 
