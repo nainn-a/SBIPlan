@@ -2255,15 +2255,16 @@ function confirmTaskModal() {
 function deleteTask(id) {
   var el = document.querySelector('[data-task-id="' + id + '"]');
   if (!el) return;
-  var prev = el.outerHTML; // 취소용 백업
+  el.style.display = 'none';
   el.classList.add('deleted');
-  // 취소 토스트
   showUndoToast(function() {
+    // 취소: 복원
+    el.style.display = '';
     el.classList.remove('deleted');
     onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: false }); });
   }, function() {
-    el.remove();
-    onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: true }); });
+    // 확정: Firebase에 deleted:true 저장 (DOM은 이미 hide)
+    onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: true, checked: el.classList.contains('done') }); });
   });
 }
 
@@ -2394,29 +2395,36 @@ function initFbBookSync() {
     });
     // dailyTasks 실시간 수신 (모든 prefix 처리)
     window.fbOnSnapshot(window.fbCollection(window.fbDb, 'dailyTasks'), function(snap) {
-      snap.forEach(function(d) {
-        var id = d.id;
-        var data = d.data();
-        if (id.startsWith('fb_')) {
-          // 동적 추가 태스크
-          _renderTask(id, data, false);
-        } else {
-          // 정적/마이그레이션 태스크 - 체크/삭제 상태만 반영
-          var el = document.querySelector('[data-task-id="' + id + '"]');
-          if (el) {
-            if (data.deleted) {
-              el.style.display = 'none';
-              el.classList.add('deleted');
-            } else {
-              el.style.display = '';
-              el.classList.remove('deleted');
-              if (data.checked !== undefined) {
-                el.classList.toggle('done', data.checked);
+      // DOM 준비 후 적용 (타이밍 보장)
+      function applySnap() {
+        snap.forEach(function(d) {
+          var id = d.id;
+          var data = d.data();
+          if (id.startsWith('fb_')) {
+            _renderTask(id, data, false);
+          } else {
+            var el = document.querySelector('[data-task-id="' + id + '"]');
+            if (el) {
+              if (data.deleted) {
+                el.style.display = 'none';
+                el.classList.add('deleted');
+              } else {
+                el.style.display = '';
+                el.classList.remove('deleted');
+                if (data.checked !== undefined) {
+                  el.classList.toggle('done', !!data.checked);
+                }
               }
             }
           }
-        }
-      });
+        });
+      }
+      // initTaskChecks 완료 보장을 위해 약간 지연
+      if (document.readyState === 'complete') {
+        applySnap();
+      } else {
+        window.addEventListener('load', applySnap);
+      }
     });
   });
 }
