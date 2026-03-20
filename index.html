@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>출판학교 준비 계획표</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
   :root {
-    --bg: #f5f3ef;
+    --bg: #f4f4f4;
     --surface: #ffffff;
-    --surface2: #f0ede8;
-    --border: #e2ddd6;
-    --text: #2a2724;
-    --text-muted: #7a7570;
-    --text-dim: #b0aba4;
-    --accent: #a07840;
-    --accent2: #4a8c62;
-    --accent3: #8c4f65;
-    --accent4: #4a7a9c;
+    --surface2: #eaebed;
+    --border: #d3d6db;
+    --text: #4e5359;
+    --text-muted: #9b9ea3;
+    --text-dim: #c2c4c8;
+    --accent: #345193;
+    --accent2: #345193;
+    --accent3: #6b7a99;
+    --accent4: #345193;
     --red: #a04840;
-    --today: #a0784015;
+    --today: #34519318;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,7 +27,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-weight: 300;
     min-height: 100vh;
     padding: 40px 24px 80px;
@@ -49,7 +49,7 @@
   }
 
   h1 {
-    font-family: 'Noto Serif KR', serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-size: 28px;
     font-weight: 600;
     color: var(--text);
@@ -123,7 +123,7 @@
   .day-card.weekend { }
 
   .day-card.today {
-    border: 3px solid #7a9ab5;
+    border: 2px solid #345193;
     background: var(--surface);
     box-shadow: none;
   }
@@ -147,7 +147,7 @@
 
   .day-date {
     font-size: 18px;
-    font-family: 'Noto Serif KR', serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-weight: 600;
     color: var(--text);
     line-height: 1;
@@ -193,8 +193,9 @@
     user-select: none;
   }
   .task.done {
-    opacity: 0.45;
-    text-decoration: line-through;
+    opacity: 1;
+    text-decoration: none;
+    filter: brightness(0.88);
   }
   .task-icon {
     font-size: 9px;
@@ -202,48 +203,19 @@
     margin-top: 1px;
   }
 
-  .task.reading {
-    background: #a0784012;
-    border-left: 2px solid var(--accent);
-    color: #7a5c2e;
-  }
+  .task.reading { background: #f5f1e8; border-left: 3px solid #c8c0a0; color: #4e5359; }
 
-  .task.book {
-    background: #5a3e1a12;
-    border-left: 2px solid #8b6914;
-    color: #5a3e1a;
-  }
+  .task.book { background: #f5f1e8; border-left: 3px solid #c8c0a0; color: #4e5359; }
 
-  .task.cover {
-    background: #8c4f6512;
-    border-left: 2px solid var(--accent3);
-    color: #6e3a50;
-  }
+  .task.cover { background: #dbd9f1; border-left: 3px solid #9b98d4; color: #4e5359; }
 
-  .task.korean {
-    background: #4a8c6212;
-    border-left: 2px solid var(--accent2);
-    color: #366a4a;
-  }
+  .task.korean { background: #ceefe4; border-left: 3px solid #7ecdb0; color: #4e5359; }
 
-  .task.study {
-    background: #4a7a9c12;
-    border-left: 2px solid var(--accent4);
-    color: #365e78;
-  }
+  .task.study { background: #d9eaf5; border-left: 3px solid #8ab5d9; color: #4e5359; }
 
-  .task.study2 {
-    background: #4a7a9c12;
-    border-left: 2px solid var(--accent4);
-    color: #365e78;
-  }
+  .task.study2 { background: #d9eaf5; border-left: 3px solid #8ab5d9; color: #4e5359; }
 
-  .task.milestone {
-    background: #a0484012;
-    border-left: 2px solid var(--red);
-    color: var(--red);
-    font-weight: 500;
-  }
+  .task.milestone { background: #fde8e8; border-left: 3px solid #95393e; color: #4e5359; font-weight: 600; }
 
   .day-total {
     margin-top: 8px;
@@ -280,7 +252,7 @@
   }
 
   .counter-num {
-    font-family: 'Noto Serif KR', serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-size: 32px;
     font-weight: 600;
     color: var(--accent);
@@ -303,7 +275,7 @@
 
   .progress-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    background: linear-gradient(90deg, var(--accent), var(--accent));
     border-radius: 3px;
     width: 0%;
     animation: fillBar 1.5s ease forwards 0.5s;
@@ -327,7 +299,7 @@
     font-size: 11px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--accent2);
+    color: var(--accent);
     margin-bottom: 16px;
   }
 
@@ -344,9 +316,9 @@
   }
 
   .step-num {
-    font-family: 'Noto Serif KR', serif;
+    font-family: 'Pretendard Variable', 'Pretendard', sans-serif;
     font-size: 20px;
-    color: var(--accent2);
+    color: var(--accent);
     font-weight: 600;
     margin-bottom: 6px;
   }
@@ -380,8 +352,8 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 24px 28px 28px;
-    overflow-x: auto;
+    padding: 24px 20px 28px;
+    
   }
 
   .booklist-header {
@@ -412,7 +384,7 @@
 
   .col-labels {
     display: grid;
-    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
+    grid-template-columns: minmax(0,2.5fr) minmax(0,1fr) 52px 52px 52px;
     gap: 8px;
     padding: 0 10px 8px;
     border-bottom: 1px solid var(--border);
@@ -431,7 +403,7 @@
 
   .book-item {
     display: grid;
-    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
+    grid-template-columns: minmax(0,2.5fr) minmax(0,1fr) 52px 52px 52px;
     gap: 8px;
     align-items: center;
     padding: 7px 10px;
@@ -494,18 +466,18 @@
   }
 
   .custom-cb.type-read input[type="checkbox"]:checked {
-    background: var(--accent2);
-    border-color: var(--accent2);
+    background: #c8c0a0;
+    border-color: #c8c0a0;
   }
 
   .custom-cb.type-history input[type="checkbox"]:checked {
-    background: var(--accent3);
-    border-color: var(--accent3);
+    background: #7ecdb0;
+    border-color: #7ecdb0;
   }
 
   .custom-cb.type-wip input[type="checkbox"]:checked {
-    background: #c9a96e;
-    border-color: #c9a96e;
+    background: #9b98d4;
+    border-color: #9b98d4;
   }
 
   .custom-cb input[type="checkbox"]:checked::after {
@@ -574,7 +546,7 @@
     line-height: 1.4;
   }
   .task-action-btn:hover { color: var(--text); }
-  .task.done > span { opacity: 0.45; text-decoration: line-through; }
+  .task.done > span { opacity: 1; text-decoration: none; }
   .task.deleted { display: none; }
 
   /* 태스크 추가 버튼 */
@@ -601,11 +573,11 @@
     width: 90%; max-width: 360px;
     box-shadow: 0 8px 32px rgba(0,0,0,0.18);
   }
-  #task-modal-box h3 { font-family: 'Noto Serif KR'; font-size: 15px; margin-bottom: 14px; }
+  #task-modal-box h3 { font-family: 'Pretendard Variable', 'Pretendard'; font-size: 15px; margin-bottom: 14px; }
   #task-modal-box input, #task-modal-box select {
     width: 100%; border: 1px solid var(--border); border-radius: 7px;
     padding: 8px 10px; font-size: 13px; margin-bottom: 10px;
-    font-family: 'Noto Sans KR'; background: #fff;
+    font-family: 'Pretendard Variable', 'Pretendard'; background: #fff;
   }
   .task-modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
   .task-modal-btns button {
@@ -666,7 +638,7 @@
 <body>
 
 <div style="max-width:900px; margin:40px auto 48px; padding:0 20px; text-align:center;">
-  <h1 style="font-family:'Noto Serif KR',serif; font-size:36px; font-weight:400; color:var(--text); margin:0; text-align:center;">출판학교 준비</h1>
+  <h1 style="font-family:'Pretendard Variable','Pretendard',sans-serif; font-size:22px; font-weight:600; color:#345193; margin:0; text-align:center;">2026 서울출판예비학교 편집자과정 지원 청사진</h1>
 </div>
 
 <!-- 포모도로 타이머 -->
@@ -674,7 +646,7 @@
 
   <!-- 헤더 -->
   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
-    <h1 style="font-family:'Noto Serif KR',serif; font-size:28px; font-weight:600; color:var(--text); margin:0;">🍅 포모도로 타이머</h1>
+    <h1 style="font-family:'Pretendard Variable', 'Pretendard',serif; font-size:28px; font-weight:600; color:var(--text); margin:0;">🍅 포모도로 타이머</h1>
     <div style="display:flex; align-items:center; gap:10px;">
       <span style="font-size:11px; color:var(--text-muted);">현재 시각</span>
       <div id="pomo-clock" style="font-size:13px; font-variant-numeric:tabular-nums; color:var(--text-muted); letter-spacing:1px;">00:00:00</div>
@@ -699,7 +671,7 @@
   <!-- 컨트롤 -->
   <div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px;">
     <button id="pomo-reset" style="background:none; border:1px solid var(--border); border-radius:8px; padding:9px 18px; font-size:12px; cursor:pointer; color:var(--text-muted);">↺ 리셋</button>
-    <button id="pomo-start" style="background:#5a4a3a; color:#fff; border:none; border-radius:8px; padding:9px 32px; font-size:13px; font-weight:500; cursor:pointer; letter-spacing:0.5px;">시작</button>
+    <button id="pomo-start" style="background:#345193; color:#fff; border:none; border-radius:8px; padding:9px 32px; font-size:13px; font-weight:500; cursor:pointer; letter-spacing:0.5px;">시작</button>
     <button id="pomo-skip" style="background:none; border:1px solid var(--border); border-radius:8px; padding:9px 18px; font-size:12px; cursor:pointer; color:var(--text-muted);">건너뛰기 ›</button>
   </div>
 
@@ -709,7 +681,7 @@
       <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted);">일별 기록</div>
       <button id="pomo-manual-btn" style="background:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:11px; cursor:pointer; color:var(--text-muted);">+ 세션 추가</button>
     </div>
-    <div id="pomo-log-list" style="display:grid; gap:6px; max-height:180px; overflow-y:auto;">
+    <div id="pomo-log-list" style="display:grid; gap:6px;">
       <div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>
     </div>
   </div>
@@ -749,12 +721,12 @@
   <h1>3월 세부 계획표</h1>
   <p class="subtitle">2026. 3. 2 — 3. 29 &nbsp;·&nbsp; 독서이력서 35권 완주 + 자소서 + 서평</p>
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>독서이력서 (40분/권)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#b07d8f"></div>자소서 (1~2시간)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#8fba9f"></div>한국어 공부</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#4a7a9c"></div>칼럼분석①</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#4a7a9c"></div>칼럼분석②</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#c9756e"></div>마일스톤</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f5f1e8"></div>독서이력서 (40분/권)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#dbd9f1"></div>자소서 (1~2시간)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ceefe4"></div>한국어 공부</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d9eaf5;"></div>칼럼분석①</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d9eaf5;"></div>칼럼분석②</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fde8e8"></div>마일스톤</div>
   </div>
 </header>
 
@@ -776,7 +748,7 @@
             <span>읽음</span><strong id="bar-read">0</strong>
           </div>
           <div class="progress-bar-wrap" style="height:7px;">
-            <div id="bar-read-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent2),#6dbf8a); transition:width 0.4s ease;"></div>
+            <div id="bar-read-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#c8c0a0,#e8dfc0); transition:width 0.4s ease;"></div>
           </div>
         </div>
         <div>
@@ -784,7 +756,7 @@
             <span>진행중</span><strong id="bar-wip">0</strong>
           </div>
           <div class="progress-bar-wrap" style="height:7px;">
-            <div id="bar-wip-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#c9a96e,#e0c080); transition:width 0.4s ease;"></div>
+            <div id="bar-wip-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#9b98d4,#bbb9e8); transition:width 0.4s ease;"></div>
           </div>
         </div>
         <div>
@@ -792,7 +764,7 @@
             <span>완성</span><strong id="bar-history">0</strong>
           </div>
           <div class="progress-bar-wrap" style="height:7px;">
-            <div id="bar-history-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent3),#c47a98); transition:width 0.4s ease;"></div>
+            <div id="bar-history-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#7ecdb0,#a8e8cc); transition:width 0.4s ease;"></div>
           </div>
         </div>
       </div>
@@ -988,6 +960,7 @@
     </div>
   </div>
 
+<!-- 3주차 3/16~3/22 -->
 <div class="week-section">
   <div class="week-label">3주차 · Mar 16 – 22</div>
     <div class="week-grid">
@@ -1134,6 +1107,7 @@
   </div>
 </div>
 </div>
+
 <!-- 독서 리스트 -->
 
 
@@ -1146,16 +1120,15 @@
   <div class="booklist-header">
     <div class="booklist-title">📚 독서이력서 리스트</div>
     <div class="booklist-stats">
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 35 읽음</div>
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 35 진행중</div>
-      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 35 완성</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#c8c0a0"></div><span id="stat-read">0</span> / 35 읽음</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#9b98d4"></div><span id="stat-wip">0</span> / 35 진행중</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#7ecdb0"></div><span id="stat-history">0</span> / 35 완성</div>
     </div>
   </div>
 
   <div class="col-labels">
     <div class="col-label" style="text-align:left;">제목 / 저자</div>
     <div class="col-label" style="text-align:center;">출판사</div>
-    <div class="col-label"></div>
     <div class="col-label">읽음</div>
     <div class="col-label">진행중</div>
     <div class="col-label">완성</div>
@@ -1168,7 +1141,6 @@
         <div class="book-author">조무원</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="1" data-type="read">
@@ -1191,7 +1163,6 @@
         <div class="book-author">황정은</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="2" data-type="read">
@@ -1214,7 +1185,6 @@
         <div class="book-author">마이클 샌델</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">동아시아</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="3" data-type="read">
@@ -1237,7 +1207,6 @@
         <div class="book-author">우춘희</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">교양인</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="4" data-type="read">
@@ -1260,7 +1229,6 @@
         <div class="book-author">천선란</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="5" data-type="read">
@@ -1283,7 +1251,6 @@
         <div class="book-author">조세희</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">이성과힘</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="6" data-type="read">
@@ -1306,7 +1273,6 @@
         <div class="book-author">애나 램키</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">흐름출판</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="7" data-type="read">
@@ -1329,7 +1295,6 @@
         <div class="book-author">문목하</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="8" data-type="read">
@@ -1352,7 +1317,6 @@
         <div class="book-author">브레네 브라운</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="9" data-type="read">
@@ -1375,7 +1339,6 @@
         <div class="book-author">한나 렌</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">엘리</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="10" data-type="read">
@@ -1398,7 +1361,6 @@
         <div class="book-author">누누 칼러</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현암사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="11" data-type="read">
@@ -1421,7 +1383,6 @@
         <div class="book-author">최준혁</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">고트</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="12" data-type="read">
@@ -1444,7 +1405,6 @@
         <div class="book-author">코니 윌리스</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="13" data-type="read">
@@ -1467,7 +1427,6 @@
         <div class="book-author">톰 스웨터리치</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">허블</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="14" data-type="read">
@@ -1490,7 +1449,6 @@
         <div class="book-author">김현경</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="15" data-type="read">
@@ -1513,7 +1471,6 @@
         <div class="book-author">안톤 체호프(안지영)</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">펭귄클래식코리아</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="16" data-type="read">
@@ -1536,7 +1493,6 @@
         <div class="book-author">자미라 엘 우아실, 프리데만 카릭(김현정)</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">원더박스</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="17" data-type="read">
@@ -1559,7 +1515,6 @@
         <div class="book-author">제임스 우드</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="18" data-type="read">
@@ -1582,7 +1537,6 @@
         <div class="book-author">마거릿 애트우드</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">황금가지</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="19" data-type="read">
@@ -1605,7 +1559,6 @@
         <div class="book-author">루시 쿡</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="20" data-type="read">
@@ -1628,7 +1581,6 @@
         <div class="book-author">김소영</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">사계절</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="21" data-type="read">
@@ -1651,7 +1603,6 @@
         <div class="book-author">F. 스콧 피츠제럴드</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="22" data-type="read">
@@ -1674,7 +1625,6 @@
         <div class="book-author">신예슬</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">워크룸프레스</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="23" data-type="read">
@@ -1697,7 +1647,6 @@
         <div class="book-author">레프 니콜라예비치 톨스토이</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현대지성</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="24" data-type="read">
@@ -1720,7 +1669,6 @@
         <div class="book-author">알베르 카뮈</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="25" data-type="read">
@@ -1743,7 +1691,6 @@
         <div class="book-author">김성우</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">유유</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="26" data-type="read">
@@ -1766,7 +1713,6 @@
         <div class="book-author">캐럴 계숙 윤</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">윌북</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="27" data-type="read">
@@ -1789,7 +1735,6 @@
         <div class="book-author">구병모</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="28" data-type="read">
@@ -1812,7 +1757,6 @@
         <div class="book-author">정보라</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">래빗홀</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="29" data-type="read">
@@ -1835,7 +1779,6 @@
         <div class="book-author">홍수열</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">슬로비</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="30" data-type="read">
@@ -1858,7 +1801,6 @@
         <div class="book-author">지이</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">마인드빌딩</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="31" data-type="read">
@@ -1881,7 +1823,6 @@
         <div class="book-author">김소연</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="32" data-type="read">
@@ -1904,7 +1845,6 @@
         <div class="book-author">김학원</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">휴머니스트</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="33" data-type="read">
@@ -1927,7 +1867,6 @@
         <div class="book-author">잭 트라우트 & 앨 리스(안진환)</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">을유문화사</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="34" data-type="read">
@@ -1950,7 +1889,6 @@
         <div class="book-author">한강</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="35" data-type="read">
@@ -2225,7 +2163,17 @@ function _renderTask(id, data, append) {
 
   el.onclick = function(e) {
     if (e.target.closest('.task-actions')) return;
-    el.classList.toggle('done');
+    var iconEl2 = el.querySelector('.task-icon');
+    if (el.classList.contains('done')) {
+      el.classList.remove('done');
+      if (iconEl2 && iconEl2.dataset.origIcon) iconEl2.textContent = iconEl2.dataset.origIcon;
+    } else {
+      el.classList.add('done');
+      if (iconEl2) {
+        if (!iconEl2.dataset.origIcon) iconEl2.dataset.origIcon = iconEl2.textContent;
+        iconEl2.textContent = '☑️';
+      }
+    }
     onFbReady(function() { window.dbSync('dailyTasks', id, { checked: el.classList.contains('done') }); });
   };
   el.addEventListener('dragstart', function(e) {
@@ -2469,7 +2417,6 @@ function renderList() {
         <div class="book-author">${book.author}</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">—</div>
-      <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
           <input type="checkbox" data-i="${i}" data-type="read" ${isRead ? 'checked' : ''}>
@@ -2618,7 +2565,8 @@ function updateDisplay() {
   // 탭 활성화
   document.querySelectorAll('.pomo-tab').forEach(function(btn) {
     var isActive = btn.dataset.mode === pomoState.mode;
-    btn.style.background = isActive ? 'var(--surface2)' : 'none';
+    btn.style.background = isActive ? '#345193' : 'none';
+    btn.style.color = isActive ? '#ffffff' : '';
     btn.style.fontWeight = isActive ? '600' : '400';
   });
 
@@ -3019,7 +2967,11 @@ function initTaskChecks() {
     var taskId = 'task_' + fullDate + '_' + idx;
     task.dataset.taskId = taskId;
     task.setAttribute('draggable', 'true');
-    if (taskState[taskId]) task.classList.add('done');
+    if (taskState[taskId]) {
+      task.classList.add('done');
+      var ic = task.querySelector('.task-icon');
+      if (ic && !ic.dataset.origIcon) { ic.dataset.origIcon = ic.textContent; ic.textContent = '☑️'; }
+    }
 
     // CRUD 버튼 추가 (아직 없는 경우만)
     if (!task.querySelector('.task-actions')) {
@@ -3044,12 +2996,18 @@ function initTaskChecks() {
         e.preventDefault();
         var id = this.dataset.taskId;
         var s = loadTaskState();
+        var iconEl = this.querySelector('.task-icon');
         if (this.classList.contains('done')) {
           this.classList.remove('done');
           delete s[id];
+          if (iconEl && iconEl.dataset.origIcon) iconEl.textContent = iconEl.dataset.origIcon;
         } else {
           this.classList.add('done');
           s[id] = true;
+          if (iconEl) {
+            if (!iconEl.dataset.origIcon) iconEl.dataset.origIcon = iconEl.textContent;
+            iconEl.textContent = '☑️';
+          }
         }
         saveTaskState(s);
         onFbReady(function() {
