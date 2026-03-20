@@ -200,4 +200,91 @@
       });
     });
   };
-</script> 
+</script>
+// --- 할 일 추가 기능 ---
+  window.addTaskToDB = async () => {
+    const text = document.getElementById('new-task-text').value;
+    const type = document.getElementById('new-task-type').value;
+    if (!text.trim()) return;
+    const taskId = `dynamic_${window.selectedDate}_${Date.now()}`;
+    await window.dbSync('dailyTasks', taskId, { 
+      date: window.selectedDate, 
+      text: text, 
+      type: type, 
+      checked: false, 
+      deleted: false 
+    });
+    document.getElementById('task-input-modal').style.display = 'none';
+    document.getElementById('new-task-text').value = '';
+  };
+
+  // --- 독서 리스트 & 포모도로 & 메모 동기화 리스너 ---
+  onSnapshot(collection(db, "syncData"), (snap) => {
+    snap.docChanges().forEach(c => {
+      const d = c.doc.data(), id = c.doc.id;
+      const el = document.querySelector(`input[data-sync-id="${id}"]`);
+      if(el) el.checked = d.checked;
+    });
+    updateProgress();
+  });
+
+  onSnapshot(collection(db, "pomoLogs"), (snap) => {
+    const list = document.getElementById('pomo-log-list'); list.innerHTML = '';
+    const logs = []; snap.forEach(doc => logs.push({id:doc.id, ...doc.data()}));
+    logs.sort((a,b) => b.id.localeCompare(a.id)).forEach(d => {
+      list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px;background:#f9f9f9;border-radius:6px;margin-bottom:4px"><span>📅 ${d.id}</span><span>🍅 ${d.sessions}세션</span></div>`;
+    });
+  });
+
+  onSnapshot(collection(db, "dayMemos"), (snap) => {
+    const counts = {}; snap.forEach(doc => { const d = doc.data(); if(!d.checked) counts[d.date] = (counts[d.date] || 0) + 1; });
+    document.querySelectorAll('.day-card').forEach(card => {
+      const d = card.dataset.date, old = card.querySelector('.memo-badge'); if(old) old.remove();
+      if(counts[d]) { const b = document.createElement('span'); b.className='memo-badge'; b.innerText=counts[d]; card.appendChild(b); }
+    });
+    if(window.currentDate) renderMemos(window.currentDate, snap);
+  });
+
+  // --- 기타 유틸리티 함수 ---
+  window.openMemo = (date) => { 
+    window.currentDate = date; 
+    document.getElementById('memo-title').innerText = `3월 ${parseInt(date.substring(2))}일 메모`; 
+    document.getElementById('memo-overlay').style.display = 'flex'; 
+  };
+
+  window.dbDel = async (col, id) => {
+    const { getFirestore, doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+    await deleteDoc(doc(db, col, id));
+  };
+
+  function updateProgress() {
+    const total = 37;
+    const r = document.querySelectorAll('input[data-sync-id*="_read"]:checked').length;
+    const h = document.querySelectorAll('input[data-sync-id*="_hist"]:checked').length;
+    if(document.getElementById('bar-read')) document.getElementById('bar-read').style.width = (r/total*100)+'%';
+    if(document.getElementById('txt-read')) document.getElementById('txt-read').innerText = `${r}/${total}`;
+    if(document.getElementById('bar-hist')) document.getElementById('bar-hist').style.width = (h/total*100)+'%';
+    if(document.getElementById('txt-hist')) document.getElementById('txt-hist').innerText = `${h}/${total}`;
+  }
+
+  function renderMemos(date, snap) {
+    const list = document.getElementById('memo-items'); list.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data(); if(d.date === date) {
+        const div = document.createElement('div'); div.style.display='flex'; div.style.alignItems='center'; div.style.marginBottom='8px';
+        div.innerHTML = `<input type="checkbox" ${d.checked?'checked':''} onchange="window.dbSync('dayMemos','${doc.id}',{checked:this.checked})"><span style="flex:1;margin-left:8px;font-size:13px;${d.checked?'text-decoration:line-through;opacity:0.5':''}">${d.text}</span><button onclick="window.dbDel('dayMemos','${doc.id}')" style="background:none;border:none;color:#ccc;cursor:pointer">✕</button>`;
+        list.appendChild(div);
+      }
+    });
+  }
+
+  document.getElementById('memo-add-btn').onclick = async () => {
+    const i = document.getElementById('memo-input'); if(!i.value.trim()) return;
+    await window.dbSync('dayMemos', `${window.currentDate}_${Date.now()}`, {date:window.currentDate, text:i.value, checked:false});
+    i.value = '';
+  };
+</script>
+
+<!-- 드디어 진짜 끝입니다! -->
+</body>
+</html>
