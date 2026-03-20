@@ -41,17 +41,14 @@
   .task.book { background: #5a3e1a12; border-left: 2px solid #8b6914; color: #5a3e1a; }
   .task.milestone { background: #a0484012; border-left: 2px solid var(--red); color: var(--red); font-weight: 600; }
 
-  /* 관리 버튼(추가, 수정, 삭제) */
+  /* 관리 도구 버튼 */
   .add-task-btn { position: absolute; top: 6px; right: 28px; width: 18px; height: 18px; background: var(--accent); color: white; border-radius: 50%; border: none; font-size: 14px; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 10; }
   .day-card:hover .add-task-btn { display: flex; }
-  
   .task-btns { display: none; gap: 4px; margin-left: auto; }
   .task:hover .task-btns { display: flex; }
   .task-btn { background: none; border: none; cursor: pointer; font-size: 10px; padding: 0 2px; }
-  .task-edit-btn { color: #a07840; }
-  .task-del-btn { color: #cc0000; }
 
-  .book-publisher { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--text-muted); text-align: center; display: flex; align-items: center; justify-content: center; height: 100%; }
+  .book-publisher { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--text-muted); text-align: center; display: flex; align-items: center; justify-content: center; }
   .col-labels, .book-item { display: grid; grid-template-columns: 2.5fr 1fr 60px 60px 60px; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
   .memo-badge { position: absolute; top: 6px; right: 6px; background: #7a9ab5; color: white; font-size: 9px; padding: 1px 5px; border-radius: 10px; }
 
@@ -71,7 +68,6 @@
     <p style="color:var(--text-muted); margin-top:8px;">2026. 03. 02 — 03. 30</p>
   </header>
 
-  <!-- 포모도로 및 진행바 (이전과 동일) -->
   <section class="section">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 style="font-family:'Noto Serif KR'; font-size:20px;">🍅 포모도로 타이머</h2>
@@ -95,36 +91,94 @@
     </div>
     <div class="progress-bar-wrap"><div id="bar-hist" class="progress-bar-fill" style="background:var(--accent3);"></div></div>
   </section>
-
   <div id="calendar-root">
-    <!-- WEEK 01 ~ 04 HTML (내용 동일하게 복원) -->
     <div class="week-label">WEEK 01 (3/2 - 3/8)</div>
     <div class="week-grid">
       <div class="day-card" data-date="0302"><div class="day-date">02</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task korean">✍️ 한국어 1시간</div><div class="task study">📡 칼럼분석① 화상</div><div class="task book">📚 책읽기 1권</div></div></div>
       <div class="day-card" data-date="0303"><div class="day-date">03</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권 (80분)</div><div class="task cover">✏️ 자소서 1시간</div><div class="task study">📝 칼럼② 과제 제출</div></div></div>
-      <!-- [중략: 3월 30일까지의 모든 day-card를 여기에 넣으세요] -->
+      <div class="day-card" data-date="0304"><div class="day-date">04</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서 1시간</div><div class="task study">💬 칼럼① 피드백</div></div></div>
+      <div class="day-card" data-date="0305"><div class="day-date">05</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task korean">✍️ 한국어 1시간</div></div></div>
+      <div class="day-card" data-date="0306"><div class="day-date">06</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서 1시간</div></div></div>
+      <div class="day-card" data-date="0307"><div class="day-date">07</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task study">📤 칼럼① 제출</div></div></div>
+      <div class="day-card" data-date="0308"><div class="day-date">08</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+    </div>
+    
+    <div class="week-label">WEEK 02 (3/9 - 3/15)</div>
+    <div class="week-grid">
+      <div class="day-card" data-date="0309"><div class="day-date">09</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📡 칼럼분석① 화상</div></div></div>
+      <div class="day-card" data-date="0310"><div class="day-date">10</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 매끄러운 세계</div><div class="task reading">📖 돌이킬 수 있는</div><div class="task study">📝 칼럼① 과제</div></div></div>
+      <div class="day-card" data-date="0311"><div class="day-date">11</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task study">📤 칼럼① 제출</div><div class="task study">💬 피드백</div><div class="task reading">📖 사라진 세계</div></div></div>
+      <div class="day-card" data-date="0312"><div class="day-date">12</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+      <div class="day-card" data-date="0313"><div class="day-date">13</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div></div></div>
+      <div class="day-card" data-date="0314"><div class="day-date">14</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task reading">📖 이력서 2권</div></div></div>
+      <div class="day-card" data-date="0315"><div class="day-date">15</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+    </div>
+
+    <!-- 3-4주차 생략 (원본 내용대로 유지) -->
+    <div class="week-label">WEEK 03 (3/16 - 3/22)</div>
+    <div class="week-grid">
+      <div class="day-card" data-date="0316"><div class="day-date">16</div><div class="tasks"><div class="task reading">📖 이력서 2권</div></div></div>
+      <div class="day-card" data-date="0317"><div class="day-date">17</div><div class="tasks"><div class="task cover">✏️ 자소서 2시간</div></div></div>
+      <div class="day-card" data-date="0318"><div class="day-date">18</div><div class="tasks"><div class="task reading">📖 이력서 2권</div></div></div>
+      <div class="day-card" data-date="0319"><div class="day-date">19</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+      <div class="day-card" data-date="0320"><div class="day-date">20</div><div class="tasks"><div class="task milestone">🚩 마감 임박</div></div></div>
+      <div class="day-card" data-date="0321"><div class="day-date">21</div><div class="tasks"><div class="task study">📤 과제 제출</div></div></div>
+      <div class="day-card" data-date="0322"><div class="day-date">22</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+    </div>
+
+    <div class="week-label">WEEK 04 (3/23 - 3/30)</div>
+    <div class="week-grid">
+      <div class="day-card" data-date="0323"><div class="day-date">23</div><div class="tasks"><div class="task reading">📖 이력서 2권</div></div></div>
+      <div class="day-card" data-date="0324"><div class="day-date">24</div><div class="tasks"><div class="task milestone">🏁 이력서 끝!</div></div></div>
+      <div class="day-card" data-date="0325"><div class="day-date">25</div><div class="tasks"><div class="task milestone">🚀 최종 제출</div></div></div>
+      <div class="day-card" data-date="0326"><div class="day-date">26</div></div>
+      <div class="day-card" data-date="0327"><div class="day-date">27</div></div>
+      <div class="day-card" data-date="0328"><div class="day-date">28</div></div>
+      <div class="day-card" data-date="0329"><div class="day-date">29</div></div>
     </div>
   </div>
 
-  <!-- 편집용 모달 -->
-  <div id="edit-modal" class="modal-overlay">
-    <div class="modal-content">
-      <h3 style="font-family:'Noto Serif KR'; margin-bottom:15px;">할 일 수정</h3>
-      <input id="edit-task-text" type="text" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
-      <select id="edit-task-type" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
-        <option value="reading">📖 독서이력서</option>
-        <option value="cover">✏️ 자소서</option>
-        <option value="korean">✍️ 한국어</option>
-        <option value="study">📡 칼럼분석</option>
-        <option value="milestone">🚩 마일스톤</option>
-      </select>
-      <div style="display:flex; gap:10px;">
-        <button onclick="saveEditToDB()" style="flex:1; padding:10px; background:#5a4a3a; color:white; border:none; border-radius:8px; cursor:pointer;">저장</button>
-        <button onclick="document.getElementById('edit-modal').style.display='none'" style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px; cursor:pointer;">취소</button>
-      </div>
+  <section class="section">
+    <div class="col-labels">
+      <div class="col-label" style="text-align:left;">제목 / 저자</div>
+      <div class="col-label">출판사</div>
+      <div class="col-label">읽음</div><div class="col-label">진행</div><div class="col-label">완성</div>
+    </div>
+    <div id="book-list-root"></div>
+  </section>
+</div>
+<!-- 모달들 -->
+<div id="task-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3 id="modal-title" style="margin-bottom:15px; font-family:'Noto Serif KR';">할 일 관리</h3>
+    <input id="modal-text" type="text" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:8px;">
+    <select id="modal-type" style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ddd; border-radius:8px;">
+      <option value="reading">📖 독서이력서</option>
+      <option value="cover">✏️ 자소서</option>
+      <option value="korean">✍️ 한국어</option>
+      <option value="study">📡 칼럼분석</option>
+      <option value="milestone">🚩 마일스톤</option>
+    </select>
+    <div style="display:flex; gap:10px;">
+      <button id="modal-save-btn" class="btn" style="flex:1; background:#5a4a3a; color:white; border:none;">저장</button>
+      <button onclick="document.getElementById('task-modal').style.display='none'" class="btn" style="flex:1;">취소</button>
     </div>
   </div>
- <script type="module">
+</div>
+
+<div id="memo-overlay" class="modal-overlay">
+  <div class="modal-content">
+    <h3 id="memo-title" style="margin-bottom:15px; font-family:'Noto Serif KR';">날짜 메모</h3>
+    <div id="memo-items" style="margin-bottom:15px; max-height:200px; overflow-y:auto;"></div>
+    <div style="display:flex; gap:8px;">
+      <input id="memo-input" type="text" placeholder="메모 추가..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px;">
+      <button id="memo-add-btn" style="padding:10px; background:#5a4a3a; color:white; border:none; border-radius:8px;">추가</button>
+    </div>
+    <button onclick="document.getElementById('memo-overlay').style.display='none'" class="btn" style="width:100%; margin-top:10px;">닫기</button>
+  </div>
+</div>
+
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -141,84 +195,123 @@
 
   window.dbSync = async (col, id, data) => await setDoc(doc(db, col, id), data, { merge: true });
 
-  // --- 실시간 엔진 ---
-  onSnapshot(collection(db, "dailyTasks"), (snap) => {
-    snap.forEach(doc => {
-      const task = doc.data(); const id = doc.id;
-      let el = document.querySelector(`[data-task-id="${id}"]`) || document.getElementById(id);
+  const books = [
+    {t: "거짓말 게임", a: "조무원", p: "민음사"}, {t: "계속해보겠습니다", a: "황정은", p: "창비"},
+    {t: "공정하다는 착각", a: "마이클 샌델", p: "동아시아"}, {t: "깻잎 투쟁기", a: "우춘희", p: "교양인"},
+    {t: "나인", a: "천선란", p: "창비"}, {t: "난장이가 쏘아올린 작은 공", a: "조세희", p: "이성의힘"},
+    {t: "댈러웨이 부인", a: "버지니아 울프", p: "창비"}, {t: "도파민네이션", a: "애나 램키", p: "흐름출판"},
+    {t: "돌이킬 수 있는", a: "문목하", p: "아작"}, {t: "마음 가면", a: "브레네 브라운", p: "웅진지식하우스"},
+    {t: "매끄러운 세계와 그 적들", a: "한나 렌", p: "엘리"}, {t: "물욕의 세계", a: "누누 칼러", p: "현암사"},
+    {t: "병원탐험기", a: "최준혁", p: "고트"}, {t: "빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!", a: "코니 윌리스", p: "아작"},
+    {t: "사라진 세계", a: "톰 스웨터리치", p: "허블"}, {t: "사람, 장소, 환대", a: "김현경", p: "문학과지성사"},
+    {t: "사랑에 관하여", a: "안톤 체호프(안지영)", p: "펭귄클래식코리아"},
+    {t: "세상은 이야기로 만들어졌다", a: "자마리 엘 우아실 & 프리데만 카릭 / 김현정 역", p: "원더박스"},
+    {t: "소설은 어떻게 작동하는가", a: "제임스 우드", p: "창비"},
+    {t: "시녀 이야기와 증언들", a: "마거릿 애트우드", p: "황금가지"},
+    {t: "암컷들 — 방탕하고 쟁취하며 군림하는", a: "루시 쿡", p: "웅진지식하우스"},
+    {t: "어린이라는 세계", a: "김소영", p: "사계절"}, {t: "위대한 개츠비", a: "F. 스콧 피츠제럴드", p: "문학동네"},
+    {t: "음악의 사물들: 악보, 자동 악기, 음반", a: "신예슬", p: "워크룸프레스"},
+    {t: "이반 일리치의 죽음", a: "레프 니콜라예비치 톨스토이", p: "현대지성"},
+    {t: "이방인", a: "알베르 카뮈", p: "민음사"},
+    {t: "인공지능은 나의 읽기·쓰기를 어떻게 바꿀까", a: "김성우", p: "유유"},
+    {t: "자연에 이름 붙이기", a: "캐럴 계속 윤", p: "윌북"}, {t: "절창", a: "구병모", p: "문학동네"},
+    {t: "지구 생물체는 항복하라", a: "정보라", p: "래빗홀"}, {t: "지금 우리 곁의 쓰레기", a: "홍수열", p: "슬로비"},
+    {t: "진짜 게으른 사람이 쓴 게으름 탈출법", a: "지이", p: "마인드빌딩"},
+    {t: "촉진하는 밤", a: "김소연", p: "문학과지성사"}, {t: "컬티시 — 광신의 언어학", a: "어맨다 몬텔", p: "교양인"},
+    {t: "편집자란 무엇인가", a: "김학원", p: "휴머니스트"},
+    {t: "포지셔닝", a: "잭 트라우트 & 앨 리스 / 안진환 역", p: "을유문화사"},
+    {t: "희랍어 시간", a: "한강", p: "문학동네"}
+  ];
 
-      // dynamic 태스크 생성 로직
-      if (!el && !task.deleted && id.startsWith('dynamic_')) {
-        const target = document.querySelector(`.day-card[data-date="${task.date}"] .tasks`);
-        if (target) {
-          el = document.createElement('div'); el.id = id; target.appendChild(el);
-        }
-      }
-
-      if (el) {
-        el.className = `task ${task.type} ${task.checked ? 'done' : ''} ${task.deleted ? 'deleted' : ''}`;
-        el.querySelector('span') ? el.querySelector('span').innerText = task.text : el.innerHTML = `<span>${task.text}</span><div class="task-btns"><button class="task-btn task-edit-btn" onclick="event.stopPropagation(); window.prepareEdit('${id}', '${task.text}', '${task.type}')">✏️</button><button class="task-btn task-del-btn" onclick="event.stopPropagation(); window.dbSync('dailyTasks', '${id}', {deleted: true})">✕</button></div>`;
-        el.onclick = (e) => { e.stopPropagation(); window.dbSync('dailyTasks', id, {checked: !task.checked, text: task.text, date: task.date || id.split('_')[1], type: task.type}); };
-      }
-    });
-  });
-
-  window.saveEditToDB = async () => {
-    const newText = document.getElementById('edit-task-text').value;
-    const newType = document.getElementById('edit-task-type').value;
-    await window.dbSync('dailyTasks', window.editingId, { text: newText, type: newType });
-    document.getElementById('edit-modal').style.display = 'none';
-  };
-
-  window.prepareEdit = (id, text, type) => {
-    window.editingId = id;
-    document.getElementById('edit-task-text').value = text;
-    document.getElementById('edit-task-type').value = type;
-    document.getElementById('edit-modal').style.display = 'flex';
-  };
-
-  // 초기화 (시계, 버튼 달기 등)
   window.onload = () => {
+    // 시계 (HH:MM)
     setInterval(() => {
       const now = new Date();
       document.getElementById('pomo-clock').innerText = `현재 시각 ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     }, 1000);
 
+    // 독서 리스트 생성
+    const root = document.getElementById('book-list-root');
+    books.forEach((b, i) => {
+      const item = document.createElement('div'); item.className = 'book-item';
+      item.innerHTML = `<div class="book-info"><div class="book-title" style="font-size:12px;font-weight:500;">${b.t}</div><div style="font-size:10px;color:#999">${b.a}</div></div><div class="book-publisher">${b.p}</div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`;
+      root.appendChild(item);
+    });
+
+    // 캘린더 초기화
     document.querySelectorAll('.day-card').forEach(card => {
       const date = card.dataset.date;
-      // 추가 버튼
+      
+      // [+] 버튼
       const addBtn = document.createElement('button');
       addBtn.className = 'add-task-btn'; addBtn.innerHTML = '+';
-      addBtn.onclick = (e) => { e.stopPropagation(); window.selectedDate = date; document.getElementById('task-input-modal').style.display='flex'; };
+      addBtn.onclick = (e) => { e.stopPropagation(); openModal('add', date); };
       card.appendChild(addBtn);
 
-      // 기존 항목 ID 부여
+      // 기존 태스크들 연동
       card.querySelectorAll('.task').forEach((task, idx) => {
-        const taskId = `static_${date}_${idx}`;
-        task.setAttribute('data-task-id', taskId);
-        task.innerHTML = `<span>${task.innerText}</span><div class="task-btns"><button class="task-btn task-edit-btn" onclick="event.stopPropagation(); window.prepareEdit('${taskId}', this.closest('.task').querySelector('span').innerText, this.closest('.task').classList[1])">✏️</button><button class="task-btn task-del-btn" onclick="event.stopPropagation(); window.dbSync('dailyTasks', '${taskId}', {deleted: true})">✕</button></div>`;
+        const id = `static_${date}_${idx}`;
+        task.setAttribute('data-task-id', id);
+        task.innerHTML = `<span>${task.innerText}</span><div class="task-btns"><button class="task-btn" onclick="event.stopPropagation(); openModal('edit', '${id}', this.closest('.task'))">✏️</button><button class="task-btn" onclick="event.stopPropagation(); window.dbSync('dailyTasks', '${id}', {deleted: true})">✕</button></div>`;
+        task.onclick = (e) => { e.stopPropagation(); window.dbSync('dailyTasks', id, {checked: !task.classList.contains('done'), text: task.querySelector('span').innerText, type: task.classList[1], date: date}); };
       });
+      card.onclick = () => openMemo(date);
     });
-  };
-</script>
-// --- 할 일 추가 기능 ---
-  window.addTaskToDB = async () => {
-    const text = document.getElementById('new-task-text').value;
-    const type = document.getElementById('new-task-type').value;
-    if (!text.trim()) return;
-    const taskId = `dynamic_${window.selectedDate}_${Date.now()}`;
-    await window.dbSync('dailyTasks', taskId, { 
-      date: window.selectedDate, 
-      text: text, 
-      type: type, 
-      checked: false, 
-      deleted: false 
-    });
-    document.getElementById('task-input-modal').style.display = 'none';
-    document.getElementById('new-task-text').value = '';
   };
 
-  // --- 독서 리스트 & 포모도로 & 메모 동기화 리스너 ---
+  // 모달 제어
+  window.openModal = (mode, id, el) => {
+    const modal = document.getElementById('task-modal');
+    const title = document.getElementById('modal-title');
+    const input = document.getElementById('modal-text');
+    const type = document.getElementById('modal-type');
+    modal.style.display = 'flex';
+    
+    if (mode === 'add') {
+      title.innerText = "새 할 일 추가";
+      input.value = "";
+      window.currentAction = { mode, date: id };
+    } else {
+      title.innerText = "할 일 수정";
+      input.value = el.querySelector('span').innerText;
+      type.value = el.classList[1];
+      window.currentAction = { mode, id };
+    }
+  };
+
+  document.getElementById('modal-save-btn').onclick = async () => {
+    const text = document.getElementById('modal-text').value;
+    const type = document.getElementById('modal-type').value;
+    if (!text.trim()) return;
+
+    if (window.currentAction.mode === 'add') {
+      const id = `dynamic_${window.currentAction.date}_${Date.now()}`;
+      await window.dbSync('dailyTasks', id, { date: window.currentAction.date, text, type, checked: false, deleted: false });
+    } else {
+      await window.dbSync('dailyTasks', window.currentAction.id, { text, type });
+    }
+    document.getElementById('task-modal').style.display = 'none';
+  };
+
+  // 실시간 동기화 리스너들
+  onSnapshot(collection(db, "dailyTasks"), (snap) => {
+    snap.forEach(doc => {
+      const task = doc.data(); const id = doc.id;
+      let el = document.querySelector(`[data-task-id="${id}"]`) || document.getElementById(id);
+      
+      if (!el && !task.deleted && id.startsWith('dynamic_')) {
+        const target = document.querySelector(`.day-card[data-date="${task.date}"] .tasks`);
+        if (target) { el = document.createElement('div'); el.id = id; target.appendChild(el); }
+      }
+      
+      if (el) {
+        el.className = `task ${task.type} ${task.checked ? 'done' : ''} ${task.deleted ? 'deleted' : ''}`;
+        el.innerHTML = `<span>${task.text}</span><div class="task-btns"><button class="task-btn" onclick="event.stopPropagation(); openModal('edit', '${id}', this.closest('.task'))">✏️</button><button class="task-btn" onclick="event.stopPropagation(); window.dbSync('dailyTasks', '${id}', {deleted: true})">✕</button></div>`;
+        el.onclick = (e) => { e.stopPropagation(); window.dbSync('dailyTasks', id, {checked: !task.classList.contains('done')}); };
+      }
+    });
+  });
+
   onSnapshot(collection(db, "syncData"), (snap) => {
     snap.docChanges().forEach(c => {
       const d = c.doc.data(), id = c.doc.id;
@@ -230,9 +323,8 @@
 
   onSnapshot(collection(db, "pomoLogs"), (snap) => {
     const list = document.getElementById('pomo-log-list'); list.innerHTML = '';
-    const logs = []; snap.forEach(doc => logs.push({id:doc.id, ...doc.data()}));
-    logs.sort((a,b) => b.id.localeCompare(a.id)).forEach(d => {
-      list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px;background:#f9f9f9;border-radius:6px;margin-bottom:4px"><span>📅 ${d.id}</span><span>🍅 ${d.sessions}세션</span></div>`;
+    snap.forEach(doc => {
+      const d = doc.data(); list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:6px;background:#f9f9f9;border-radius:6px;margin-bottom:4px"><span>📅 ${doc.id}</span><span>🍅 ${d.sessions}세션</span></div>`;
     });
   });
 
@@ -242,20 +334,7 @@
       const d = card.dataset.date, old = card.querySelector('.memo-badge'); if(old) old.remove();
       if(counts[d]) { const b = document.createElement('span'); b.className='memo-badge'; b.innerText=counts[d]; card.appendChild(b); }
     });
-    if(window.currentDate) renderMemos(window.currentDate, snap);
   });
-
-  // --- 기타 유틸리티 함수 ---
-  window.openMemo = (date) => { 
-    window.currentDate = date; 
-    document.getElementById('memo-title').innerText = `3월 ${parseInt(date.substring(2))}일 메모`; 
-    document.getElementById('memo-overlay').style.display = 'flex'; 
-  };
-
-  window.dbDel = async (col, id) => {
-    const { getFirestore, doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
-    await deleteDoc(doc(db, col, id));
-  };
 
   function updateProgress() {
     const total = 37;
@@ -266,25 +345,6 @@
     if(document.getElementById('bar-hist')) document.getElementById('bar-hist').style.width = (h/total*100)+'%';
     if(document.getElementById('txt-hist')) document.getElementById('txt-hist').innerText = `${h}/${total}`;
   }
-
-  function renderMemos(date, snap) {
-    const list = document.getElementById('memo-items'); list.innerHTML = '';
-    snap.forEach(doc => {
-      const d = doc.data(); if(d.date === date) {
-        const div = document.createElement('div'); div.style.display='flex'; div.style.alignItems='center'; div.style.marginBottom='8px';
-        div.innerHTML = `<input type="checkbox" ${d.checked?'checked':''} onchange="window.dbSync('dayMemos','${doc.id}',{checked:this.checked})"><span style="flex:1;margin-left:8px;font-size:13px;${d.checked?'text-decoration:line-through;opacity:0.5':''}">${d.text}</span><button onclick="window.dbDel('dayMemos','${doc.id}')" style="background:none;border:none;color:#ccc;cursor:pointer">✕</button>`;
-        list.appendChild(div);
-      }
-    });
-  }
-
-  document.getElementById('memo-add-btn').onclick = async () => {
-    const i = document.getElementById('memo-input'); if(!i.value.trim()) return;
-    await window.dbSync('dayMemos', `${window.currentDate}_${Date.now()}`, {date:window.currentDate, text:i.value, checked:false});
-    i.value = '';
-  };
 </script>
-
-<!-- 드디어 진짜 끝입니다! -->
 </body>
 </html>
