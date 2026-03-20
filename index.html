@@ -559,7 +559,99 @@
     font-size: 9px; background: #7a9ab5; color: #fff;
     border-radius: 10px; padding: 1px 6px; margin-left: 6px; vertical-align: middle;
   }
+
+  /* ── 태스크 CRUD ── */
+  .task { position: relative; }
+  .task-actions {
+    display: none; position: absolute; right: 4px; top: 50%;
+    transform: translateY(-50%); gap: 2px; background: rgba(255,255,255,0.92);
+    border-radius: 4px; padding: 1px 2px;
+  }
+  .task:hover .task-actions { display: flex; }
+  .task-action-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 10px; padding: 1px 3px; color: var(--text-muted);
+    line-height: 1.4;
+  }
+  .task-action-btn:hover { color: var(--text); }
+  .task.done > span { opacity: 0.45; text-decoration: line-through; }
+  .task.deleted { display: none; }
+
+  /* 태스크 추가 버튼 */
+  .add-task-btn {
+    width: 100%; margin-top: 6px; background: none;
+    border: 1px dashed var(--border); border-radius: 4px;
+    padding: 3px; font-size: 11px; color: var(--text-dim);
+    cursor: pointer; display: none; text-align: center;
+  }
+  .day-card:hover .add-task-btn { display: block; }
+
+  /* 태스크 모달 */
+  #task-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 3000;
+    align-items: center; justify-content: center;
+  }
+  #task-modal-overlay.open { display: flex; }
+  #task-modal-box {
+    background: #fff; border-radius: 12px; padding: 24px;
+    width: 90%; max-width: 360px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  #task-modal-box h3 { font-family: 'Noto Serif KR'; font-size: 15px; margin-bottom: 14px; }
+  #task-modal-box input, #task-modal-box select {
+    width: 100%; border: 1px solid var(--border); border-radius: 7px;
+    padding: 8px 10px; font-size: 13px; margin-bottom: 10px;
+    font-family: 'Noto Sans KR'; background: #fff;
+  }
+  .task-modal-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  .task-modal-btns button {
+    border-radius: 7px; padding: 7px 16px; font-size: 12px;
+    cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text);
+  }
+  .task-modal-btns .btn-ok { background: #5a4a3a; color: #fff; border: none; }
+
 </style>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
+    authDomain: "glittery-ganache.firebaseapp.com",
+    projectId: "glittery-ganache",
+    storageBucket: "glittery-ganache.firebasestorage.app",
+    messagingSenderId: "105377509245",
+    appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.fbDb = db;
+  window.fbDoc = doc;
+  window.fbSetDoc = setDoc;
+  window.fbDeleteDoc = deleteDoc;
+  window.fbOnSnapshot = onSnapshot;
+  window.fbCollection = collection;
+
+  window.dbSync = async (col, id, data) => {
+    try { await setDoc(doc(db, col, id), data, { merge: true }); }
+    catch(e) { console.error('dbSync:', e); }
+  };
+
+  window.dbDel = async (col, id) => {
+    try { await deleteDoc(doc(db, col, id)); }
+    catch(e) { console.error('dbDel:', e); }
+  };
+
+  // Firebase 준비 완료 플래그
+  window._fbReady = true;
+  if (window._fbCallbacks) window._fbCallbacks.forEach(fn => fn());
+</script>
 </head>
 <body>
 
@@ -645,7 +737,7 @@
 <hr style="max-width:900px; margin:48px auto 0; border:none; border-top:1px solid var(--border);">
 <header style="margin-top:32px;">
   <h1>3월 세부 계획표</h1>
-  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 37권 완주 + 자소서</p>
+  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 35권 완주 + 자소서</p>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>독서이력서 (40분/권)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#b07d8f"></div>자소서 (1~2시간)</div>
@@ -661,12 +753,12 @@
   <div class="progress-title">독서이력서 목표 진도</div>
   <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
     <div>
-      <div class="counter-num">37</div>
+      <div class="counter-num">35</div>
       <div class="counter-label">총 권수<br>이력서 작성 대상</div>
     </div>
     <div style="flex:1; min-width:200px;">
       <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-bottom:6px;">
-        <span>3/2 시작</span><span>3/24 완료 목표</span>
+        <span>3/2 시작</span><span>3/29 완료 목표</span>
       </div>
       <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:5px;">
         <div>
@@ -713,7 +805,7 @@
   <div class="week-grid">
 
     <!-- 3/2 월요일 (TODAY) -->
-    <div class="day-card">
+    <div class="day-card" data-date="0302">
       <div class="day-header">
         <div>
           <div class="day-date">02</div>
@@ -730,7 +822,7 @@
     </div>
 
     <!-- 3/3 화요일 -->
-    <div class="day-card">
+    <div class="day-card" data-date="0303">
       <div class="day-header">
         <div><div class="day-date">03</div><div class="day-of-week">Tue</div></div>
       </div>
@@ -745,7 +837,7 @@
     </div>
 
     <!-- 3/4 수요일 -->
-    <div class="day-card">
+    <div class="day-card" data-date="0304">
       <div class="day-header">
         <div><div class="day-date">04</div><div class="day-of-week">Wed</div></div>
       </div>
@@ -761,7 +853,7 @@
     </div>
 
     <!-- 3/5 목요일 -->
-    <div class="day-card">
+    <div class="day-card" data-date="0305">
       <div class="day-header">
         <div><div class="day-date">05</div><div class="day-of-week">Thu</div></div>
       </div>
@@ -775,7 +867,7 @@
     </div>
 
     <!-- 3/6 금요일 -->
-    <div class="day-card">
+    <div class="day-card" data-date="0306">
       <div class="day-header">
         <div><div class="day-date">06</div><div class="day-of-week">Fri</div></div>
       </div>
@@ -823,7 +915,7 @@
 <div class="week-section">
   <div class="week-label">2주차 · Mar 9 – 15</div>
   <div class="week-grid">
-    <div class="day-card">
+    <div class="day-card" data-date="0309">
       <div class="day-header"><div><div class="day-date">09</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -833,7 +925,7 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0310">
       <div class="day-header"><div><div class="day-date">10</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -844,7 +936,7 @@
       </div>
       <div class="day-total">합계 6.3h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0311">
       <div class="day-header"><div><div class="day-date">11</div><div class="day-icon">Wed</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -856,7 +948,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0312">
       <div class="day-header"><div><div class="day-date">12</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
@@ -866,7 +958,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0313">
       <div class="day-header"><div><div class="day-date">13</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -904,7 +996,7 @@
 <div class="week-section">
   <div class="week-label">3주차 · Mar 16 – 22</div>
   <div class="week-grid">
-    <div class="day-card">
+    <div class="day-card" data-date="0316">
       <div class="day-header"><div><div class="day-date">16</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -914,7 +1006,7 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0317">
       <div class="day-header"><div><div class="day-date">17</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -925,7 +1017,7 @@
       </div>
       <div class="day-total">합계 6.3h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0318">
       <div class="day-header"><div><div class="day-date">18</div><div class="day-of-week">Wed</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -937,7 +1029,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0319">
       <div class="day-header"><div><div class="day-date">19</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
@@ -947,7 +1039,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0320">
       <div class="day-header"><div><div class="day-date">20</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -985,7 +1077,7 @@
 <div class="week-section">
   <div class="week-label">4주차 · Mar 23 – 25 &nbsp;·&nbsp; 마무리 스프린트</div>
   <div class="week-grid">
-    <div class="day-card">
+    <div class="day-card" data-date="0323">
       <div class="day-header"><div><div class="day-date">23</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -995,7 +1087,7 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card">
+    <div class="day-card" data-date="0324">
       <div class="day-header"><div><div class="day-date">24</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 — 완주 🎯</div>
@@ -1007,7 +1099,7 @@
       </div>
       <div class="day-total">합계 6.3h</div>
     </div>
-    <div class="day-card phase-end">
+    <div class="day-card phase-end" data-date="0325">
       <div class="day-header"><div><div class="day-date">25</div><div class="day-of-week">Wed</div></div></div>
       <div class="tasks">
         <div class="task milestone"><span class="task-icon">🚀</span>자소서 마무리 시작</div>
@@ -1016,11 +1108,26 @@
       </div>
       <div class="day-total">합계 1h</div>
     </div>
-    <!-- 빈 칸 4개 -->
-    <div class="day-card empty"></div>
-    <div class="day-card empty"></div>
-    <div class="day-card empty"></div>
-    <div class="day-card empty"></div>
+    <div class="day-card" data-date="0326">
+      <div class="day-header"><div><div class="day-date">26</div><div class="day-of-week">Thu</div></div></div>
+      <div class="tasks"></div>
+      <div class="day-total">합계 0h</div>
+    </div>
+    <div class="day-card" data-date="0327">
+      <div class="day-header"><div><div class="day-date">27</div><div class="day-of-week">Fri</div></div></div>
+      <div class="tasks"></div>
+      <div class="day-total">합계 0h</div>
+    </div>
+    <div class="day-card" data-date="0328">
+      <div class="day-header"><div><div class="day-date">28</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks"></div>
+      <div class="day-total">합계 0h</div>
+    </div>
+    <div class="day-card" data-date="0329">
+      <div class="day-header"><div><div class="day-date">29</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks"></div>
+      <div class="day-total">합계 0h</div>
+    </div>
   </div>
 </div>
 
@@ -1037,9 +1144,9 @@
   <div class="booklist-header">
     <div class="booklist-title">📚 독서이력서 리스트</div>
     <div class="booklist-stats">
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 37 읽음</div>
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 37 진행중</div>
-      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 37 완성</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 35 읽음</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 35 진행중</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 35 완성</div>
     </div>
   </div>
 
@@ -1173,7 +1280,7 @@
         <div class="book-title">난장이가 쏘아올린 작은 공</div>
         <div class="book-author">조세희</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">이성의힘</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">이성과힘</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1193,10 +1300,10 @@
     </div>
     <div class="book-item" data-index="6">
       <div class="book-info">
-        <div class="book-title">댈러웨이 부인</div>
-        <div class="book-author">버지니아 울프</div>
+        <div class="book-title">도파민네이션</div>
+        <div class="book-author">애나 램키</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">솔</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">흐름출판</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1216,10 +1323,10 @@
     </div>
     <div class="book-item" data-index="7">
       <div class="book-info">
-        <div class="book-title">도파민네이션</div>
-        <div class="book-author">애나 램키</div>
+        <div class="book-title">돌이킬 수 있는</div>
+        <div class="book-author">문목하</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">흐름출판</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1239,10 +1346,10 @@
     </div>
     <div class="book-item" data-index="8">
       <div class="book-info">
-        <div class="book-title">돌이킬 수 있는</div>
-        <div class="book-author">문목하</div>
+        <div class="book-title">마음 가면</div>
+        <div class="book-author">브레네 브라운</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1262,10 +1369,10 @@
     </div>
     <div class="book-item" data-index="9">
       <div class="book-info">
-        <div class="book-title">마음 가면</div>
-        <div class="book-author">브레네 브라운</div>
+        <div class="book-title">매끄러운 세계와 그 적들</div>
+        <div class="book-author">한나 렌</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">엘리</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1285,10 +1392,10 @@
     </div>
     <div class="book-item" data-index="10">
       <div class="book-info">
-        <div class="book-title">매끄러운 세계와 그 적들</div>
-        <div class="book-author">한나 렌</div>
+        <div class="book-title">물욕의 세계</div>
+        <div class="book-author">누누 칼러</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">엘리</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현암사</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1308,10 +1415,10 @@
     </div>
     <div class="book-item" data-index="11">
       <div class="book-info">
-        <div class="book-title">물욕의 세계</div>
-        <div class="book-author">누누 칼러</div>
+        <div class="book-title">병원탐험기</div>
+        <div class="book-author">최준혁</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현암사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">고트</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1331,10 +1438,10 @@
     </div>
     <div class="book-item" data-index="12">
       <div class="book-info">
-        <div class="book-title">병원탐험기</div>
-        <div class="book-author">최준혁</div>
+        <div class="book-title">빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!</div>
+        <div class="book-author">코니 윌리스</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">고트</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1354,10 +1461,10 @@
     </div>
     <div class="book-item" data-index="13">
       <div class="book-info">
-        <div class="book-title">빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!</div>
-        <div class="book-author">코니 윌리스</div>
+        <div class="book-title">사라진 세계</div>
+        <div class="book-author">톰 스웨터리치</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">허블</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1377,10 +1484,10 @@
     </div>
     <div class="book-item" data-index="14">
       <div class="book-info">
-        <div class="book-title">사라진 세계</div>
-        <div class="book-author">톰 스웨터리치</div>
+        <div class="book-title">사람, 장소, 환대</div>
+        <div class="book-author">김현경</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">허블</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1400,10 +1507,10 @@
     </div>
     <div class="book-item" data-index="15">
       <div class="book-info">
-        <div class="book-title">사람, 장소, 환대</div>
-        <div class="book-author">김현경</div>
+        <div class="book-title">사랑에 관하여</div>
+        <div class="book-author">안톤 체호프(안지영)</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">펭귄클래식코리아</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1421,13 +1528,35 @@
         </label>
       </div>
     </div>
-
-    <div class="book-item" data-index="17">
+    <div class="book-item" data-index="16">
       <div class="book-info">
         <div class="book-title">세상은 이야기로 만들어졌다</div>
-        <div class="book-author">자마리 엘 우아실, 프리데만 카릭 / 김현정 역</div>
+        <div class="book-author">자미라 엘 우아실, 프리데만 카릭(김현정)</div>
       </div>
       <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">원더박스</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="17" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="17" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="17" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="17">
+      <div class="book-info">
+        <div class="book-title">소설은 어떻게 작동하는가</div>
+        <div class="book-author">제임스 우드</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1447,10 +1576,10 @@
     </div>
     <div class="book-item" data-index="18">
       <div class="book-info">
-        <div class="book-title">소설은 어떻게 작동하는가</div>
-        <div class="book-author">제임스 우드</div>
+        <div class="book-title">시녀 이야기, 증언들</div>
+        <div class="book-author">마거릿 애트우드</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">황금가지</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1470,10 +1599,10 @@
     </div>
     <div class="book-item" data-index="19">
       <div class="book-info">
-        <div class="book-title">시녀 이야기와 증언들</div>
-        <div class="book-author">마거릿 애트우드</div>
+        <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
+        <div class="book-author">루시 쿡</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">황금가지</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1491,13 +1620,35 @@
         </label>
       </div>
     </div>
-
+    <div class="book-item" data-index="20">
+      <div class="book-info">
+        <div class="book-title">어린이라는 세계</div>
+        <div class="book-author">김소영</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">사계절</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="21" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="21" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="21" data-type="history">
+        </label>
+      </div>
+    </div>
     <div class="book-item" data-index="21">
       <div class="book-info">
-        <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
-        <div class="book-author">루시 쿡</div>
+        <div class="book-title">위대한 개츠비</div>
+        <div class="book-author">F. 스콧 피츠제럴드</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1517,10 +1668,10 @@
     </div>
     <div class="book-item" data-index="22">
       <div class="book-info">
-        <div class="book-title">어린이라는 세계</div>
-        <div class="book-author">김소영</div>
+        <div class="book-title">음악의 사물들: 악보, 자동 악기, 음반</div>
+        <div class="book-author">신예슬</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">사계절</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">워크룸프레스</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1540,10 +1691,10 @@
     </div>
     <div class="book-item" data-index="23">
       <div class="book-info">
-        <div class="book-title">위대한 개츠비</div>
-        <div class="book-author">F. 스콧 피츠제럴드</div>
+        <div class="book-title">이반 일리치의 죽음</div>
+        <div class="book-author">레프 니콜라예비치 톨스토이</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현대지성</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1563,10 +1714,10 @@
     </div>
     <div class="book-item" data-index="24">
       <div class="book-info">
-        <div class="book-title">음악의 사물들: 악보, 자동 악기, 음반</div>
-        <div class="book-author">신예슬</div>
+        <div class="book-title">이방인</div>
+        <div class="book-author">알베르 카뮈</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">워크룸프레스</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1584,35 +1735,12 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="ivan">
-      <div class="book-info">
-        <div class="book-title">이반 일리치의 죽음</div>
-        <div class="book-author">레프 니콜라예비치 톨스토이</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현대지성</div>
-      <div></div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
-          <input type="checkbox" data-i="ivan" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-wip">
-          <input type="checkbox" data-i="ivan" data-type="wip">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="ivan" data-type="history">
-        </label>
-      </div>
-    </div>
     <div class="book-item" data-index="25">
       <div class="book-info">
-        <div class="book-title">이방인</div>
-        <div class="book-author">알베르 카뮈</div>
+        <div class="book-title">인공지능은 나의 읽기-쓰기를 어떻게 바꿀까</div>
+        <div class="book-author">김성우</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">유유</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1632,10 +1760,10 @@
     </div>
     <div class="book-item" data-index="26">
       <div class="book-info">
-        <div class="book-title">인공지능은 나의 읽기·쓰기를 어떻게 바꿀까</div>
-        <div class="book-author">김성우</div>
+        <div class="book-title">자연에 이름 붙이기</div>
+        <div class="book-author">캐럴 계숙 윤</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">유유</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">윌북</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1655,10 +1783,10 @@
     </div>
     <div class="book-item" data-index="27">
       <div class="book-info">
-        <div class="book-title">자연에 이름 붙이기</div>
-        <div class="book-author">캐럴 계속 윤</div>
+        <div class="book-title">절창</div>
+        <div class="book-author">구병모</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">윌북</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1678,10 +1806,10 @@
     </div>
     <div class="book-item" data-index="28">
       <div class="book-info">
-        <div class="book-title">절창</div>
-        <div class="book-author">구병모</div>
+        <div class="book-title">지구 생물체는 항복하라</div>
+        <div class="book-author">정보라</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">래빗홀</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1701,10 +1829,10 @@
     </div>
     <div class="book-item" data-index="29">
       <div class="book-info">
-        <div class="book-title">지구 생물체는 항복하라</div>
-        <div class="book-author">정보라</div>
+        <div class="book-title">지금 우리 곁의 쓰레기</div>
+        <div class="book-author">홍수열</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">래빗홀</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">슬로비</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1724,10 +1852,10 @@
     </div>
     <div class="book-item" data-index="30">
       <div class="book-info">
-        <div class="book-title">지금 우리 곁의 쓰레기</div>
-        <div class="book-author">홍수열</div>
+        <div class="book-title">진짜 게으른 사람이 쓴 게으름 탈출법</div>
+        <div class="book-author">지이</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">슬로비</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">마인드빌딩</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1747,10 +1875,10 @@
     </div>
     <div class="book-item" data-index="31">
       <div class="book-info">
-        <div class="book-title">진짜 게으른 사람이 쓴 게으름 탈출법</div>
-        <div class="book-author">지이</div>
+        <div class="book-title">촉진하는 밤</div>
+        <div class="book-author">김소연</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">마인드빌딩</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1770,10 +1898,10 @@
     </div>
     <div class="book-item" data-index="32">
       <div class="book-info">
-        <div class="book-title">촉진하는 밤</div>
-        <div class="book-author">김소연</div>
+        <div class="book-title">편집자란 무엇인가</div>
+        <div class="book-author">김학원</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">휴머니스트</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1793,10 +1921,10 @@
     </div>
     <div class="book-item" data-index="33">
       <div class="book-info">
-        <div class="book-title">컬티시 — 광신의 언어학</div>
-        <div class="book-author">어맨다 몬텔</div>
+        <div class="book-title">포지셔닝</div>
+        <div class="book-author">잭 트라우트 & 앨 리스(안진환)</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아르테</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">을유문화사</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1816,10 +1944,10 @@
     </div>
     <div class="book-item" data-index="34">
       <div class="book-info">
-        <div class="book-title">트릭 미러</div>
-        <div class="book-author">지아 톨렌티노</div>
+        <div class="book-title">희랍어 시간</div>
+        <div class="book-author">한강</div>
       </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">생각의힘</div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
       <div></div>
       <div class="check-cell">
         <label class="custom-cb type-read">
@@ -1837,87 +1965,311 @@
         </label>
       </div>
     </div>
-    <div class="book-item" data-index="35">
-      <div class="book-info">
-        <div class="book-title">편집자란 무엇인가</div>
-        <div class="book-author">김학원</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">휴머니스트</div>
-      <div></div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
-          <input type="checkbox" data-i="36" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-wip">
-          <input type="checkbox" data-i="36" data-type="wip">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="36" data-type="history">
-        </label>
-      </div>
-    </div>
-    <div class="book-item" data-index="36">
-      <div class="book-info">
-        <div class="book-title">포지셔닝</div>
-        <div class="book-author">잭 트라우트 & 앨 리스 / 안진환 역</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">을유문화사</div>
-      <div></div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
-          <input type="checkbox" data-i="37" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-wip">
-          <input type="checkbox" data-i="37" data-type="wip">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="37" data-type="history">
-        </label>
-      </div>
-    </div>
-    <div class="book-item" data-index="37">
-      <div class="book-info">
-        <div class="book-title">희랍어 시간</div>
-        <div class="book-author">한강</div>
-      </div>
-      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
-      <div></div>
-      <div class="check-cell">
-        <label class="custom-cb type-read">
-          <input type="checkbox" data-i="38" data-type="read">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-wip">
-          <input type="checkbox" data-i="38" data-type="wip">
-        </label>
-      </div>
-      <div class="check-cell">
-        <label class="custom-cb type-history">
-          <input type="checkbox" data-i="38" data-type="history">
-        </label>
-      </div>
-    </div>
   </div>
 </div>
 
 <script>
+
+// ══════════════════════════════════════════
+// Firebase 준비 콜백 헬퍼
+// ══════════════════════════════════════════
+function onFbReady(fn) {
+  if (window._fbReady) fn();
+  else { window._fbCallbacks = window._fbCallbacks || []; window._fbCallbacks.push(fn); }
+}
+
+// ══════════════════════════════════════════
+// 태스크 CRUD
+// ══════════════════════════════════════════
+var _tModal = { mode: 'add', date: '', id: '', el: null };
+var TYPE_ICONS = { reading:'📖', korean:'✍️', study:'📝', cover:'✏️', book:'📚', milestone:'🚩', study2:'💬' };
+
+function openTaskModal(btnOrEl, editId) {
+  var overlay = document.getElementById('task-modal-overlay');
+  var titleEl = document.getElementById('task-modal-title');
+  var inp = document.getElementById('task-modal-text');
+  var sel = document.getElementById('task-modal-type');
+
+  if (editId) {
+    // 편집 모드
+    _tModal.mode = 'edit';
+    _tModal.id = editId;
+    _tModal.el = document.querySelector('[data-task-id="' + editId + '"]');
+    titleEl.textContent = '태스크 편집';
+    if (_tModal.el) {
+      var sp = _tModal.el.querySelector('span.task-text');
+      if (sp) {
+        inp.value = sp.textContent;
+      } else {
+        var clone = _tModal.el.cloneNode(true);
+        var rmA = clone.querySelector('.task-actions'); if (rmA) rmA.remove();
+        var rmI = clone.querySelector('.task-icon'); if (rmI) rmI.remove();
+        inp.value = clone.textContent.trim();
+      }
+      var cls = Array.from(_tModal.el.classList).find(function(c){ return c !== 'task' && c !== 'done'; });
+    sel.value = cls || 'reading';
+  } else {
+    // 추가 모드
+    _tModal.mode = 'add';
+    var card = btnOrEl.closest('.day-card');
+    _tModal.date = card ? card.getAttribute('data-date') : '';
+    _tModal.el = null;
+    titleEl.textContent = '태스크 추가';
+    inp.value = '';
+    sel.value = 'reading';
+  }
+  overlay.classList.add('open');
+  setTimeout(function() { inp.focus(); }, 60);
+}
+
+function closeTaskModal() {
+  document.getElementById('task-modal-overlay').classList.remove('open');
+}
+
+function confirmTaskModal() {
+  var text = document.getElementById('task-modal-text').value.trim();
+  var type = document.getElementById('task-modal-type').value;
+  if (!text) return;
+
+  if (_tModal.mode === 'add') {
+    var id = 'fb_' + _tModal.date + '_' + Date.now();
+    var data = { text: text, type: type, date: _tModal.date, deleted: false, checked: false };
+    _renderTask(id, data, true); // 즉시 렌더
+    onFbReady(function() { window.dbSync('dailyTasks', id, data); });
+  } else {
+    // 편집
+    var el = _tModal.el;
+    if (el) {
+      var sp = el.querySelector('span.task-text');
+      if (sp) {
+        sp.textContent = text;
+      } else {
+        // 정적 태스크: task-icon 뒤 텍스트 노드 교체
+        var iconEl = el.querySelector('.task-icon');
+        var actEl = el.querySelector('.task-actions');
+        // 기존 텍스트 노드 제거 후 재삽입
+        Array.from(el.childNodes).forEach(function(n){
+          if (n.nodeType === 3) n.textContent = '';
+        });
+        var tn = document.createTextNode(text);
+        if (actEl) el.insertBefore(tn, actEl);
+        else el.appendChild(tn);
+      }
+      var isDone = el.classList.contains('done');
+      el.className = 'task ' + type + (isDone ? ' done' : '');
+    }
+    onFbReady(function() { window.dbSync('dailyTasks', _tModal.id, { text: text, type: type }); });
+  }
+  closeTaskModal();
+}
+
+function deleteTask(id) {
+  var el = document.querySelector('[data-task-id="' + id + '"]');
+  if (!el) return;
+  var prev = el.outerHTML; // 취소용 백업
+  el.classList.add('deleted');
+  // 취소 토스트
+  showUndoToast(function() {
+    el.classList.remove('deleted');
+    onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: false }); });
+  }, function() {
+    el.remove();
+    onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: true }); });
+  });
+}
+
+function showUndoToast(onUndo, onConfirm) {
+  var toast = document.getElementById('undo-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'undo-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;display:flex;gap:12px;align-items:center;';
+    document.body.appendChild(toast);
+  }
+  if (toast._timer) clearTimeout(toast._timer);
+  toast.innerHTML = '<span>태스크가 삭제됩니다</span><button onclick="window._undoNow()" style="background:var(--accent);color:#fff;border:none;border-radius:5px;padding:3px 10px;cursor:pointer;font-size:12px;">취소</button>';
+  toast.style.display = 'flex';
+  window._undoNow = function() {
+    clearTimeout(toast._timer);
+    toast.style.display = 'none';
+    onUndo();
+  };
+  toast._timer = setTimeout(function() {
+    toast.style.display = 'none';
+    onConfirm();
+  }, 4000);
+}
+
+function _renderTask(id, data, append) {
+  if (data.deleted) {
+    var existing = document.querySelector('[data-task-id="' + id + '"]');
+    if (existing) existing.remove();
+    return;
+  }
+  var card = document.querySelector('.day-card[data-date="' + data.date + '"]');
+  if (!card) return;
+  var tasksDiv = card.querySelector('.tasks');
+  if (!tasksDiv) return;
+
+  var el = tasksDiv.querySelector('[data-task-id="' + id + '"]');
+  var icon = TYPE_ICONS[data.type] || '';
+  var doneClass = data.checked ? ' done' : '';
+
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'task ' + data.type + doneClass;
+    el.setAttribute('data-task-id', id);
+    el.setAttribute('draggable', 'true');
+    tasksDiv.appendChild(el);
+  } else {
+    el.className = 'task ' + data.type + doneClass;
+  }
+
+  el.innerHTML = '<span class="task-icon">' + icon + '</span>'
+    + '<span class="task-text">' + data.text + '</span>'
+    + '<div class="task-actions">'
+    + '<button class="task-action-btn" title="편집" onclick="event.stopPropagation();openTaskModal(null,&quot;' + id + '&quot;)">✏️</button>'
+    + '<button class="task-action-btn" title="이동" onclick="event.stopPropagation();openMoveModal(&quot;' + id + '&quot;)">↗</button>'
+    + '<button class="task-action-btn" title="삭제" onclick="event.stopPropagation();deleteTask(&quot;' + id + '&quot;)">✕</button>'
+    + '</div>';
+
+  el.onclick = function(e) {
+    if (e.target.closest('.task-actions')) return;
+    el.classList.toggle('done');
+    onFbReady(function() { window.dbSync('dailyTasks', id, { checked: el.classList.contains('done') }); });
+  };
+  el.addEventListener('dragstart', function(e) {
+    e.dataTransfer.setData('text/plain', id);
+  });
+}
+
+// 이동 모달
+function openMoveModal(id) {
+  var date = prompt('이동할 날짜 입력 (예: 0326):');
+  if (!date || !/^03[0-2]\d$/.test(date)) return;
+  var el = document.querySelector('[data-task-id="' + id + '"]');
+  if (!el) return;
+  var card = document.querySelector('.day-card[data-date="' + date + '"]');
+  if (!card) { alert('해당 날짜 카드를 찾을 수 없습니다.'); return; }
+  var tasksDiv = card.querySelector('.tasks');
+  if (tasksDiv) tasksDiv.appendChild(el);
+  onFbReady(function() { window.dbSync('dailyTasks', id, { date: date }); });
+}
+
+// 드롭 이동
+function initDragDrop() {
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    card.addEventListener('dragover', function(e) { e.preventDefault(); card.style.outline = '2px dashed var(--accent4)'; });
+    card.addEventListener('dragleave', function() { card.style.outline = ''; });
+    card.addEventListener('drop', function(e) {
+      e.preventDefault(); card.style.outline = '';
+      var id = e.dataTransfer.getData('text/plain');
+      var el = document.querySelector('[data-task-id="' + id + '"]');
+      if (!el) return;
+      var tasksDiv = card.querySelector('.tasks');
+      if (tasksDiv) tasksDiv.appendChild(el);
+      var date = card.getAttribute('data-date');
+      onFbReady(function() { window.dbSync('dailyTasks', id, { date: date }); });
+    });
+  });
+}
+
+// ══════════════════════════════════════════
+// Firebase 독서 체크박스 동기화
+// ══════════════════════════════════════════
+function initFbBookSync() {
+  // 체크박스 변경 시 Firebase에도 저장
+  document.querySelectorAll('#book-list input[type="checkbox"]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      onFbReady(function() {
+        window.dbSync('bookState', 'book_' + cb.dataset.i + '_' + cb.dataset.type, { checked: cb.checked });
+      });
+    });
+  });
+  // Firestore 실시간 수신
+  onFbReady(function() {
+    window.fbOnSnapshot(window.fbCollection(window.fbDb, 'bookState'), function(snap) {
+      snap.forEach(function(d) {
+        var p = d.id.split('_'); // book_N_type
+        if (p[0] !== 'book') return;
+        var cb = document.querySelector('#book-list input[data-i="' + p[1] + '"][data-type="' + p[2] + '"]');
+        if (cb && d.data().checked !== undefined) {
+          cb.checked = d.data().checked;
+          // localStorage도 동기화
+          var s = loadBookState();
+          s[p[1] + '_' + p[2]] = d.data().checked;
+          saveBookState(s);
+        }
+      });
+      updateBookStats();
+    });
+    // dailyTasks 실시간 수신
+    window.fbOnSnapshot(window.fbCollection(window.fbDb, 'dailyTasks'), function(snap) {
+      snap.forEach(function(d) {
+        if (d.id.startsWith('fb_')) _renderTask(d.id, d.data(), false);
+      });
+    });
+  });
+}
+
+// ══════════════════════════════════════════
+// Firebase 포모도로 동기화
+// ══════════════════════════════════════════
+function initFbPomoSync() {
+  onFbReady(function() {
+    window.fbOnSnapshot(window.fbCollection(window.fbDb, 'pomoLogs'), function(snap) {
+      var todayKey = getKSTDateStr();
+      // localStorage 갱신
+      var log = loadPomoLog();
+      snap.forEach(function(d) {
+        log[d.id] = d.data();
+      });
+      savePomoLog(log);
+      renderPomoLog();
+      // 오늘 세션 수 반영
+      var todayData = log[todayKey];
+      if (todayData) {
+        pomoState.focusDone = (todayData.sessions || 0) % pomoConfig.sessions;
+        updateDisplay();
+      }
+    });
+  });
+}
+
+// recordFocusDone 후 Firebase에도 저장 (원본 함수 래핑)
+function wrapPomoRecord() {
+  var orig = window.recordFocusDone;
+  if (typeof orig !== 'function') return;
+  window.recordFocusDone = function() {
+    orig.apply(this, arguments);
+    var todayKey = getKSTDateStr();
+    var log = loadPomoLog();
+    var d = log[todayKey] || { sessions: 0, minutes: 0 };
+    onFbReady(function() { window.dbSync('pomoLogs', todayKey, d); });
+  };
+}
+
+// + 세션 추가 버튼도 Firebase 동기화
+function initManualSessionBtn() {
+  var btn = document.getElementById('pomo-manual-btn');
+  if (!btn) return;
+  var origClick = btn.onclick;
+  btn.onclick = function() {
+    if (origClick) origClick.call(this);
+    var todayKey = getKSTDateStr();
+    var log = loadPomoLog();
+    var d = log[todayKey] || { sessions: 0, minutes: 0 };
+    onFbReady(function() { window.dbSync('pomoLogs', todayKey, d); });
+  };
+}
+
 const books = [
   { title: "거짓말 게임", author: "조무원", publisher: "민음사" },
   { title: "계속해보겠습니다", author: "황정은", publisher: "창비" },
   { title: "공정하다는 착각", author: "마이클 샌델", publisher: "동아시아" },
   { title: "깻잎 투쟁기", author: "우춘희", publisher: "교양인" },
   { title: "나인", author: "천선란", publisher: "창비" },
-  { title: "난장이가 쏘아올린 작은 공", author: "조세희", publisher: "이성의힘" },
-  { title: "댈러웨이 부인", author: "버지니아 울프", publisher: "솔" },
+  { title: "난장이가 쏘아올린 작은 공", author: "조세희", publisher: "이성과힘" },
   { title: "도파민네이션", author: "애나 램키", publisher: "흐름출판" },
   { title: "돌이킬 수 있는", author: "문목하", publisher: "아작" },
   { title: "마음 가면", author: "브레네 브라운", publisher: "웅진지식하우스" },
@@ -1927,26 +2279,25 @@ const books = [
   { title: "빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!", author: "코니 윌리스", publisher: "아작" },
   { title: "사라진 세계", author: "톰 스웨터리치", publisher: "허블" },
   { title: "사람, 장소, 환대", author: "김현경", publisher: "문학과지성사" },
-  { title: "세상은 이야기로 만들어졌다", author: "자마리 엘 우아실, 프리데만 카릭 / 김현정 역", publisher: "원더박스" },
+  { title: "사랑에 관하여", author: "안톤 체호프(안지영)", publisher: "펭귄클래식코리아" },
+  { title: "세상은 이야기로 만들어졌다", author: "자미라 엘 우아실, 프리데만 카릭(김현정)", publisher: "원더박스" },
   { title: "소설은 어떻게 작동하는가", author: "제임스 우드", publisher: "창비" },
-  { title: "시녀 이야기와 증언들", author: "마거릿 애트우드", publisher: "황금가지" },
+  { title: "시녀 이야기, 증언들", author: "마거릿 애트우드", publisher: "황금가지" },
   { title: "암컷들 — 방탕하고 쟁취하며 군림하는", author: "루시 쿡", publisher: "웅진지식하우스" },
   { title: "어린이라는 세계", author: "김소영", publisher: "사계절" },
   { title: "위대한 개츠비", author: "F. 스콧 피츠제럴드", publisher: "문학동네" },
   { title: "음악의 사물들: 악보, 자동 악기, 음반", author: "신예슬", publisher: "워크룸프레스" },
   { title: "이반 일리치의 죽음", author: "레프 니콜라예비치 톨스토이", publisher: "현대지성" },
   { title: "이방인", author: "알베르 카뮈", publisher: "민음사" },
-  { title: "인공지능은 나의 읽기·쓰기를 어떻게 바꿀까", author: "김성우", publisher: "유유" },
-  { title: "자연에 이름 붙이기", author: "캐럴 계속 윤", publisher: "윌북" },
+  { title: "인공지능은 나의 읽기-쓰기를 어떻게 바꿀까", author: "김성우", publisher: "유유" },
+  { title: "자연에 이름 붙이기", author: "캐럴 계숙 윤", publisher: "윌북" },
   { title: "절창", author: "구병모", publisher: "문학동네" },
   { title: "지구 생물체는 항복하라", author: "정보라", publisher: "래빗홀" },
   { title: "지금 우리 곁의 쓰레기", author: "홍수열", publisher: "슬로비" },
   { title: "진짜 게으른 사람이 쓴 게으름 탈출법", author: "지이", publisher: "마인드빌딩" },
   { title: "촉진하는 밤", author: "김소연", publisher: "문학과지성사" },
-  { title: "컬티시 — 광신의 언어학", author: "어맨다 몬텔", publisher: "아르테" },
-  { title: "트릭 미러", author: "지아 톨렌티노", publisher: "생각의힘" },
   { title: "편집자란 무엇인가", author: "김학원", publisher: "휴머니스트" },
-  { title: "포지셔닝", author: "잭 트라우트 & 앨 리스 / 안진환 역", publisher: "을유문화사" },
+  { title: "포지셔닝", author: "잭 트라우트 & 앨 리스(안진환)", publisher: "을유문화사" },
   { title: "희랍어 시간", author: "한강", publisher: "문학동네" },
 ];
 
@@ -2561,11 +2912,32 @@ function initTaskChecks() {
     var card = task.closest('.day-card');
     var dateEl = card ? card.querySelector('.day-date') : null;
     var date = dateEl ? dateEl.innerText.trim() : 'x';
-    var taskId = 'task_' + date + '_' + idx;
+    var fullDate = card ? (card.getAttribute('data-date') || ('03' + (date.length===1?'0':'')+date)) : '';
+    var taskId = 'task_' + fullDate + '_' + idx;
     task.dataset.taskId = taskId;
+    task.setAttribute('draggable', 'true');
     if (taskState[taskId]) task.classList.add('done');
+
+    // CRUD 버튼 추가 (아직 없는 경우만)
+    if (!task.querySelector('.task-actions')) {
+      var actions = document.createElement('div');
+      actions.className = 'task-actions';
+      actions.innerHTML =
+        '<button class="task-action-btn" title="편집" onclick="event.stopPropagation();openTaskModal(null,&quot;' + taskId + '&quot;)">✏️</button>' +
+        '<button class="task-action-btn" title="이동" onclick="event.stopPropagation();openMoveModal(&quot;' + taskId + '&quot;)">↗</button>' +
+        '<button class="task-action-btn" title="삭제" onclick="event.stopPropagation();deleteTask(&quot;' + taskId + '&quot;)">✕</button>';
+      task.appendChild(actions);
+    }
+
+    // 드래그
+    task.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('text/plain', taskId);
+    });
+
+    // 클릭: task-actions 영역 제외
     ['click', 'touchend'].forEach(function(evt) {
       task.addEventListener(evt, function(e) {
+        if (e.target.closest('.task-actions')) return;
         e.preventDefault();
         var id = this.dataset.taskId;
         var s = loadTaskState();
@@ -2577,6 +2949,9 @@ function initTaskChecks() {
           s[id] = true;
         }
         saveTaskState(s);
+        onFbReady(function() {
+          window.dbSync('dailyTasks', id, { checked: task.classList.contains('done') });
+        });
       });
     });
   });
@@ -2588,6 +2963,11 @@ window.addEventListener('DOMContentLoaded', function() {
   initBookChecks();
   initMemoModal();
   initPomo();
+  initDragDrop();
+  initFbBookSync();
+  initFbPomoSync();
+  wrapPomoRecord();
+  initManualSessionBtn();
 
 });
 
@@ -2642,5 +3022,26 @@ window.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 </div>
+
+<!-- 태스크 추가/편집 모달 -->
+<div id="task-modal-overlay">
+  <div id="task-modal-box">
+    <h3 id="task-modal-title">태스크 추가</h3>
+    <input id="task-modal-text" type="text" placeholder="내용 입력" />
+    <select id="task-modal-type">
+      <option value="reading">📖 독서이력서</option>
+      <option value="korean">✍️ 한국어/어법</option>
+      <option value="study">📝 칼럼/공부</option>
+      <option value="cover">✏️ 자소서</option>
+      <option value="book">📚 책읽기</option>
+      <option value="milestone">🚩 마일스톤</option>
+    </select>
+    <div class="task-modal-btns">
+      <button onclick="closeTaskModal()">취소</button>
+      <button class="btn-ok" onclick="confirmTaskModal()">확인</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
