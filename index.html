@@ -2137,6 +2137,13 @@ function confirmTaskModal() {
     }
     onFbReady(function() { window.dbSync('dailyTasks', _tModal.id, { text: text, type: type }); });
   }
+  // 계획/실행 합계 업데이트
+  setTimeout(function() {
+    document.querySelectorAll('.day-card').forEach(function(card) {
+      updatePlanTotal(card);
+      updateExecTotal(card);
+    });
+  }, 50);
   closeTaskModal();
 }
 
@@ -2152,12 +2159,14 @@ function deleteTask(id) {
     var deleted = loadDeletedTasks();
     delete deleted[id];
     saveDeletedTasks(deleted);
+    updatePlanTotal(el.closest('.day-card'));
     onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: false }); });
   }, function() {
     // 확정: Firebase + localStorage에 deleted:true 저장
     var deleted = loadDeletedTasks();
     deleted[id] = true;
     saveDeletedTasks(deleted);
+    updatePlanTotal(el.closest('.day-card'));
     onFbReady(function() { window.dbSync('dailyTasks', id, { deleted: true, checked: el.classList.contains('done') }); });
   });
 }
@@ -2230,6 +2239,7 @@ function _renderTask(id, data, append) {
       }
     }
     updateExecTotal(el.closest('.day-card'));
+    updatePlanTotal(el.closest('.day-card'));
     onFbReady(function() { window.dbSync('dailyTasks', id, { checked: el.classList.contains('done') }); });
   };
   el.addEventListener('dragstart', function(e) {
@@ -3095,6 +3105,19 @@ function minsToHM(mins) {
   return h + ':' + (m < 10 ? '0' : '') + m;
 }
 
+
+// ── 계획 합계 실시간 업데이트 ──
+function updatePlanTotal(card) {
+  var planEl = card.querySelector('.total-plan');
+  if (!planEl) return;
+  var total = 0;
+  card.querySelectorAll('.task').forEach(function(t) {
+    if (t.classList.contains('deleted') || t.style.display === 'none') return;
+    total += parseMinutes(t.textContent || '');
+  });
+  planEl.textContent = '계획 ' + minsToHM(total);
+}
+
 function updateExecTotal(card) {
   var execEl = card.querySelector('.total-exec');
   if (!execEl) return;
@@ -3112,6 +3135,7 @@ window.addEventListener('DOMContentLoaded', function() {
   initTaskChecks();
   // 페이지 로드 시 이미 done인 태스크 실행합계 반영
   document.querySelectorAll('.day-card').forEach(function(card) {
+    updatePlanTotal(card);
     updateExecTotal(card);
   });
   initBookChecks();
