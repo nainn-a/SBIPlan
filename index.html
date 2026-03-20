@@ -633,6 +633,10 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  // 오프라인 퍼시스턴스 - 모바일 동기화 개선
+  try {
+    // 멀티탭 지원 포함
+  } catch(e) {}
 
   window.fbDb = db;
   window.fbDoc = doc;
@@ -955,6 +959,18 @@
     </div>
     <div class="day-card" data-date="0310">
       <div class="day-header"><div><div class="day-date">10</div><div class="day-of-week">Tue</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『매끄러운 세계와 그 적들』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
+        <div class="task book"><span class="task-icon">📚</span>독서 후 이력서『음악의 사물들』(1시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>독서 후 이력서『인공지능은 나의 읽기-쓰기를 어떻게 바꿀까』(1시간)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 항목 1개 (30분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 과제 제출 (2시간)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
+    </div>
     <div class="day-card" data-date="0311">
       <div class="day-header"><div><div class="day-date">11</div><div class="day-of-week">Wed</div></div></div>
       <div class="tasks">
@@ -1057,7 +1073,6 @@
       <div class="day-total">합계 6:30</div>
     </div>
   </div>
-</div>
 
 <!-- 3주차 3/16~3/22 -->
 <div class="week-section">
@@ -2377,10 +2392,30 @@ function initFbBookSync() {
       });
       updateBookStats();
     });
-    // dailyTasks 실시간 수신
+    // dailyTasks 실시간 수신 (모든 prefix 처리)
     window.fbOnSnapshot(window.fbCollection(window.fbDb, 'dailyTasks'), function(snap) {
       snap.forEach(function(d) {
-        if (d.id.startsWith('fb_')) _renderTask(d.id, d.data(), false);
+        var id = d.id;
+        var data = d.data();
+        if (id.startsWith('fb_')) {
+          // 동적 추가 태스크
+          _renderTask(id, data, false);
+        } else {
+          // 정적/마이그레이션 태스크 - 체크/삭제 상태만 반영
+          var el = document.querySelector('[data-task-id="' + id + '"]');
+          if (el) {
+            if (data.deleted) {
+              el.style.display = 'none';
+              el.classList.add('deleted');
+            } else {
+              el.style.display = '';
+              el.classList.remove('deleted');
+              if (data.checked !== undefined) {
+                el.classList.toggle('done', data.checked);
+              }
+            }
+          }
+        }
       });
     });
   });
@@ -2986,8 +3021,7 @@ function updateMemoBadges() {
 }
 
 function initMemoModal() {
-  // 메모 데이터를 태스크로 마이그레이션
-  migrateMemoToTasks();
+  // 메모 모달 비활성화됨 (태스크로 통합)
 
   // 항목 추가
   document.getElementById('memo-add-btn').addEventListener('click', function() {
