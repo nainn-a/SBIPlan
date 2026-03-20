@@ -3,262 +3,3013 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>출판학교 준비 - 완벽 관리 도구</title>
+<title>출판학교 준비 계획표</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f5f3ef; --surface: #ffffff; --surface2: #f0ede8; --border: #e2ddd6;
-    --text: #2a2724; --text-muted: #7a7570; --text-dim: #b0aba4;
-    --accent: #a07840; --accent2: #4a8c62; --accent3: #8c4f65; --accent4: #4a7a9c;
-    --red: #a04840; --today: #a0784015;
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --surface2: #f0ede8;
+    --border: #e2ddd6;
+    --text: #2a2724;
+    --text-muted: #7a7570;
+    --text-dim: #b0aba4;
+    --accent: #a07840;
+    --accent2: #4a8c62;
+    --accent3: #8c4f65;
+    --accent4: #4a7a9c;
+    --red: #a04840;
+    --today: #a0784015;
   }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; padding: 40px 20px; font-weight: 300; }
-  .container { max-width: 900px; margin: 0 auto; }
-  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; margin-bottom: 32px; position: relative; }
-  
-  /* 포모도로 스크린샷 기반 스타일 */
-  .pomo-header { display: flex; align-items: center; margin-bottom: 20px; }
-  .pomo-title { font-family: 'Noto Serif KR'; font-size: 24px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-  .pomo-clock-box { font-size: 13px; color: var(--text-muted); margin-left: auto; display: flex; align-items: center; gap: 8px; }
-  .btn-setting { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 11px; cursor: pointer; color: var(--text-muted); }
-  
-  .pomo-tabs { display: flex; gap: 8px; margin-bottom: 25px; }
-  .pomo-tab { flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--border); background: #f9f9f9; cursor: pointer; font-size: 12px; color: var(--accent4); }
-  .pomo-tab.active { background: white; border: 1.5px solid var(--border); font-weight: 600; }
 
-  #pomo-display { font-size: 64px; font-weight: 300; text-align: center; margin-bottom: 5px; font-variant-numeric: tabular-nums; letter-spacing: 2px; }
-  .pomo-status-text { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-  
-  .pomo-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 25px; }
-  .pomo-dot { width: 8px; height: 8px; border-radius: 50%; background: #e0e0e0; border: 1px solid #ccc; }
-  .pomo-dot.filled { background: var(--accent); border-color: var(--accent); }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
 
-  .pomo-btns { display: flex; justify-content: center; gap: 12px; margin-bottom: 30px; }
-  .pomo-btn { border-radius: 8px; border: 1px solid var(--border); padding: 10px 25px; font-size: 13px; cursor: pointer; background: white; }
-  .pomo-btn-start { background: #5a4a3a; color: white; border: none; padding: 10px 45px; }
-  
-  .pomo-log-header { border-top: 1px solid #eee; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-  .btn-add-session { border: 1px solid var(--border); border-radius: 6px; padding: 4px 12px; font-size: 12px; background: white; cursor: pointer; color: var(--text-muted); }
+  header {
+    max-width: 900px;
+    margin: 0 auto 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
 
-  /* 캘린더 및 태스크 */
-  .week-label { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; color: #2a2724; margin: 50px 0 15px 0; padding-left: 10px; border-left: 4px solid var(--accent); display: block; }
-  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
-  .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-height: 180px; cursor: pointer; position: relative; transition: 0.2s; }
-  .day-card.today { border: 3px solid #7a9ab5; background: #f0f7ff; }
-  .day-card.drag-over { background-color: #f0f4f8; border: 2px dashed var(--accent4); }
-  
-  /* 추가 버튼 위치 (우측 상단 고정) */
-  .add-task-btn { position: absolute; top: 8px; right: 8px; width: 18px; height: 18px; background: var(--border); color: var(--text-muted); border-radius: 4px; border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+  .header-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
 
-  .task { font-size: 10px; padding: 4px 6px; border-radius: 4px; margin-top: 4px; cursor: grab; display: flex; justify-content: space-between; align-items: flex-start; gap: 3px; position: relative; }
-  .task.done { opacity: 0.35; text-decoration: line-through; }
-  .task.reading { background: #a0784012; border-left: 2px solid var(--accent); color: #7a5c2e; }
-  .task.korean { background: #4a8c6212; border-left: 2px solid var(--accent2); color: #366a4a; }
-  .task.study { background: #4a7a9c12; border-left: 2px solid var(--accent4); color: #365e78; }
-  .task.cover { background: #8c4f6512; border-left: 2px solid var(--accent3); color: #6e3a50; }
-  .task.book { background: #5a3e1a12; border-left: 2px solid #8b6914; color: #5a3e1a; }
-  .task.milestone { background: #a0484012; border-left: 2px solid var(--red); color: var(--red); font-weight: 600; }
+  h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
 
-  .task-btns { display: none; gap: 4px; margin-left: auto; }
+  .subtitle {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* 주별 섹션 */
+  .week-section {
+    max-width: 900px;
+    margin: 0 auto 32px;
+  }
+
+  .week-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  /* 날짜 카드 */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 10px;
+    min-height: 180px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .day-card:hover {
+    border-color: #c8c0b4;
+  }
+
+  .day-card.weekend { }
+
+  .day-card.today {
+    border: 3px solid #7a9ab5;
+    background: var(--surface);
+    box-shadow: none;
+  }
+
+  .day-card.phase-end {
+    border-color: var(--accent3);
+  }
+
+  .day-card.empty {
+    background: transparent;
+    border-color: transparent;
+    min-height: auto;
+  }
+
+  .day-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .day-date {
+    font-size: 18px;
+    font-family: 'Noto Serif KR', serif;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .day-of-week {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .today-badge {
+    font-size: 8px;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* 태스크 아이템 */
+  .tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .task {
+    font-size: 10px;
+    padding: 4px 7px;
+    border-radius: 4px;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .task {
+    cursor: pointer;
+    user-select: none;
+  }
+  .task.done {
+    opacity: 0.45;
+    text-decoration: line-through;
+  }
+  .task-icon {
+    font-size: 9px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .task.reading {
+    background: #a0784012;
+    border-left: 2px solid var(--accent);
+    color: #7a5c2e;
+  }
+
+  .task.book {
+    background: #5a3e1a12;
+    border-left: 2px solid #8b6914;
+    color: #5a3e1a;
+  }
+
+  .task.cover {
+    background: #8c4f6512;
+    border-left: 2px solid var(--accent3);
+    color: #6e3a50;
+  }
+
+  .task.korean {
+    background: #4a8c6212;
+    border-left: 2px solid var(--accent2);
+    color: #366a4a;
+  }
+
+  .task.study {
+    background: #4a7a9c12;
+    border-left: 2px solid var(--accent4);
+    color: #365e78;
+  }
+
+  .task.study2 {
+    background: #4a7a9c12;
+    border-left: 2px solid var(--accent4);
+    color: #365e78;
+  }
+
+  .task.milestone {
+    background: #a0484012;
+    border-left: 2px solid var(--red);
+    color: var(--red);
+    font-weight: 500;
+  }
+
+  .day-total {
+    margin-top: 8px;
+    padding-top: 7px;
+    border-top: 1px solid var(--border);
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+  }
+
+  /* 책 읽기 진도 섹션 */
+  .progress-section {
+    max-width: 900px;
+    margin: 0 auto 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .progress-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .book-counter {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+  }
+
+  .counter-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .counter-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .progress-bar-wrap {
+    flex: 1;
+    background: var(--border);
+    border-radius: 3px;
+    height: 4px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 3px;
+    width: 0%;
+    animation: fillBar 1.5s ease forwards 0.5s;
+  }
+
+  @keyframes fillBar {
+    to { width: var(--target-width); }
+  }
+
+  /* 슬랙 가이드 섹션 */
+  .slack-guide {
+    max-width: 900px;
+    margin: 40px auto 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+  }
+
+  .slack-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+
+  .slack-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+
+  .slack-step {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .step-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    color: var(--accent2);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .step-code {
+    font-family: monospace;
+    background: #e8e2d8;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: var(--accent);
+    font-size: 10px;
+  }
+
+  /* 독서 리스트 섹션 */
+  .booklist-section {
+    max-width: 900px;
+    margin: 32px auto 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px 28px;
+    overflow-x: auto;
+  }
+
+  .booklist-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .booklist-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent3);
+  }
+
+  .booklist-stats {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 16px;
+  }
+
+  .stat-item { display: flex; align-items: center; gap: 5px; }
+  .stat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+  .col-labels {
+    display: grid;
+    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
+    gap: 8px;
+    padding: 0 10px 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+
+  .col-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .col-label:first-child { text-align: left; }
+
+  .book-item {
+    display: grid;
+    grid-template-columns: 340px 120px 1fr 128px 128px 128px;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+
+  .book-item:hover { background: var(--surface2); }
+
+  .book-item.read-done .book-title { color: var(--text-muted); }
+  .book-publisher-inline {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  .book-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .book-item.all-done .book-title {
+    color: var(--text-dim);
+    text-decoration: line-through;
+  }
+
+  .book-info { display: flex; flex-direction: column; gap: 1px; }
+
+  .book-title {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.4;
+    transition: color 0.2s;
+  }
+
+  .book-author {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .check-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* 커스텀 체크박스 */
+  .custom-cb { position: relative; display: flex; align-items: center; justify-content: center; }
+  .custom-cb input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .custom-cb input[type="checkbox"]:hover {
+    border-color: var(--text-muted);
+  }
+
+  .custom-cb.type-read input[type="checkbox"]:checked {
+    background: var(--accent2);
+    border-color: var(--accent2);
+  }
+
+  .custom-cb.type-history input[type="checkbox"]:checked {
+    background: var(--accent3);
+    border-color: var(--accent3);
+  }
+
+  .custom-cb.type-wip input[type="checkbox"]:checked {
+    background: #c9a96e;
+    border-color: #c9a96e;
+  }
+
+  .custom-cb input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -60%) rotate(45deg);
+    width: 4px;
+    height: 7px;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+  }
+
+  @media (max-width: 700px) {
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+    .col-labels, .book-item { grid-template-columns: 340px 120px 1fr 128px 128px 128px; }
+  }
+
+  @media (max-width: 480px) {
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+    .col-labels, .book-item { grid-template-columns: 340px 120px 1fr 128px 128px 128px; }
+    .book-title { font-size: 11px; }
+    .booklist-section { padding: 16px 12px; }
+    .col-labels, .book-item { gap: 4px; }
+    .booklist-stats { flex-direction: column; gap: 6px; }
+  }
+
+  .memo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    border-bottom: 1px solid #eee;
+  }
+  .memo-item input[type="checkbox"] {
+    width: 16px; height: 16px; cursor: pointer; accent-color: #7a9ab5;
+  }
+  .memo-item label {
+    flex: 1; font-size: 13px; color: #5a4a3a; cursor: pointer;
+  }
+  .memo-item.checked label {
+    text-decoration: line-through; opacity: 0.5;
+  }
+  .memo-item .del-btn {
+    background: none; border: none; color: #bbb; cursor: pointer; font-size: 14px; padding: 0 2px;
+  }
+  .memo-item .del-btn:hover { color: #c04848; }
+  .day-card { cursor: pointer; }
+  .memo-badge {
+    font-size: 9px; background: #7a9ab5; color: #fff;
+    border-radius: 10px; padding: 1px 6px; margin-left: 6px; vertical-align: middle;
+  }
+
+  /* 태스크 추가/편집/삭제 */
+  .add-task-btn {
+    position: absolute; top: 8px; right: 8px;
+    width: 18px; height: 18px;
+    background: var(--border); color: var(--text-muted);
+    border-radius: 4px; border: none; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; z-index: 10; opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .day-card:hover .add-task-btn { opacity: 1; }
+  .task-btns { display: none; gap: 2px; margin-left: auto; flex-shrink: 0; }
   .task:hover .task-btns { display: flex; }
-  .task-btn { background: none; border: none; cursor: pointer; font-size: 10px; }
+  .task-btn { background: none; border: none; cursor: pointer; font-size: 10px; padding: 0 2px; line-height: 1; color: var(--text-muted); }
+  .task-btn:hover { color: var(--text); }
+  .task.done { opacity: 0.4; text-decoration: line-through; }
+  .task.drag-over { background: var(--surface2) !important; border: 2px dashed var(--accent4) !important; }
+  .day-card.drag-over { background: var(--surface2); border: 2px dashed var(--accent4); }
 
-  /* 독서 리스트 표 정렬 */
-  .col-labels, .book-item { display: grid; grid-template-columns: 2.5fr 1.2fr 55px 55px 55px; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
-  .col-label { font-size: 10px; color: var(--text-dim); text-align: center; font-weight: 600; }
-  .book-publisher { font-family: 'Noto Sans KR', sans-serif; font-size: 11px; color: var(--text-muted); text-align: center; }
+  /* 태스크 모달 */
+  .task-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 3000;
+    align-items: center; justify-content: center;
+  }
+  .task-modal-overlay.open { display: flex; }
+  .task-modal {
+    background: #fff; border-radius: 12px;
+    padding: 24px; width: 90%; max-width: 380px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .task-modal h3 { font-family: 'Noto Serif KR'; font-size: 15px; margin-bottom: 16px; }
+  .task-modal input, .task-modal select {
+    width: 100%; border: 1px solid var(--border);
+    border-radius: 7px; padding: 8px 10px;
+    font-size: 13px; margin-bottom: 10px;
+    font-family: 'Noto Sans KR';
+  }
+  .task-modal-btns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+  .task-modal-btns button {
+    border-radius: 7px; padding: 7px 18px;
+    font-size: 12px; cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface2); color: var(--text);
+  }
+  .task-modal-btns .btn-confirm {
+    background: #5a4a3a; color: #fff; border: none;
+  }
 
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
-  .modal-content { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 400px; }
-
-  @media (max-width: 700px) { .week-grid { grid-template-columns: repeat(2, 1fr); } }
 </style>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
+    authDomain: "glittery-ganache.firebaseapp.com",
+    projectId: "glittery-ganache",
+    storageBucket: "glittery-ganache.firebasestorage.app",
+    messagingSenderId: "105377509245",
+    appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 전역 노출
+  window.fbDb = db;
+  window.fbSetDoc = setDoc;
+  window.fbGetDoc = getDoc;
+  window.fbDeleteDoc = deleteDoc;
+  window.fbDoc = doc;
+  window.fbCollection = collection;
+  window.fbOnSnapshot = onSnapshot;
+
+  // dbSync: Firestore에 데이터 저장
+  window.dbSync = async (col, id, data) => {
+    try {
+      await setDoc(doc(db, col, id), data, { merge: true });
+    } catch(e) { console.error('dbSync error:', e); }
+  };
+
+  // dbDel: Firestore에서 삭제
+  window.dbDel = async (col, id) => {
+    try {
+      await deleteDoc(doc(db, col, id));
+    } catch(e) { console.error('dbDel error:', e); }
+  };
+
+  // Firebase 준비 완료 이벤트
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
 </head>
 <body>
-<div class="container">
-  <header style="text-align:center; margin: 40px 0;">
-    <h1 style="font-family:'Noto Serif KR'; font-size:36px;">출판학교 준비</h1>
-    <p style="color:var(--text-muted); margin-top:8px;">2026. 03. 02 — 03. 30</p>
-  </header>
 
-  <!-- 포모도로 (스크린샷 완벽 복원) -->
-  <section class="section">
-    <div class="pomo-header">
-      <div class="pomo-title">🍎 포모도로 타이머</div>
-      <div class="pomo-clock-box">
-        <span id="pomo-clock">00:00</span>
-        <button class="btn-setting">설정</button>
-      </div>
-    </div>
-    
-    <div class="pomo-tabs">
-      <button class="pomo-tab active" data-mode="focus">집중</button>
-      <button class="pomo-tab" data-mode="break">휴식</button>
-      <button class="pomo-tab" data-mode="longbreak">긴 휴식</button>
-    </div>
+<div style="max-width:900px; margin:40px auto 48px; padding:0 20px; text-align:center;">
+  <h1 style="font-family:'Noto Serif KR',serif; font-size:36px; font-weight:400; color:var(--text); margin:0; text-align:center;">출판학교 준비</h1>
+</div>
 
-    <div id="pomo-display">50:00</div>
-    <div class="pomo-status-text">집중 준비 · 0/9 세션</div>
-    
-    <div class="pomo-dots" id="pomo-dots">
-      <div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div>
-      <div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div>
-      <div class="pomo-dot"></div><div class="pomo-dot"></div><div class="pomo-dot"></div>
-    </div>
+<!-- 포모도로 타이머 -->
+<div id="pomo-section" style="max-width:900px; margin:0 auto; background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:24px 28px;">
 
-    <div class="pomo-btns">
-      <button id="pomo-reset" class="pomo-btn">↺ 리셋</button>
-      <button id="pomo-start" class="pomo-btn pomo-btn-start">시작</button>
-      <button id="pomo-skip" class="pomo-btn">건너뛰기 ›</button>
-    </div>
-
-    <div class="pomo-log-header">
-      <div style="font-size:13px; color:var(--text-muted);">일별 기록</div>
-      <button id="pomo-add-manual" class="btn-add-session">+ 세션 추가</button>
-    </div>
-    <div id="pomo-log-list"></div>
-  </section>
-
-  <!-- 진행 상황 -->
-  <section class="section">
-    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
-      <span>📖 독서 이력서 (읽음)</span><span id="txt-read">0 / 37</span>
-    </div>
-    <div class="progress-bar-wrap"><div id="bar-read" class="progress-bar-fill" style="background:var(--accent2);"></div></div>
-    <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; margin-top:15px;">
-      <span>🏆 이력서 완성 (최종)</span><span id="txt-hist">0 / 37</span>
-    </div>
-    <div class="progress-bar-wrap"><div id="bar-hist" class="progress-bar-fill" style="background:var(--accent3);"></div></div>
-  </section>
-  <div id="calendar-root">
-    <div class="week-label">WEEK 01 (3/2 - 3/8)</div>
-    <div class="week-grid">
-      <div class="day-card" data-date="0302"><div class="day-date">02</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📡 칼럼분석① 화상 (2시간)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0303"><div class="day-date">03</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0304"><div class="day-date">04</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">💬 칼럼① 피드백 (30분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0305"><div class="day-date">05</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0306"><div class="day-date">06</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0307"><div class="day-date">07</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📤 칼럼① 제출 (110분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div></div></div>
-      <div class="day-card" data-date="0308"><div class="day-date">08</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-    </div>
-    
-    <div class="week-label">WEEK 02 (3/9 - 3/15)</div>
-    <div class="week-grid">
-      <div class="day-card" data-date="0309"><div class="day-date">09</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📡 칼럼분석① 화상 (2시간)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0310"><div class="day-date">10</div><div class="tasks">
-        <div class="task reading" draggable="true">📖 이력서 『매끄러운 세계와 그 적들』 (30분)</div>
-        <div class="task reading" draggable="true">📖 이력서 『돌이킬 수 있는』 (30분)</div>
-        <div class="task book" draggable="true">📚 독서 후 이력서 『음악의 사물들』 (1시간)</div>
-        <div class="task book" draggable="true">📚 이력서 『인공지능은 나의 읽기-쓰기를 어떻게 바꿀까』 (1시간)</div>
-        <div class="task korean" draggable="true">✍️ 시대에듀 어법특강 2강 (1.5h)</div>
-        <div class="task study" draggable="true">📝 칼럼① 과제 제출 (2시간)</div>
-        <div class="task cover" draggable="true">✏️ 자소서 항목 1개 (30분)</div>
-      </div></div>
-      <div class="day-card" data-date="0311"><div class="day-date">11</div><div class="tasks">
-        <div class="task korean" draggable="true">✍️ 시대에듀 어법특강 2강 (1.5h)</div>
-        <div class="task study" draggable="true">📤 칼럼① 제출 (2시간)</div>
-        <div class="task study" draggable="true">💬 칼럼① 피드백 (30분)</div>
-        <div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div>
-        <div class="task reading" draggable="true">📖 이력서 『음악의 사물들』 (30분)</div>
-        <div class="task reading" draggable="true">📖 이력서 『돌이킬 수 있는』 (30분)</div>
-        <div class="task reading" draggable="true">📖 이력서 『사라진 세계』 (30분)</div>
-        <div class="task reading" draggable="true">📖 이력서 『어린이라는 세계』 (30분)</div>
-      </div></div>
-      <div class="day-card" data-date="0312"><div class="day-date">12</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0313"><div class="day-date">13</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0314"><div class="day-date">14</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📤 칼럼① 제출 (110분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div></div></div>
-      <div class="day-card" data-date="0315"><div class="day-date">15</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 1시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-    </div>
-    <div class="week-label">WEEK 03 (3/16 - 3/22)</div>
-    <div class="week-grid">
-      <div class="day-card" data-date="0316"><div class="day-date">16</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📡 칼럼분석① 화상 (2시간)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0317"><div class="day-date">17</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0318"><div class="day-date">18</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">💬 칼럼① 피드백 (30분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0319"><div class="day-date">19</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0320"><div class="day-date">20</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div><div class="task milestone" draggable="true">🚩 마감 임박</div></div></div>
-      <div class="day-card" data-date="0321"><div class="day-date">21</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📤 칼럼① 제출 (110분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div></div></div>
-      <div class="day-card" data-date="0322"><div class="day-date">22</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 3권 (120분)</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div><div class="task milestone" draggable="true">🚩 전체 검토</div></div></div>
-    </div>
-
-    <div class="week-label">WEEK 04 (3/23 - 3/30)</div>
-    <div class="week-grid">
-      <div class="day-card" data-date="0323"><div class="day-date">23</div><div class="tasks"><div class="task reading" draggable="true">📖 이력서 2권 (80분)</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📡 칼럼분석① 화상 (2시간)</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div><div class="task milestone" draggable="true">🏁 완주 목표</div></div></div>
-      <div class="day-card" data-date="0324"><div class="day-date">24</div><div class="tasks"><div class="task milestone" draggable="true">📖 이력서 2권 — 완주 🎯</div><div class="task cover" draggable="true">✏️ 자소서 2시간</div><div class="task korean" draggable="true">✍️ 한국어 1시간</div><div class="task study" draggable="true">📝 칼럼② 과제 제출 (110분)</div><div class="task milestone" draggable="true">🏁 이력서 전체 완료!</div><div class="task book" draggable="true">📚 책읽기 1권 (90분)</div></div></div>
-      <div class="day-card" data-date="0325"><div class="day-date">25</div><div class="tasks"><div class="task milestone" draggable="true">🚀 최종 제출 및 마무리</div><div class="task study" draggable="true">💬 칼럼① 피드백 (30분)</div><div class="task study" draggable="true">💬 칼럼② 피드백 (30분)</div></div></div>
-      <div class="day-card" data-date="0326"><div class="day-date">26</div><div class="day-of-week">Thu</div><div class="tasks"></div></div>
-      <div class="day-card" data-date="0327"><div class="day-date">27</div><div class="day-of-week">Fri</div><div class="tasks"></div></div>
-      <div class="day-card" data-date="0328"><div class="day-date">28</div><div class="day-of-week">Sat</div><div class="tasks"></div></div>
-      <div class="day-card" data-date="0329"><div class="day-date">29</div><div class="day-of-week">Sun</div><div class="tasks"></div></div>
+  <!-- 헤더 -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;">
+    <h1 style="font-family:'Noto Serif KR',serif; font-size:28px; font-weight:600; color:var(--text); margin:0;">🍅 포모도로 타이머</h1>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:11px; color:var(--text-muted);">현재 시각</span>
+      <div id="pomo-clock" style="font-size:13px; font-variant-numeric:tabular-nums; color:var(--text-muted); letter-spacing:1px;">00:00:00</div>
+      <button id="pomo-settings-btn" style="background:none; border:1px solid var(--border); border-radius:6px; padding:4px 10px; font-size:11px; cursor:pointer; color:var(--text-muted);">설정</button>
     </div>
   </div>
 
-  <section class="section">
-    <h2 style="font-family:'Noto Serif KR'; margin-bottom:18px;">📚 독서이력서 리스트 (37권)</h2>
-    <div class="col-labels">
-      <div class="col-label" style="text-align:left;">제목 / 저자</div>
-      <div class="col-label">출판사</div>
-      <div class="col-label">읽음</div><div class="col-label">진행</div><div class="col-label">완성</div>
+  <!-- 모드 탭 -->
+  <div style="display:flex; gap:8px; margin-bottom:20px;">
+    <button class="pomo-tab active" data-mode="focus" style="flex:1; padding:7px; border-radius:7px; border:1px solid var(--border); font-size:11px; cursor:pointer; background:var(--surface2);">집중</button>
+    <button class="pomo-tab" data-mode="break" style="flex:1; padding:7px; border-radius:7px; border:1px solid var(--border); font-size:11px; cursor:pointer; background:none;">휴식</button>
+    <button class="pomo-tab" data-mode="longbreak" style="flex:1; padding:7px; border-radius:7px; border:1px solid var(--border); font-size:11px; cursor:pointer; background:none;">긴 휴식</button>
+  </div>
+
+  <!-- 타이머 디스플레이 -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <div id="pomo-display" style="font-size:52px; font-weight:300; letter-spacing:2px; color:var(--text); font-variant-numeric:tabular-nums;">50:00</div>
+    <div id="pomo-status" style="font-size:11px; color:var(--text-muted); margin-top:4px; letter-spacing:1px;">집중 세션 준비</div>
+    <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;" id="pomo-dots"></div>
+  </div>
+
+  <!-- 컨트롤 -->
+  <div style="display:flex; justify-content:center; gap:12px; margin-bottom:20px;">
+    <button id="pomo-reset" style="background:none; border:1px solid var(--border); border-radius:8px; padding:9px 18px; font-size:12px; cursor:pointer; color:var(--text-muted);">↺ 리셋</button>
+    <button id="pomo-start" style="background:#5a4a3a; color:#fff; border:none; border-radius:8px; padding:9px 32px; font-size:13px; font-weight:500; cursor:pointer; letter-spacing:0.5px;">시작</button>
+    <button id="pomo-skip" style="background:none; border:1px solid var(--border); border-radius:8px; padding:9px 18px; font-size:12px; cursor:pointer; color:var(--text-muted);">건너뛰기 ›</button>
+  </div>
+
+  <!-- 일 단위 기록 -->
+  <div style="border-top:1px solid var(--border); padding-top:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted);">일별 기록</div>
+      <button id="pomo-manual-btn" style="background:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:11px; cursor:pointer; color:var(--text-muted);">+ 세션 추가</button>
     </div>
-    <div id="book-list-root"></div>
-  </section>
+    <div id="pomo-log-list" style="display:grid; gap:6px;">
+      <div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>
+    </div>
+  </div>
+
 </div>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, onSnapshot, collection, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = { apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg", authDomain: "glittery-ganache.firebaseapp.com", projectId: "glittery-ganache", storageBucket: "glittery-ganache.firebasestorage.app", messagingSenderId: "105377509245", appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614" };
-  const app = initializeApp(firebaseConfig); const db = getFirestore(app);
-  window.dbSync = async (col, id, data) => await setDoc(doc(db, col, id), data, { merge: true });
-  window.dbDel = async (col, id) => await deleteDoc(doc(db, col, id));
+<!-- 설정 모달 -->
+<div id="pomo-settings-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center;">
+  <div style="background:#faf8f5; border-radius:14px; padding:28px 24px; width:90%; max-width:360px; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <div style="font-size:14px; font-weight:600; color:#5a4a3a;">타이머 설정</div>
+      <button id="pomo-settings-close" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999;">✕</button>
+    </div>
+    <div style="display:grid; gap:12px;">
+      <label style="font-size:12px; color:var(--text-muted);">집중 시간 (분)
+        <input id="cfg-focus" type="number" min="1" max="120" value="50" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+      </label>
+      <label style="font-size:12px; color:var(--text-muted);">휴식 시간 (분)
+        <input id="cfg-break" type="number" min="1" max="60" value="10" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+      </label>
+      <label style="font-size:12px; color:var(--text-muted);">긴 휴식 시간 (분)
+        <input id="cfg-longbreak" type="number" min="1" max="120" value="30" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+      </label>
+      <label style="font-size:12px; color:var(--text-muted);">총 세션 수
+        <input id="cfg-sessions" type="number" min="1" max="99" value="9" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+      </label>
+      <label style="font-size:12px; color:var(--text-muted);">긴 휴식 간격 (집중 N회 후)
+        <input id="cfg-interval" type="number" min="1" max="10" value="3" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+      </label>
+    </div>
+    <button id="pomo-settings-save" style="width:100%; margin-top:20px; background:#5a4a3a; color:#fff; border:none; border-radius:8px; padding:10px; font-size:13px; cursor:pointer;">적용</button>
+  </div>
+</div>
 
-  // --- [수동 세션 추가 버튼 로직 고정] ---
-  window.addSessionManual = async () => {
-    const today = new Date().toISOString().split('T')[0];
-    const docRef = doc(db, "pomoLogs", today);
-    const snap = await getDoc(docRef);
-    let count = snap.exists() ? (snap.data().sessions || 0) : 0;
-    if (count < 9) {
-      await window.dbSync('pomoLogs', today, { sessions: count + 1 });
-    } else { alert("오늘의 목표 달성!"); }
-  };
+<hr style="max-width:900px; margin:48px auto 0; border:none; border-top:1px solid var(--border);">
+<header style="margin-top:32px;">
+  <h1>3월 세부 계획표</h1>
+  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 34권 완주 + 자소서</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>독서이력서 (40분/권)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#b07d8f"></div>자소서 (1~2시간)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#8fba9f"></div>한국어 공부</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4a7a9c"></div>칼럼분석①</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4a7a9c"></div>칼럼분석②</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c9756e"></div>마일스톤</div>
+  </div>
+</header>
 
-  const books = [{t:"거짓말 게임",a:"조무원",p:"민음사"},{t:"계속해보겠습니다",a:"황정은",p:"창비"},{t:"공정하다는 착각",a:"마이클 샌델",p:"동아시아"},{t:"깻잎 투쟁기",a:"우춘희",p:"교양인"},{t:"나인",a:"천선란",p:"창비"},{t:"난장이가 쏘아올린 작은 공",a:"조세희",p:"이성의힘"},{t:"댈러웨이 부인",a:"버지니아 울프",p:"창비"},{t:"도파민네이션",a:"애나 램키",p:"흐름출판"},{t:"돌이킬 수 있는",a:"문목하",p:"아작"},{t:"마음 가면",a:"브레네 브라운",p:"웅진지식하우스"},{t:"매끄러운 세계와 그 적들",a:"한나 렌",p:"엘리"},{t:"물욕의 세계",a:"누누 칼러",p:"현암사"},{t:"병원탐험기",a:"최준혁",p:"고트"},{t:"빨간 구두 꺼져!",a:"코니 윌리스",p:"아작"},{t:"사라진 세계",a:"톰 스웨터리치",p:"허블"},{t:"사람, 장소, 환대",a:"김현경",p:"문지"},{t:"사랑에 관하여",a:"안톤 체호프",p:"펭귄"},{t:"세상은 이야기로 만들어졌다",a:"자마리 엘 우아실",p:"원더박스"},{t:"소설은 어떻게 작동하는가",a:"제임스 우드",p:"창비"},{t:"시녀 이야기, 증언들",a:"마거릿 애트우드",p:"황금가지"},{t:"암컷들",a:"루시 쿡",p:"웅진"},{t:"어린이라는 세계",a:"김소영",p:"사계절"},{t:"위대한 개츠비",a:"피츠제럴드",p:"문학동네"},{t:"음악의 사물들",a:"신예슬",p:"워크룸"},{t:"이반 일리치의 죽음",a:"톨스토이",p:"현대지성"},{t:"이방인",a:"카뮈",p:"민음사"},{t:"인공지능은 나의 읽기쓰기",a:"김성우",p:"유유"},{t:"자연에 이름 붙이기",a:"캐럴 계속 윤",p:"윌북"},{t:"절창",a:"구병모",p:"문학동네"},{t:"지구 생물체는 항복하라",a:"정보라",p:"래빗홀"},{t:"지금 우리 곁의 쓰레기",a:"홍수열",p:"슬로비"},{t:"진짜 게으른 사람",a:"지이",p:"마인드빌딩"},{t:"촉진하는 밤",a:"김소연",p:"문지"},{t:"편집자란 무엇인가",a:"김학원",p:"휴머니스트"},{t:"포지셔닝",a:"잭 트라우트",p:"을유"},{t:"희랍어 시간",a:"한강",p:"문학동네"}];
+<!-- 책 진도 요약 -->
+<div class="progress-section">
+  <div class="progress-title">독서이력서 목표 진도</div>
+  <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
+    <div>
+      <div class="counter-num">34</div>
+      <div class="counter-label">총 권수<br>이력서 작성 대상</div>
+    </div>
+    <div style="flex:1; min-width:200px;">
+      <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--text-muted); margin-bottom:6px;">
+        <span>3/2 시작</span><span>3/24 완료 목표</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:5px;">
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>읽음</span><strong id="bar-read">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-read-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent2),#6dbf8a); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>진행중</span><strong id="bar-wip">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-wip-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,#c9a96e,#e0c080); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:3px;">
+            <span>완성</span><strong id="bar-history">0</strong>
+          </div>
+          <div class="progress-bar-wrap" style="height:7px;">
+            <div id="bar-history-fill" style="height:100%; border-radius:3px; width:0%; background:linear-gradient(90deg,var(--accent3),#c47a98); transition:width 0.4s ease;"></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px; font-size:11px; color:var(--text-muted);">
+        주중 2~3권 × 40분 = 하루 80~120분 / 주 목요일·일요일 3권 집중
+      </div>
+    </div>
+  </div>
+</div>
 
-  window.onload = () => {
-    setInterval(() => { const n = new Date(); document.getElementById('pomo-clock').innerText = `${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`; }, 1000);
-    document.getElementById('pomo-add-manual').onclick = window.addSessionManual;
-    const bRoot = document.getElementById('book-list-root');
-    books.forEach((b, i) => { const div = document.createElement('div'); div.className = 'book-item'; div.innerHTML = `<div class="book-info"><div class="book-title" style="font-size:12px;font-weight:500;">${b.t}</div><div style="font-size:10px;color:#999">${b.a}</div></div><div class="book-publisher">${b.p}</div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`; bRoot.appendChild(div); });
-    
-    document.querySelectorAll('.day-card').forEach(card => {
-       const date = card.dataset.date;
-       const addBtn = document.createElement('button'); addBtn.className = 'add-task-btn'; addBtn.innerHTML = '+';
-       addBtn.onclick = (e) => { e.stopPropagation(); openModal('add', date); }; card.appendChild(addBtn);
-       card.querySelectorAll('.task').forEach((t, idx) => {
-          const id = `static_${date}_${idx}`; t.setAttribute('data-task-id', id); t.setAttribute('draggable', 'true');
-          t.innerHTML = `<span>${t.innerText}</span><div class="task-btns"><button class="task-btn" onclick="event.stopPropagation(); window.openModal('edit','${id}',this.closest('.task'))">✏️</button><button class="task-btn" onclick="event.stopPropagation(); window.lastDeletedId='${id}'; window.dbSync('dailyTasks','${id}',{deleted:true})">✕</button></div>`;
-          t.onclick = (e) => { e.stopPropagation(); window.dbSync('dailyTasks', id, {checked: !t.classList.contains('done'), text: t.querySelector('span').innerText, type: t.classList[1], date: date, deleted: false}); };
-       });
-       card.onclick = () => openMemo(date);
-    });
-    
-    onSnapshot(collection(db, "dailyTasks"), (snap) => { /* 실시간 태스크 수신 */ });
-    onSnapshot(collection(db, "pomoLogs"), (snap) => {
-      const today = new Date().toISOString().split('T')[0];
-      const dots = document.querySelectorAll('.pomo-dot'); dots.forEach(d => d.classList.remove('filled'));
-      snap.forEach(doc => {
-        if (doc.id === today) {
-          for (let i=0; i<doc.data().sessions && i<9; i++) dots[i].classList.add('filled');
-          document.querySelector('.pomo-status-text').innerText = `집중 중 · ${doc.data().sessions}/9 세션`;
-        }
+
+<div style="max-width:900px; margin:28px auto 0; display:flex; align-items:center; justify-content:space-between;">
+  <div style="font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted);">📅 월간 캘린더</div>
+  <button id="toggle-calendar-btn" onclick="(function(){var el=document.getElementById('calendar-wrapper');var btn=document.getElementById('toggle-calendar-btn');if(el.style.display==='none'){el.style.display='';btn.textContent='접기 ▲';}else{el.style.display='none';btn.textContent='펼치기 ▼';}})()" style="background:none; border:1px solid var(--border); border-radius:6px; padding:4px 12px; font-size:11px; cursor:pointer; color:var(--text-muted);">접기 ▲</button>
+</div>
+<div id="calendar-wrapper">
+<!-- 1주차 3/2~3/8 -->
+<div class="week-section">
+  <div class="week-label">1주차 · Mar 2 – 8</div>
+  <div class="week-grid">
+
+    <!-- 3/2 월요일 (TODAY) -->
+    <div class="day-card" data-date="0302">
+      <div class="day-header">
+        <div>
+          <div class="day-date">02</div>
+          <div class="day-of-week">Mon</div>
+        </div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.8h</div>
+    </div>
+
+    <!-- 3/3 화요일 -->
+    <div class="day-card" data-date="0303">
+      <div class="day-header">
+        <div><div class="day-date">03</div><div class="day-of-week">Tue</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+
+    <!-- 3/4 수요일 -->
+    <div class="day-card" data-date="0304">
+      <div class="day-header">
+        <div><div class="day-date">04</div><div class="day-of-week">Wed</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+
+    <!-- 3/5 목요일 -->
+    <div class="day-card" data-date="0305">
+      <div class="day-header">
+        <div><div class="day-date">05</div><div class="day-of-week">Thu</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+
+    <!-- 3/6 금요일 -->
+    <div class="day-card" data-date="0306">
+      <div class="day-header">
+        <div><div class="day-date">06</div><div class="day-of-week">Fri</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+
+    <!-- 3/7 토요일 -->
+    <div class="day-card weekend saturday">
+      <div class="day-header">
+        <div><div class="day-date" style="color:#4a7ab5;">07</div><div class="day-of-week">Sat</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <div class="day-total">합계 5.5h</div>
+    </div>
+
+    <!-- 3/8 일요일 -->
+    <div class="day-card weekend saturday">
+      <div class="day-header">
+        <div><div class="day-date" style="color:#c04848;">08</div><div class="day-of-week">Sun</div></div>
+      </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+  </div>
+</div>
+
+<!-- 2주차 3/9~3/15 -->
+<div class="week-section">
+  <div class="week-label">2주차 · Mar 9 – 15</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0309">
+      <div class="day-header"><div><div class="day-date">09</div><div class="day-of-week">Mon</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.8h</div>
+    </div>
+    <div class="day-card" data-date="0310">
+      <div class="day-header"><div><div class="day-date">10</div><div class="day-of-week">Tue</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『매끄러운 세계와 그 적들』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
+        <div class="task reading"><span class="task-icon">📚</span>독서 후 이력서『음악의 사물들』(1시간)</div>
+        <div class="task reading"><span class="task-icon">📚</span>독서 후 이력서『인공지능은 나의 읽기-쓰기를 어떻게 바꿀까』(1시간)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 항목 1개 (30분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 과제 제출 (2시간)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+    <div class="day-card" data-date="0311">
+      <div class="day-header"><div><div class="day-date">11</div><div class="day-icon">Wed</div></div></div>
+      <div class="tasks">
+        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼① 제출 (2시간)</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼② 피드백 (30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『음악의 사물들』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『사라진 세계』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『어린이라는 세계』(30분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+    <div class="day-card" data-date="0312">
+      <div class="day-header"><div><div class="day-date">12</div><div class="day-of-week">Thu</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+    <div class="day-card" data-date="0313">
+      <div class="day-header"><div><div class="day-date">13</div><div class="day-of-week">Fri</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+    <div class="day-card weekend saturday">
+      <div class="day-header"><div><div class="day-date" style="color:#4a7ab5;">14</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <div class="day-total">합계 5.5h</div>
+    </div>
+    <div class="day-card weekend sunday">
+      <div class="day-header"><div><div class="day-date" style="color:#c04848;">15</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+  </div>
+</div>
+
+<!-- 3주차 3/16~3/22 -->
+<div class="week-section">
+  <div class="week-label">3주차 · Mar 16 – 22</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0316">
+      <div class="day-header"><div><div class="day-date">16</div><div class="day-of-week">Mon</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.8h</div>
+    </div>
+    <div class="day-card" data-date="0317">
+      <div class="day-header"><div><div class="day-date">17</div><div class="day-of-week">Tue</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+    <div class="day-card" data-date="0318">
+      <div class="day-header"><div><div class="day-date">18</div><div class="day-of-week">Wed</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+    <div class="day-card" data-date="0319">
+      <div class="day-header"><div><div class="day-date">19</div><div class="day-of-week">Thu</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+    <div class="day-card" data-date="0320">
+      <div class="day-header"><div><div class="day-date">20</div><div class="day-of-week">Fri</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+    <div class="day-card weekend sunday">
+      <div class="day-header"><div><div class="day-date" style="color:#4a7ab5;">21</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <div class="day-total">합계 5.5h</div>
+    </div>
+    <div class="day-card weekend sunday">
+      <div class="day-header"><div><div class="day-date" style="color:#c04848;">22</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.5h</div>
+    </div>
+  </div>
+</div>
+
+<!-- 4주차 3/23~3/25 (마지막) -->
+<div class="week-section">
+  <div class="week-label">4주차 · Mar 23 – 25 &nbsp;·&nbsp; 마무리 스프린트</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0323">
+      <div class="day-header"><div><div class="day-date">23</div><div class="day-of-week">Mon</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.8h</div>
+    </div>
+    <div class="day-card" data-date="0324">
+      <div class="day-header"><div><div class="day-date">24</div><div class="day-of-week">Tue</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 — 완주 🎯</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task milestone"><span class="task-icon">🏁</span>독서이력서 전체 완료!</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <div class="day-total">합계 6.3h</div>
+    </div>
+    <div class="day-card phase-end">
+      <div class="day-header"><div><div class="day-date">25</div><div class="day-of-week">Wed</div></div></div>
+      <div class="tasks">
+        <div class="task milestone"><span class="task-icon">🚀</span>자소서 마무리 시작</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <div class="day-total">합계 1h</div>
+    </div>
+    <!-- 빈 칸 4개 -->
+    <div class="day-card empty"></div>
+    <div class="day-card empty"></div>
+    <div class="day-card empty"></div>
+    <div class="day-card empty"></div>
+  </div>
+</div>
+
+</div>
+<!-- 독서 리스트 -->
+
+
+<div style="max-width:900px; margin:28px auto 0; display:flex; align-items:center; justify-content:space-between;">
+  <div></div>
+  <button id="toggle-booklist-btn" onclick="(function(){var el=document.getElementById('booklist-wrapper');var btn=document.getElementById('toggle-booklist-btn');if(el.style.display==='none'){el.style.display='';btn.textContent='접기 ▲';}else{el.style.display='none';btn.textContent='펼치기 ▼';}})()" style="background:none; border:1px solid var(--border); border-radius:6px; padding:4px 12px; font-size:11px; cursor:pointer; color:var(--text-muted);">접기 ▲</button>
+</div>
+<div id="booklist-wrapper">
+<div class="booklist-section">
+  <div class="booklist-header">
+    <div class="booklist-title">📚 독서이력서 리스트</div>
+    <div class="booklist-stats">
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 34 읽음</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 34 진행중</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 34 완성</div>
+    </div>
+  </div>
+
+  <div class="col-labels">
+    <div class="col-label" style="text-align:left;">제목 / 저자</div>
+    <div class="col-label" style="text-align:center;">출판사</div>
+    <div class="col-label"></div>
+    <div class="col-label">읽음</div>
+    <div class="col-label">진행중</div>
+    <div class="col-label">완성</div>
+  </div>
+
+  <div id="book-list">
+    <div class="book-item" data-index="0">
+      <div class="book-info">
+        <div class="book-title">거짓말 게임</div>
+        <div class="book-author">조무원</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="1" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="1" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="1" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="1">
+      <div class="book-info">
+        <div class="book-title">계속해보겠습니다</div>
+        <div class="book-author">황정은</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="2" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="2" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="2" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="2">
+      <div class="book-info">
+        <div class="book-title">공정하다는 착각</div>
+        <div class="book-author">마이클 샌델</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">동아시아</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="3" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="3" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="3" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="3">
+      <div class="book-info">
+        <div class="book-title">깻잎 투쟁기</div>
+        <div class="book-author">우춘희</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">교양인</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="4" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="4" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="4" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="4">
+      <div class="book-info">
+        <div class="book-title">나인</div>
+        <div class="book-author">천선란</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="5" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="5" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="5" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="5">
+      <div class="book-info">
+        <div class="book-title">난장이가 쏘아올린 작은 공</div>
+        <div class="book-author">조세희</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">이성의힘</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="6" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="6" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="6" data-type="history">
+        </label>
+      </div>
+    </div>
+
+    <div class="book-item" data-index="7">
+      <div class="book-info">
+        <div class="book-title">도파민네이션</div>
+        <div class="book-author">애나 램키</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">흐름출판</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="8" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="8" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="8" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="8">
+      <div class="book-info">
+        <div class="book-title">돌이킬 수 있는</div>
+        <div class="book-author">문목하</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="9" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="9" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="9" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="9">
+      <div class="book-info">
+        <div class="book-title">마음 가면</div>
+        <div class="book-author">브레네 브라운</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="10" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="10" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="10" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="10">
+      <div class="book-info">
+        <div class="book-title">매끄러운 세계와 그 적들</div>
+        <div class="book-author">한나 렌</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">엘리</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="11" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="11" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="11" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="11">
+      <div class="book-info">
+        <div class="book-title">물욕의 세계</div>
+        <div class="book-author">누누 칼러</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현암사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="12" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="12" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="12" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="12">
+      <div class="book-info">
+        <div class="book-title">병원탐험기</div>
+        <div class="book-author">최준혁</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">고트</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="13" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="13" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="13" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="13">
+      <div class="book-info">
+        <div class="book-title">빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!</div>
+        <div class="book-author">코니 윌리스</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아작</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="14" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="14" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="14" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="14">
+      <div class="book-info">
+        <div class="book-title">사라진 세계</div>
+        <div class="book-author">톰 스웨터리치</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">허블</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="15" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="15" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="15" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="15">
+      <div class="book-info">
+        <div class="book-title">사람, 장소, 환대</div>
+        <div class="book-author">김현경</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="16" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="16" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="16" data-type="history">
+        </label>
+      </div>
+    </div>
+
+    <div class="book-item" data-index="17">
+      <div class="book-info">
+        <div class="book-title">세상은 이야기로 만들어졌다</div>
+        <div class="book-author">자마리 엘 우아실, 프리데만 카릭 / 김현정 역</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">원더박스</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="18" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="18" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="18" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="18">
+      <div class="book-info">
+        <div class="book-title">소설은 어떻게 작동하는가</div>
+        <div class="book-author">제임스 우드</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">창비</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="19" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="19" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="19" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="19">
+      <div class="book-info">
+        <div class="book-title">시녀 이야기와 증언들</div>
+        <div class="book-author">마거릿 애트우드</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">황금가지</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="20" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="20" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="20" data-type="history">
+        </label>
+      </div>
+    </div>
+
+    <div class="book-item" data-index="21">
+      <div class="book-info">
+        <div class="book-title">암컷들 — 방탕하고 쟁취하며 군림하는</div>
+        <div class="book-author">루시 쿡</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">웅진지식하우스</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="22" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="22" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="22" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="22">
+      <div class="book-info">
+        <div class="book-title">어린이라는 세계</div>
+        <div class="book-author">김소영</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">사계절</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="23" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="23" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="23" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="23">
+      <div class="book-info">
+        <div class="book-title">위대한 개츠비</div>
+        <div class="book-author">F. 스콧 피츠제럴드</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="24" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="24" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="24" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="24">
+      <div class="book-info">
+        <div class="book-title">음악의 사물들: 악보, 자동 악기, 음반</div>
+        <div class="book-author">신예슬</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">워크룸프레스</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="25" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="25" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="25" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="ivan">
+      <div class="book-info">
+        <div class="book-title">이반 일리치의 죽음</div>
+        <div class="book-author">레프 니콜라예비치 톨스토이</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">현대지성</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="ivan" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="ivan" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="ivan" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="25">
+      <div class="book-info">
+        <div class="book-title">이방인</div>
+        <div class="book-author">알베르 카뮈</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">민음사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="26" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="26" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="26" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="26">
+      <div class="book-info">
+        <div class="book-title">인공지능은 나의 읽기·쓰기를 어떻게 바꿀까</div>
+        <div class="book-author">김성우</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">유유</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="27" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="27" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="27" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="27">
+      <div class="book-info">
+        <div class="book-title">자연에 이름 붙이기</div>
+        <div class="book-author">캐럴 계속 윤</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">윌북</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="28" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="28" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="28" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="28">
+      <div class="book-info">
+        <div class="book-title">절창</div>
+        <div class="book-author">구병모</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="29" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="29" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="29" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="29">
+      <div class="book-info">
+        <div class="book-title">지구 생물체는 항복하라</div>
+        <div class="book-author">정보라</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">래빗홀</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="30" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="30" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="30" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="30">
+      <div class="book-info">
+        <div class="book-title">지금 우리 곁의 쓰레기</div>
+        <div class="book-author">홍수열</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">슬로비</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="31" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="31" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="31" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="31">
+      <div class="book-info">
+        <div class="book-title">진짜 게으른 사람이 쓴 게으름 탈출법</div>
+        <div class="book-author">지이</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">마인드빌딩</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="32" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="32" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="32" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="32">
+      <div class="book-info">
+        <div class="book-title">촉진하는 밤</div>
+        <div class="book-author">김소연</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학과지성사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="33" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="33" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="33" data-type="history">
+        </label>
+      </div>
+    </div>
+
+    <div class="book-item" data-index="34">
+      <div class="book-info">
+        <div class="book-title">트릭 미러</div>
+        <div class="book-author">지아 톨렌티노</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">생각의힘</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="35" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="35" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="35" data-type="history">
+        </label>
+      </div>
+    </div>
+    <div class="book-item" data-index="35">
+      <div class="book-info">
+        <div class="book-title">편집자란 무엇인가</div>
+        <div class="book-author">김학원</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">휴머니스트</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="36" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="36" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="36" data-type="history">
+        </label>
+      </div>
+    </div>
+
+    <div class="book-item" data-index="37">
+      <div class="book-info">
+        <div class="book-title">희랍어 시간</div>
+        <div class="book-author">한강</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">문학동네</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="38" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="38" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="38" data-type="history">
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// ===== Firebase 태스크 CRUD =====
+var _taskModalMode = 'add';   // 'add' | 'edit'
+var _taskModalDate = '';
+var _taskModalId = '';
+var _taskModalEl = null;
+
+var taskTypeIcons = {
+  reading: '📖', korean: '✍️', study: '📝',
+  cover: '✏️', book: '📚', milestone: '🚩', study2: '💬'
+};
+
+function openTaskModal(mode, dateOrId, el) {
+  _taskModalMode = mode;
+  var overlay = document.getElementById('task-modal-overlay');
+  var title = document.getElementById('task-modal-title');
+  var inp = document.getElementById('task-modal-text');
+  var sel = document.getElementById('task-modal-type');
+  if (mode === 'add') {
+    _taskModalDate = dateOrId;
+    _taskModalId = '';
+    _taskModalEl = null;
+    title.textContent = '태스크 추가';
+    inp.value = '';
+    sel.value = 'reading';
+  } else {
+    _taskModalId = dateOrId;
+    _taskModalEl = el;
+    title.textContent = '태스크 편집';
+    var span = el.querySelector('span');
+    inp.value = span ? span.textContent : '';
+    sel.value = el.className.split(' ')[1] || 'reading';
+  }
+  overlay.classList.add('open');
+  setTimeout(function() { inp.focus(); }, 50);
+}
+
+function closeTaskModal() {
+  document.getElementById('task-modal-overlay').classList.remove('open');
+}
+
+function confirmTaskModal() {
+  var text = document.getElementById('task-modal-text').value.trim();
+  var type = document.getElementById('task-modal-type').value;
+  if (!text) return;
+  var icon = taskTypeIcons[type] || '';
+
+  if (_taskModalMode === 'add') {
+    var id = 'task_' + _taskModalDate + '_' + Date.now();
+    var taskData = { text: text, type: type, date: _taskModalDate, deleted: false, checked: false };
+    if (window.dbSync) {
+      window.dbSync('dailyTasks', id, taskData).then(function() {
+        renderFirebaseTask(id, taskData);
       });
-      const list = document.getElementById('pomo-log-list'); list.innerHTML = '';
-      const logs = []; snap.forEach(doc => logs.push({id:doc.id, ...doc.data()}));
-      logs.sort((a,b) => b.id.localeCompare(a.id)).forEach(d => { list.innerHTML += `<div style="display:flex;justify-content:space-between;padding:4px;font-size:12px"><span>📅 ${d.id}</span><span>🍅 ${d.sessions}세션</span></div>`; });
+    }
+  } else {
+    var taskData2 = { text: text, type: type };
+    if (window.dbSync) window.dbSync('dailyTasks', _taskModalId, taskData2);
+    if (_taskModalEl) {
+      _taskModalEl.className = 'task ' + type;
+      var sp = _taskModalEl.querySelector('span');
+      if (sp) sp.textContent = icon + ' ' + text;
+    }
+  }
+  closeTaskModal();
+}
+
+function renderFirebaseTask(id, data) {
+  if (data.deleted) return;
+  var date = data.date;
+  var card = document.querySelector('.day-card[data-date="' + date + '"]');
+  if (!card) return;
+  var tasks = card.querySelector('.tasks');
+  if (!tasks) return;
+  // 이미 있으면 업데이트
+  var existing = tasks.querySelector('[data-task-id="' + id + '"]');
+  var icon = taskTypeIcons[data.type] || '';
+  var html = '<span>' + icon + ' ' + data.text + '</span>'
+    + '<div class="task-btns">'
+    + '<button class="task-btn" onclick="event.stopPropagation(); openTaskModal('edit','' + id + '',this.closest('.task'))">✏️</button>'
+    + '<button class="task-btn" onclick="event.stopPropagation(); deleteTask('' + id + '',this.closest('.task'))">✕</button>'
+    + '</div>';
+  if (existing) {
+    existing.className = 'task ' + data.type + (data.checked ? ' done' : '');
+    existing.innerHTML = html;
+  } else {
+    var div = document.createElement('div');
+    div.className = 'task ' + data.type + (data.checked ? ' done' : '');
+    div.setAttribute('data-task-id', id);
+    div.setAttribute('draggable', 'true');
+    div.innerHTML = html;
+    div.onclick = function(e) {
+      if (e.target.classList.contains('task-btn')) return;
+      var checked = !div.classList.contains('done');
+      div.classList.toggle('done', checked);
+      if (window.dbSync) window.dbSync('dailyTasks', id, { checked: checked });
+    };
+    setupDrag(div, id);
+    tasks.appendChild(div);
+  }
+}
+
+function deleteTask(id, el) {
+  if (el) el.remove();
+  if (window.dbSync) window.dbSync('dailyTasks', id, { deleted: true });
+}
+
+// ===== 드래그앤드롭 =====
+var _dragId = null;
+var _dragEl = null;
+
+function setupDrag(el, id) {
+  el.addEventListener('dragstart', function(e) {
+    _dragId = id;
+    _dragEl = el;
+    e.dataTransfer.effectAllowed = 'move';
+    setTimeout(function() { el.style.opacity = '0.4'; }, 0);
+  });
+  el.addEventListener('dragend', function() {
+    el.style.opacity = '';
+    document.querySelectorAll('.day-card').forEach(function(c) {
+      c.classList.remove('drag-over');
     });
-    // [기타 모달 및 동기화 로직 이전과 동일하게 유지]
-  };
+  });
+}
+
+function initDragDrop() {
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    card.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', function() {
+      card.classList.remove('drag-over');
+    });
+    card.addEventListener('drop', function(e) {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      if (!_dragEl || !_dragId) return;
+      var newDate = card.getAttribute('data-date');
+      var tasks = card.querySelector('.tasks');
+      if (tasks && _dragEl) {
+        tasks.appendChild(_dragEl);
+        if (window.dbSync) window.dbSync('dailyTasks', _dragId, { date: newDate });
+      }
+    });
+  });
+}
+
+// ===== + 버튼 추가 =====
+function initAddButtons() {
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    // 이미 있으면 skip
+    if (card.querySelector('.add-task-btn')) return;
+    var date = card.getAttribute('data-date');
+    if (!date) return;
+    var btn = document.createElement('button');
+    btn.className = 'add-task-btn';
+    btn.innerHTML = '+';
+    btn.title = '태스크 추가';
+    btn.onclick = function(e) {
+      e.stopPropagation();
+      openTaskModal('add', date);
+    };
+    card.style.position = 'relative';
+    card.appendChild(btn);
+  });
+}
+
+// ===== 기존 정적 태스크에 편집/삭제 버튼 달기 =====
+function initStaticTasks() {
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    var date = card.getAttribute('data-date');
+    card.querySelectorAll('.task').forEach(function(t, idx) {
+      if (t.querySelector('.task-btns')) return; // 이미 처리됨
+      var id = 'static_' + date + '_' + idx;
+      t.setAttribute('data-task-id', id);
+      t.setAttribute('draggable', 'true');
+      var origText = t.textContent.trim();
+      t.innerHTML = '<span>' + origText + '</span>'
+        + '<div class="task-btns">'
+        + '<button class="task-btn" onclick="event.stopPropagation(); openTaskModal('edit','' + id + '',this.closest('.task'))">✏️</button>'
+        + '<button class="task-btn" onclick="event.stopPropagation(); deleteTask('' + id + '',this.closest('.task'))">✕</button>'
+        + '</div>';
+      t.onclick = function(e) {
+        if (e.target.classList.contains('task-btn')) return;
+        t.classList.toggle('done');
+        if (window.dbSync) window.dbSync('dailyTasks', id, {
+          checked: t.classList.contains('done'),
+          text: t.querySelector('span').textContent,
+          type: t.className.split(' ')[1],
+          date: date, deleted: false
+        });
+      };
+      setupDrag(t, id);
+    });
+  });
+}
+
+// ===== Firebase 독서 체크박스 동기화 =====
+function initFirebaseBookSync() {
+  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
+  // 체크박스 변경 시 Firebase에 저장
+  document.querySelectorAll('#book-list input[type="checkbox"]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      var key = 'book_' + cb.dataset.i + '_' + cb.dataset.type;
+      if (window.dbSync) window.dbSync('syncData', key, { checked: cb.checked });
+    });
+  });
+  // Firestore에서 체크 상태 수신
+  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'syncData'), function(snap) {
+    snap.forEach(function(d) {
+      var key = d.id; // book_N_type
+      var parts = key.split('_');
+      if (parts[0] !== 'book') return;
+      var i = parts[1]; var type = parts[2];
+      var cb = document.querySelector('#book-list input[data-i="' + i + '"][data-type="' + type + '"]');
+      if (cb && d.data().checked !== undefined) {
+        cb.checked = d.data().checked;
+      }
+    });
+    updateBookStats();
+  });
+}
+
+// ===== Firebase 포모도로 동기화 =====
+function initFirebasePomoSync() {
+  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
+  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'pomoLogs'), function(snap) {
+    var todayKey = getKSTDateStr();
+    snap.forEach(function(d) {
+      if (d.id === todayKey) {
+        var data = d.data();
+        // localStorage도 업데이트해서 기존 로직과 호환
+        var log = loadPomoLog();
+        log[todayKey] = { sessions: data.sessions || 0, minutes: data.minutes || 0 };
+        savePomoLog(log);
+        pomoState.focusDone = (data.sessions || 0) % pomoConfig.sessions;
+        updateDisplay();
+      }
+    });
+    renderPomoLog();
+  });
+}
+
+// ===== Firebase dailyTasks 수신 =====
+function initFirebaseTaskSync() {
+  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
+  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'dailyTasks'), function(snap) {
+    snap.forEach(function(d) {
+      var id = d.id;
+      var data = d.data();
+      if (!data.deleted && id.startsWith('task_')) {
+        // Firebase에서 추가된 동적 태스크만 렌더
+        renderFirebaseTask(id, data);
+      }
+      // 삭제된 태스크 숨기기
+      if (data.deleted) {
+        var el = document.querySelector('[data-task-id="' + id + '"]');
+        if (el) el.remove();
+      }
+      // 체크 상태 반영
+      if (data.checked !== undefined) {
+        var el2 = document.querySelector('[data-task-id="' + id + '"]');
+        if (el2) el2.classList.toggle('done', data.checked);
+      }
+    });
+  });
+}
+
+// ===== 포모도로 Firebase 저장 오버라이드 =====
+// 기존 recordFocusDone 함수 래핑
+var _origRecordFocusDone = null;
+function wrapRecordFocusDone() {
+  if (typeof recordFocusDone === 'function') {
+    _origRecordFocusDone = recordFocusDone;
+    window.recordFocusDone = function() {
+      _origRecordFocusDone();
+      // Firebase에도 저장
+      var todayKey = getKSTDateStr();
+      var log = loadPomoLog();
+      var d = log[todayKey] || { sessions: 0, minutes: 0 };
+      if (window.dbSync) window.dbSync('pomoLogs', todayKey, d);
+    };
+  }
+}
+
+// ===== 초기화 =====
+window.addEventListener('firebase-ready', function() {
+  initFirebaseBookSync();
+  initFirebasePomoSync();
+  initFirebaseTaskSync();
+  wrapRecordFocusDone();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  initAddButtons();
+  initStaticTasks();
+  initDragDrop();
+});
+
+
+const books = [
+  { title: "거짓말 게임", author: "조무원", publisher: "민음사" },
+  { title: "계속해보겠습니다", author: "황정은", publisher: "창비" },
+  { title: "공정하다는 착각", author: "마이클 샌델", publisher: "동아시아" },
+  { title: "깻잎 투쟁기", author: "우춘희", publisher: "교양인" },
+  { title: "나인", author: "천선란", publisher: "창비" },
+  { title: "난장이가 쏘아올린 작은 공", author: "조세희", publisher: "이성의힘" },
+  { title: "도파민네이션", author: "애나 램키", publisher: "흐름출판" },
+  { title: "돌이킬 수 있는", author: "문목하", publisher: "아작" },
+  { title: "마음 가면", author: "브레네 브라운", publisher: "웅진지식하우스" },
+  { title: "매끄러운 세계와 그 적들", author: "한나 렌", publisher: "엘리" },
+  { title: "물욕의 세계", author: "누누 칼러", publisher: "현암사" },
+  { title: "병원탐험기", author: "최준혁", publisher: "고트" },
+  { title: "빨간 구두 꺼져! 나는 로켓 무용단이 되고 싶었다고!", author: "코니 윌리스", publisher: "아작" },
+  { title: "사라진 세계", author: "톰 스웨터리치", publisher: "허블" },
+  { title: "사람, 장소, 환대", author: "김현경", publisher: "문학과지성사" },
+  { title: "세상은 이야기로 만들어졌다", author: "자마리 엘 우아실, 프리데만 카릭 / 김현정 역", publisher: "원더박스" },
+  { title: "소설은 어떻게 작동하는가", author: "제임스 우드", publisher: "창비" },
+  { title: "시녀 이야기와 증언들", author: "마거릿 애트우드", publisher: "황금가지" },
+  { title: "암컷들 — 방탕하고 쟁취하며 군림하는", author: "루시 쿡", publisher: "웅진지식하우스" },
+  { title: "어린이라는 세계", author: "김소영", publisher: "사계절" },
+  { title: "위대한 개츠비", author: "F. 스콧 피츠제럴드", publisher: "문학동네" },
+  { title: "음악의 사물들: 악보, 자동 악기, 음반", author: "신예슬", publisher: "워크룸프레스" },
+  { title: "이반 일리치의 죽음", author: "레프 니콜라예비치 톨스토이", publisher: "현대지성" },
+  { title: "이방인", author: "알베르 카뮈", publisher: "민음사" },
+  { title: "인공지능은 나의 읽기·쓰기를 어떻게 바꿀까", author: "김성우", publisher: "유유" },
+  { title: "자연에 이름 붙이기", author: "캐럴 계속 윤", publisher: "윌북" },
+  { title: "절창", author: "구병모", publisher: "문학동네" },
+  { title: "지구 생물체는 항복하라", author: "정보라", publisher: "래빗홀" },
+  { title: "지금 우리 곁의 쓰레기", author: "홍수열", publisher: "슬로비" },
+  { title: "진짜 게으른 사람이 쓴 게으름 탈출법", author: "지이", publisher: "마인드빌딩" },
+  { title: "촉진하는 밤", author: "김소연", publisher: "문학과지성사" },
+  { title: "트릭 미러", author: "지아 톨렌티노", publisher: "생각의힘" },
+  { title: "편집자란 무엇인가", author: "김학원", publisher: "휴머니스트" },
+  { title: "희랍어 시간", author: "한강", publisher: "문학동네" },
+];
+
+// localStorage로 체크 상태 저장
+const STORAGE_KEY = 'booklist_checks_v1';
+
+function loadState() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  } catch(e) { return {}; }
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+let state = loadState();
+
+function updateStats() {
+  let readCount = 0, historyCount = 0;
+  books.forEach((_, i) => {
+    if (state[i + '_read']) readCount++;
+    if (state[i + '_history']) historyCount++;
+  });
+  const total = books.length;
+  // 하단 카운터
+  document.getElementById('stat-read').textContent = readCount;
+  document.getElementById('stat-history').textContent = historyCount;
+  // 상단 진행바
+  document.getElementById('bar-read').textContent = readCount;
+  document.getElementById('bar-history').textContent = historyCount;
+  document.getElementById('bar-read-fill').style.width = (readCount / total * 100) + '%';
+  document.getElementById('bar-history-fill').style.width = (historyCount / total * 100) + '%';
+}
+
+function renderList() {
+  const container = document.getElementById('book-list');
+  container.innerHTML = '';
+
+  books.forEach((book, i) => {
+    const isRead = !!state[i + '_read'];
+    const isHistory = !!state[i + '_history'];
+    const allDone = isRead && isHistory;
+    const classes = ['book-item', allDone ? 'all-done' : (isRead ? 'read-done' : '')].filter(Boolean).join(' ');
+
+    const row = document.createElement('div');
+    row.className = classes;
+    row.dataset.index = i;
+    row.innerHTML = `
+      <div class="book-info">
+        <div class="book-title">${book.title}</div>
+        <div class="book-author">${book.author}</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 4px;">—</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="${i}" data-type="read" ${isRead ? 'checked' : ''}>
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="${i}" data-type="history" ${isHistory ? 'checked' : ''}>
+        </label>
+      </div>
+    `;
+    container.appendChild(row);
+  });
+
+  // 체크박스 이벤트
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const idx = e.target.dataset.i;
+      const type = e.target.dataset.type;
+      const key = idx + '_' + type;
+      state[key] = e.target.checked;
+      saveState(state);
+      // 행 클래스 업데이트
+      const row = container.querySelector(`.book-item[data-index="${idx}"]`);
+      const isRead = !!state[idx + '_read'];
+      const isHistory = !!state[idx + '_history'];
+      row.className = ['book-item', (isRead && isHistory) ? 'all-done' : (isRead ? 'read-done' : '')].filter(Boolean).join(' ');
+      updateStats();
+    });
+  });
+
+  updateStats();
+}
+
+
+
+var BOOK_KEY = 'book_checks_v1';
+function loadBookState() {
+  try { return JSON.parse(localStorage.getItem(BOOK_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveBookState(s) {
+  try { localStorage.setItem(BOOK_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function updateBookStats() {
+  var cbs = document.querySelectorAll('#book-list input[type="checkbox"]');
+  var readCount = 0, wipCount = 0, histCount = 0;
+  cbs.forEach(function(cb) {
+    if (cb.dataset.type === 'read' && cb.checked) readCount++;
+    if (cb.dataset.type === 'wip' && cb.checked) wipCount++;
+    if (cb.dataset.type === 'history' && cb.checked) histCount++;
+  });
+  var total = document.querySelectorAll('#book-list .book-item').length;
+  var el = function(id) { return document.getElementById(id); };
+  if (el('stat-read')) el('stat-read').textContent = readCount;
+  if (el('stat-wip')) el('stat-wip').textContent = wipCount;
+  if (el('stat-history')) el('stat-history').textContent = histCount;
+  if (el('bar-read')) el('bar-read').textContent = readCount;
+  if (el('bar-wip')) el('bar-wip').textContent = wipCount;
+  if (el('bar-history')) el('bar-history').textContent = histCount;
+  if (el('bar-read-fill')) el('bar-read-fill').style.width = (total ? readCount/total*100 : 0) + '%';
+  if (el('bar-wip-fill')) el('bar-wip-fill').style.width = (total ? wipCount/total*100 : 0) + '%';
+  if (el('bar-history-fill')) el('bar-history-fill').style.width = (total ? histCount/total*100 : 0) + '%';
+}
+
+function initBookChecks() {
+  var bs = loadBookState();
+  var cbs = document.querySelectorAll('#book-list input[type="checkbox"]');
+  cbs.forEach(function(cb) {
+    var key = cb.dataset.i + '_' + cb.dataset.type;
+    if (bs[key]) cb.checked = true;
+    ['change', 'click'].forEach(function(evt) {
+      cb.addEventListener(evt, function(e) {
+        var k = this.dataset.i + '_' + this.dataset.type;
+        var s = loadBookState();
+        s[k] = this.checked;
+        saveBookState(s);
+        updateBookStats();
+        // Firebase 동기화
+        if (window.dbSync) window.dbSync('syncData', 'book_' + cb.dataset.i + '_' + cb.dataset.type, { checked: cb.checked });
+      });
+    });
+  });
+  updateBookStats();
+}
+
+
+
+// ===== 포모도로 타이머 =====
+var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 9, interval: 3 };
+var pomoState = { mode: 'focus', running: false, timeLeft: 50*60, session: 0, focusDone: 0, endTime: null };
+var pomoTimer = null;
+
+function beep(type) {
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (type === 'start') {
+      // 집중 시작: 낮은 단음 한 번 (둔탁하게)
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 440;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.55);
+    } else {
+      // 휴식 시작(end): 높은 3연음 (경쾌하게)
+      var freqs = [880, 1100, 1320];
+      for (var i = 0; i < 3; i++) {
+        (function(idx) {
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.frequency.value = freqs[idx];
+          osc.type = 'sine';
+          gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.2 + 0.15);
+          osc.start(ctx.currentTime + idx * 0.2);
+          osc.stop(ctx.currentTime + idx * 0.2 + 0.18);
+        })(i);
+      }
+    }
+  } catch(e) {}
+}
+
+function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+
+function getDuration(mode) {
+  if (mode === 'focus') return pomoConfig.focus * 60;
+  if (mode === 'break') return pomoConfig.breakT * 60;
+  return pomoConfig.longBreak * 60;
+}
+
+function renderDots() {
+  var el = document.getElementById('pomo-dots');
+  if (!el) return;
+  el.innerHTML = '';
+  for (var i = 0; i < pomoConfig.sessions; i++) {
+    var d = document.createElement('div');
+    d.style.cssText = 'width:8px;height:8px;border-radius:50%;background:' +
+      (i < pomoState.focusDone ? '#5a4a3a' : '#ddd') + ';';
+    el.appendChild(d);
+  }
+}
+
+function updateDisplay() {
+  var m = Math.floor(pomoState.timeLeft / 60);
+  var s = pomoState.timeLeft % 60;
+  var el = document.getElementById('pomo-display');
+  if (el) el.textContent = pad2(m) + ':' + pad2(s);
+
+  var status = document.getElementById('pomo-status');
+  if (status) {
+    var modeLabel = pomoState.mode === 'focus' ? '집중' : (pomoState.mode === 'break' ? '휴식' : '긴 휴식');
+    var currentSession = (pomoState.mode === 'focus' && pomoState.running) ? pomoState.focusDone + 1 : pomoState.focusDone;
+    status.textContent = modeLabel + ' ' + (pomoState.running ? '중' : '준비') +
+      ' · ' + currentSession + '/' + pomoConfig.sessions + ' 세션';
+  }
+
+  // 탭 활성화
+  document.querySelectorAll('.pomo-tab').forEach(function(btn) {
+    var isActive = btn.dataset.mode === pomoState.mode;
+    btn.style.background = isActive ? 'var(--surface2)' : 'none';
+    btn.style.fontWeight = isActive ? '600' : '400';
+  });
+
+  renderDots();
+}
+
+var POMO_LOG_KEY = 'pomo_log_v1';
+function loadPomoLog() {
+  try { return JSON.parse(localStorage.getItem(POMO_LOG_KEY)) || {}; } catch(e) { return {}; }
+}
+function savePomoLog(l) {
+  try { localStorage.setItem(POMO_LOG_KEY, JSON.stringify(l)); } catch(e) {}
+}
+function getKSTDateStr() {
+  var now = new Date();
+  var kst = new Date(now.getTime() + now.getTimezoneOffset()*60000 + 32400000);
+  return kst.getFullYear() + '-' + pad2(kst.getMonth()+1) + '-' + pad2(kst.getDate());
+}
+function renderPomoLog() {
+  var log = loadPomoLog();
+  var keys = Object.keys(log).sort().reverse();
+  var el = document.getElementById('pomo-log-list');
+  if (!el) return;
+  if (keys.length === 0) {
+    el.innerHTML = '<div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>';
+    return;
+  }
+  el.innerHTML = keys.map(function(k) {
+    var d = log[k];
+    var h = Math.floor(d.minutes / 60);
+    var m = d.minutes % 60;
+    var timeStr = h > 0 ? h + '시간' + (m > 0 ? ' ' + m + '분' : '') : m + '분';
+    var parts = k.split('-');
+    var dateShort = parseInt(parts[1]) + '월 ' + parseInt(parts[2]) + '일';
+    return '<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; background:#f5f2ee; border-radius:7px; font-size:12px; gap:8px;">'
+      + '<span style="color:#5a4a3a; font-weight:500; min-width:32px;">' + dateShort + '</span>'
+      + '<span style="color:var(--text-muted); flex:1;">🍅 ' + d.sessions + '세션&nbsp;·&nbsp;⏱ ' + timeStr + '</span>'
+      + '<button class="pomo-del-btn" data-key="' + k + '" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:0 2px; line-height:1;" title="삭제">✕</button>'
+      + '</div>';
+  }).join('');
+  el.querySelectorAll('.pomo-del-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var key = this.getAttribute('data-key');
+      var log = loadPomoLog();
+      delete log[key];
+      savePomoLog(log);
+      renderPomoLog();
+    });
+  });
+}
+
+function recordFocusDone() {
+  var log = loadPomoLog();
+  var key = getKSTDateStr();
+  if (!log[key]) log[key] = { sessions: 0, minutes: 0 };
+  log[key].sessions++;
+  log[key].minutes += pomoConfig.focus;
+  savePomoLog(log);
+  renderPomoLog();
+}
+
+function nextMode() {
+  beep('end');
+  clearInterval(pomoTimer);
+  pomoState.running = false;
+  pomoState.endTime = null;
+
+  if (pomoState.mode === 'focus') {
+    recordFocusDone();
+    pomoState.focusDone++;
+    if (pomoState.focusDone >= pomoConfig.sessions) {
+      pomoState.mode = 'focus';
+      pomoState.focusDone = 0;
+      pomoState.timeLeft = getDuration('focus');
+      updateDisplay();
+      document.getElementById('pomo-start').textContent = '시작';
+      return;
+    }
+    pomoState.mode = (pomoState.focusDone % pomoConfig.interval === 0) ? 'longbreak' : 'break';
+  } else {
+    pomoState.mode = 'focus';
+  }
+
+  pomoState.timeLeft = getDuration(pomoState.mode);
+  updateDisplay();
+  // 자동 시작
+  pomoState.endTime = Date.now() + pomoState.timeLeft * 1000;
+  pomoTimer = setInterval(tick, 500);
+  pomoState.running = true;
+  document.getElementById('pomo-start').textContent = '일시정지';
+}
+
+function tick() {
+  if (!pomoState.endTime) { clearInterval(pomoTimer); return; }
+  var now = Date.now();
+  var remaining = Math.round((pomoState.endTime - now) / 1000);
+  if (remaining > 0) {
+    pomoState.timeLeft = remaining;
+    updateDisplay();
+  } else {
+    pomoState.timeLeft = 0;
+    updateDisplay();
+    clearInterval(pomoTimer);
+    nextMode();
+  }
+}
+
+function initPomo() {
+  // 오늘 기록 기반으로 focusDone 초기값 설정
+  var todayLog = loadPomoLog()[getKSTDateStr()];
+  if (todayLog && todayLog.sessions > 0) {
+    pomoState.focusDone = todayLog.sessions % pomoConfig.sessions;
+  }
+  pomoState.timeLeft = getDuration('focus');
+  updateDisplay();
+
+  document.getElementById('pomo-start').addEventListener('click', function() {
+    if (pomoState.running) {
+      clearInterval(pomoTimer);
+      pomoState.running = false;
+      this.textContent = '시작';
+    } else {
+      pomoState.endTime = Date.now() + pomoState.timeLeft * 1000;
+      pomoTimer = setInterval(tick, 500);
+      pomoState.running = true;
+      this.textContent = '일시정지';
+      beep('start');
+    }
+  });
+
+  document.getElementById('pomo-reset').addEventListener('click', function() {
+    clearInterval(pomoTimer);
+    pomoState.running = false;
+    pomoState.timeLeft = getDuration(pomoState.mode);
+    document.getElementById('pomo-start').textContent = '시작';
+    updateDisplay();
+  });
+
+  document.getElementById('pomo-skip').addEventListener('click', function() {
+    clearInterval(pomoTimer);
+    pomoState.running = false;
+    nextMode();
+    document.getElementById('pomo-start').textContent = '시작';
+  });
+
+  document.querySelectorAll('.pomo-tab').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      clearInterval(pomoTimer);
+      pomoState.running = false;
+      pomoState.mode = this.dataset.mode;
+      pomoState.timeLeft = getDuration(pomoState.mode);
+      document.getElementById('pomo-start').textContent = '시작';
+      updateDisplay();
+    });
+  });
+
+  // 설정
+  document.getElementById('pomo-settings-btn').addEventListener('click', function() {
+    document.getElementById('cfg-focus').value = pomoConfig.focus;
+    document.getElementById('cfg-break').value = pomoConfig.breakT;
+    document.getElementById('cfg-longbreak').value = pomoConfig.longBreak;
+    document.getElementById('cfg-sessions').value = pomoConfig.sessions;
+    document.getElementById('cfg-interval').value = pomoConfig.interval;
+    document.getElementById('pomo-settings-overlay').style.display = 'flex';
+  });
+
+  document.getElementById('pomo-settings-close').addEventListener('click', function() {
+    document.getElementById('pomo-settings-overlay').style.display = 'none';
+  });
+
+  document.getElementById('pomo-settings-save').addEventListener('click', function() {
+    pomoConfig.focus = parseInt(document.getElementById('cfg-focus').value) || 50;
+    pomoConfig.breakT = parseInt(document.getElementById('cfg-break').value) || 10;
+    pomoConfig.longBreak = parseInt(document.getElementById('cfg-longbreak').value) || 30;
+    pomoConfig.sessions = parseInt(document.getElementById('cfg-sessions').value) || 6;
+    pomoConfig.interval = parseInt(document.getElementById('cfg-interval').value) || 3;
+    clearInterval(pomoTimer);
+    pomoState.running = false;
+    pomoState.mode = 'focus';
+    pomoState.focusDone = 0;
+    pomoState.timeLeft = getDuration('focus');
+    document.getElementById('pomo-start').textContent = '시작';
+    document.getElementById('pomo-settings-overlay').style.display = 'none';
+    updateDisplay();
+  });
+
+  document.getElementById('pomo-settings-overlay').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  // 인라인 기록 렌더
+  renderPomoLog();
+
+  // 수동 추가 - 오늘 날짜에 세션 1회 추가
+  document.getElementById('pomo-manual-btn').addEventListener('click', function() {
+    var today = getKSTDateStr();
+    var log = loadPomoLog();
+    if (!log[today]) log[today] = { sessions: 0, minutes: 0 };
+    log[today].sessions += 1;
+    log[today].minutes += pomoConfig.focus;
+    savePomoLog(log);
+    renderPomoLog();
+    // dots 업데이트
+    if (pomoState.focusDone < pomoConfig.sessions) {
+      pomoState.focusDone++;
+    } else {
+      pomoState.focusDone = 0;
+    }
+    updateDisplay();
+  });
+
+  // 현재 시각
+  function updateClock() {
+    var now = new Date();
+    var utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+    var kst = new Date(utcMs + 32400000);
+    var h = pad2(kst.getHours());
+    var m = pad2(kst.getMinutes());
+    var s = pad2(kst.getSeconds());
+    var el = document.getElementById('pomo-clock');
+    if (el) el.textContent = h + ':' + m;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+// ===== 날짜 메모 모달 =====
+var MEMO_KEY = 'day_memos_v1';
+var currentMemoDate = null;
+
+function loadMemos() {
+  try { return JSON.parse(localStorage.getItem(MEMO_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveMemos(m) {
+  try { localStorage.setItem(MEMO_KEY, JSON.stringify(m)); } catch(e) {}
+}
+
+function renderChecklist(items) {
+  var container = document.getElementById('memo-checklist');
+  container.innerHTML = '';
+  if (!items || items.length === 0) {
+    container.innerHTML = '<div style="color:#bbb; font-size:12px; text-align:center; padding:12px 0;">아직 항목이 없어요</div>';
+    return;
+  }
+  items.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'memo-item' + (item.checked ? ' checked' : '');
+    var cbId = 'memo-cb-' + idx;
+    div.innerHTML = '<input type="checkbox" id="' + cbId + '"' + (item.checked ? ' checked' : '') + '>' +
+      '<label for="' + cbId + '">' + item.text + '</label>' +
+      '<button class="del-btn" data-idx="' + idx + '">✕</button>';
+    container.appendChild(div);
+  });
+
+  // 체크 이벤트
+  container.querySelectorAll('input[type="checkbox"]').forEach(function(cb, idx) {
+    cb.addEventListener('change', function() {
+      var memos = loadMemos();
+      if (!memos[currentMemoDate]) memos[currentMemoDate] = [];
+      memos[currentMemoDate][idx].checked = this.checked;
+      saveMemos(memos);
+      renderChecklist(memos[currentMemoDate]);
+      updateMemoBadges();
+    });
+  });
+
+  // 삭제 이벤트
+  container.querySelectorAll('.del-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx = parseInt(this.dataset.idx);
+      var memos = loadMemos();
+      memos[currentMemoDate].splice(idx, 1);
+      saveMemos(memos);
+      renderChecklist(memos[currentMemoDate]);
+      updateMemoBadges();
+    });
+  });
+}
+
+function openMemoModal(dateStr, label) {
+  currentMemoDate = dateStr;
+  document.getElementById('memo-date-title').textContent = label + ' 메모';
+  var memos = loadMemos();
+  renderChecklist(memos[dateStr] || []);
+  var overlay = document.getElementById('memo-overlay');
+  overlay.style.display = 'flex';
+}
+
+function updateMemoBadges() {
+  var memos = loadMemos();
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    var dateEl = card.querySelector('.day-date');
+    var dowEl = card.querySelector('.day-of-week');
+    if (!dateEl) return;
+    var dateStr = '03' + dateEl.textContent.trim();
+    var old = card.querySelector('.memo-badge');
+    if (old) old.remove();
+    if (memos[dateStr] && memos[dateStr].length > 0) {
+      var unchecked = memos[dateStr].filter(function(item) { return !item.checked; }).length;
+      if (unchecked > 0) {
+        var badge = document.createElement('span');
+        badge.className = 'memo-badge';
+        badge.textContent = unchecked;
+        dateEl.parentNode.appendChild(badge);
+      }
+    }
+  });
+}
+
+function initMemoModal() {
+  // 날짜 카드 클릭
+  document.querySelectorAll('.day-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      // task 클릭은 모달 안 열기
+      if (e.target.closest('.task') || e.target.closest('.tasks')) return;
+      var dateEl = card.querySelector('.day-date');
+      var dowEl = card.querySelector('.day-of-week');
+      if (!dateEl) return;
+      var day = dateEl.textContent.trim();
+      var dow = dowEl ? dowEl.textContent.trim() : '';
+      var dateStr = '03' + day;
+      var label = '3/' + parseInt(day) + ' ' + dow;
+      openMemoModal(dateStr, label);
+    });
+  });
+
+  // 항목 추가
+  document.getElementById('memo-add-btn').addEventListener('click', function() {
+    var input = document.getElementById('memo-input');
+    var text = input.value.trim();
+    if (!text) return;
+    var memos = loadMemos();
+    if (!memos[currentMemoDate]) memos[currentMemoDate] = [];
+    memos[currentMemoDate].push({ text: text, checked: false });
+    saveMemos(memos);
+    input.value = '';
+    renderChecklist(memos[currentMemoDate]);
+    updateMemoBadges();
+  });
+
+  // 엔터로 추가
+  document.getElementById('memo-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') document.getElementById('memo-add-btn').click();
+  });
+
+  // 저장 버튼
+  document.getElementById('memo-save').addEventListener('click', function() {
+    document.getElementById('memo-overlay').style.display = 'none';
+  });
+
+  // 닫기
+  document.getElementById('memo-close').addEventListener('click', function() {
+    document.getElementById('memo-overlay').style.display = 'none';
+  });
+
+  // 오버레이 클릭으로 닫기
+  document.getElementById('memo-overlay').addEventListener('click', function(e) {
+    if (e.target === this) this.style.display = 'none';
+  });
+
+  updateMemoBadges();
+}
+
+function applyToday() {
+  var now = new Date();
+  var utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  var kst = new Date(utcMs + 32400000);
+  var month = kst.getMonth() + 1;
+  var day = kst.getDate();
+  var dayStr = (day < 10 ? '0' : '') + String(day);
+
+  if (month !== 3) return;
+
+  var cards = document.querySelectorAll('.day-card');
+  for (var i = 0; i < cards.length; i++) {
+    var card = cards[i];
+    card.classList.remove('today');
+    var oldBadge = card.querySelector('.today-badge');
+    if (oldBadge) oldBadge.parentNode.removeChild(oldBadge);
+    var dateEl = card.querySelector('.day-date');
+    if (!dateEl) continue;
+    if (dateEl.innerText.trim() === dayStr) {
+      card.classList.add('today');
+      var header = card.querySelector('.day-header');
+      if (header) {
+        var badge = document.createElement('span');
+        badge.className = 'today-badge';
+        badge.textContent = 'TODAY';
+        header.appendChild(badge);
+      }
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+}
+
+var TASK_KEY = 'task_checks_v1';
+function loadTaskState() {
+  try { return JSON.parse(localStorage.getItem(TASK_KEY)) || {}; } catch(e) { return {}; }
+}
+function saveTaskState(s) {
+  try { localStorage.setItem(TASK_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+function initTaskChecks() {
+  var taskState = loadTaskState();
+  var tasks = document.querySelectorAll('.day-card .task');
+  tasks.forEach(function(task, idx) {
+    var card = task.closest('.day-card');
+    var dateEl = card ? card.querySelector('.day-date') : null;
+    var date = dateEl ? dateEl.innerText.trim() : 'x';
+    var taskId = 'task_' + date + '_' + idx;
+    task.dataset.taskId = taskId;
+    if (taskState[taskId]) task.classList.add('done');
+    ['click', 'touchend'].forEach(function(evt) {
+      task.addEventListener(evt, function(e) {
+        e.preventDefault();
+        var id = this.dataset.taskId;
+        var s = loadTaskState();
+        if (this.classList.contains('done')) {
+          this.classList.remove('done');
+          delete s[id];
+        } else {
+          this.classList.add('done');
+          s[id] = true;
+        }
+        saveTaskState(s);
+      });
+    });
+  });
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  applyToday();
+  initTaskChecks();
+  initBookChecks();
+  initMemoModal();
+  initPomo();
+
+});
+
 </script>
+
+
+
+<!-- 날짜 메모 모달 -->
+<div id="memo-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; align-items:center; justify-content:center;">
+  <div id="memo-modal" style="background:#faf8f5; border-radius:14px; padding:28px 24px; width:90%; max-width:420px; max-height:80vh; overflow-y:auto; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+      <div id="memo-date-title" style="font-size:15px; font-weight:600; color:#5a4a3a;"></div>
+      <button id="memo-close" style="background:none; border:none; font-size:20px; cursor:pointer; color:#999; padding:0 4px;">✕</button>
+    </div>
+
+    <!-- 체크리스트 -->
+    <div id="memo-checklist" style="margin-bottom:16px;"></div>
+
+    <!-- 항목 추가 -->
+    <div style="display:flex; gap:8px; margin-bottom:20px;">
+      <input id="memo-input" type="text" placeholder="항목 추가..." style="flex:1; border:1px solid #ddd; border-radius:8px; padding:8px 12px; font-size:13px; background:#fff; outline:none; font-family:inherit;">
+      <button id="memo-add-btn" style="background:#7a9ab5; color:#fff; border:none; border-radius:8px; padding:8px 14px; font-size:13px; cursor:pointer;">추가</button>
+    </div>
+
+    <button id="memo-save" style="width:100%; background:#5a4a3a; color:#fff; border:none; border-radius:8px; padding:10px; font-size:13px; cursor:pointer;">저장</button>
+  </div>
+</div>
+<!-- 슬랙 연동 가이드 -->
+<div class="slack-guide">
+  <div class="slack-title">🔔 슬랙 매일 알림 설정 방법 (Notion + Slack)</div>
+  <div class="slack-steps">
+    <div class="slack-step">
+      <div class="step-num">01</div>
+      <div class="step-title">노션에 데이터베이스 생성</div>
+      <div class="step-desc">이 계획표를 노션 <span class="step-code">Date</span> 속성이 있는 데이터베이스로 만들기. 각 날짜마다 할 일 항목 추가.</div>
+    </div>
+    <div class="slack-step">
+      <div class="step-num">02</div>
+      <div class="step-title">슬랙에 Notion 앱 추가</div>
+      <div class="step-desc">슬랙 앱 디렉토리에서 <span class="step-code">Notion</span> 검색 → 워크스페이스에 추가 → 노션 계정 연결.</div>
+    </div>
+    <div class="slack-step">
+      <div class="step-num">03</div>
+      <div class="step-title">Zapier로 자동 알림 (무료)</div>
+      <div class="step-desc">Zapier 무료 플랜: <span class="step-code">Every day at 00:00</span> → 노션 DB 조회 → 슬랙 DM 전송. 월 100회 무료.</div>
+    </div>
+    <div class="slack-step">
+      <div class="step-num">04</div>
+      <div class="step-title">또는: 슬랙 리마인더 직접 설정</div>
+      <div class="step-desc">슬랙 메시지 입력창에 <span class="step-code">/remind me [내용] every day at 9am</span> 입력. 가장 빠른 방법.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 태스크 추가/편집 모달 -->
+<div id="task-modal-overlay" class="task-modal-overlay">
+  <div class="task-modal">
+    <h3 id="task-modal-title">태스크 추가</h3>
+    <input id="task-modal-text" type="text" placeholder="태스크 내용 입력" />
+    <select id="task-modal-type">
+      <option value="reading">📖 독서이력서</option>
+      <option value="korean">✍️ 한국어</option>
+      <option value="study">📝 칼럼/공부</option>
+      <option value="cover">✏️ 자소서</option>
+      <option value="book">📚 책읽기</option>
+      <option value="milestone">🚩 마일스톤</option>
+    </select>
+    <div class="task-modal-btns">
+      <button onclick="closeTaskModal()">취소</button>
+      <button class="btn-confirm" onclick="confirmTaskModal()">확인</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
