@@ -579,12 +579,15 @@
 
   /* 태스크 추가 버튼 */
   .add-task-btn {
-    width: 100%; margin-top: 6px; background: none;
-    border: 1px dashed var(--border); border-radius: 4px;
-    padding: 3px; font-size: 11px; color: var(--text-dim);
-    cursor: pointer; display: none; text-align: center;
+    position: absolute; top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 4px; font-size: 14px; line-height: 1;
+    color: var(--text-muted); cursor: pointer;
+    display: none; align-items: center; justify-content: center;
+    z-index: 5; padding: 0;
   }
-  .day-card:hover .add-task-btn { display: block; }
+  .day-card:hover .add-task-btn { display: flex; }
 
   /* 태스크 모달 */
   #task-modal-overlay {
@@ -617,7 +620,7 @@
 <!-- Firebase SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
@@ -637,6 +640,7 @@
   window.fbDeleteDoc = deleteDoc;
   window.fbOnSnapshot = onSnapshot;
   window.fbCollection = collection;
+  window.fbGetDocs = getDocs;
 
   window.dbSync = async (col, id, data) => {
     try { await setDoc(doc(db, col, id), data, { merge: true }); }
@@ -650,7 +654,9 @@
 
   // Firebase 준비 완료 플래그
   window._fbReady = true;
-  if (window._fbCallbacks) window._fbCallbacks.forEach(fn => fn());
+  var pending = window._fbCallbacks || [];
+  window._fbCallbacks = [];
+  pending.forEach(function(fn) { try { fn(); } catch(e) { console.error('fbCallback:', e); } });
 </script>
 </head>
 <body>
@@ -737,7 +743,7 @@
 <hr style="max-width:900px; margin:48px auto 0; border:none; border-top:1px solid var(--border);">
 <header style="margin-top:32px;">
   <h1>3월 세부 계획표</h1>
-  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 35권 완주 + 자소서</p>
+  <p class="subtitle">2026. 3. 2 — 3. 29 &nbsp;·&nbsp; 독서이력서 35권 완주 + 자소서 + 서평</p>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>독서이력서 (40분/권)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#b07d8f"></div>자소서 (1~2시간)</div>
@@ -818,7 +824,7 @@
         <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.8h</div>
+      <div class="day-total">합계 6:50</div>
     </div>
 
     <!-- 3/3 화요일 -->
@@ -833,7 +839,7 @@
         <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
 
     <!-- 3/4 수요일 -->
@@ -849,7 +855,7 @@
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
 
     <!-- 3/5 목요일 -->
@@ -863,7 +869,7 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
 
     <!-- 3/6 금요일 -->
@@ -871,6 +877,28 @@
       <div class="day-header">
         <div><div class="day-date">06</div><div class="day-of-week">Fri</div></div>
       </div>
+    <div class="day-card" data-date="0307">
+      <div class="day-header"><div><div class="day-date">07</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 5:30</div>
+    </div>
+    <div class="day-card" data-date="0308">
+      <div class="day-header"><div><div class="day-date">08</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
+    </div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
         <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
@@ -878,7 +906,7 @@
         <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
 
     <!-- 3/7 토요일 -->
@@ -892,7 +920,7 @@
         <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
       </div>
-      <div class="day-total">합계 5.5h</div>
+      <div class="day-total">합계 5:30</div>
     </div>
 
     <!-- 3/8 일요일 -->
@@ -906,7 +934,7 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
   </div>
 </div>
@@ -923,30 +951,24 @@
         <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.8h</div>
+      <div class="day-total">합계 6:50</div>
     </div>
     <div class="day-card" data-date="0310">
       <div class="day-header"><div><div class="day-date">10</div><div class="day-of-week">Tue</div></div></div>
-      <div class="tasks">
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
-        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
-        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
-        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
-        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
-      </div>
-      <div class="day-total">합계 6.3h</div>
-    </div>
     <div class="day-card" data-date="0311">
-      <div class="day-header"><div><div class="day-date">11</div><div class="day-icon">Wed</div></div></div>
+      <div class="day-header"><div><div class="day-date">11</div><div class="day-of-week">Wed</div></div></div>
       <div class="tasks">
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
-        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
-        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
-        <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
-        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
-        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼① 제출 (2시간)</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼② 피드백 (30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『음악의 사물들』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『사라진 세계』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『어린이라는 세계』(30분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
     </div>
     <div class="day-card" data-date="0312">
       <div class="day-header"><div><div class="day-date">12</div><div class="day-of-week">Thu</div></div></div>
@@ -956,10 +978,55 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
     </div>
     <div class="day-card" data-date="0313">
       <div class="day-header"><div><div class="day-date">13</div><div class="day-of-week">Fri</div></div></div>
+    <div class="day-card" data-date="0314">
+      <div class="day-header"><div><div class="day-date">14</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 5:30</div>
+    </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:20</div>
+    </div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『매끄러운 세계와 그 적들』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
+        <div class="task book"><span class="task-icon">📚</span>독서 후 이력서『음악의 사물들』(1시간)</div>
+        <div class="task book"><span class="task-icon">📚</span>독서 후 이력서『인공지능은 나의 읽기-쓰기를 어떻게 바꿀까』(1시간)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 항목 1개 (30분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 과제 제출 (2시간)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 5:30</div>
+    </div>
+    <div class="day-card" data-date="0315">
+      <div class="day-header"><div><div class="day-date">15</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
+    </div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
         <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
@@ -967,7 +1034,7 @@
         <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
     <div class="day-card weekend saturday">
       <div class="day-header"><div><div class="day-date" style="color:#4a7ab5;">14</div><div class="day-of-week">Sat</div></div></div>
@@ -977,7 +1044,7 @@
         <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
       </div>
-      <div class="day-total">합계 5.5h</div>
+      <div class="day-total">합계 5:30</div>
     </div>
     <div class="day-card weekend sunday">
       <div class="day-header"><div><div class="day-date" style="color:#c04848;">15</div><div class="day-of-week">Sun</div></div></div>
@@ -987,7 +1054,7 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
   </div>
 </div>
@@ -1004,7 +1071,7 @@
         <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.8h</div>
+      <div class="day-total">합계 6:50</div>
     </div>
     <div class="day-card" data-date="0317">
       <div class="day-header"><div><div class="day-date">17</div><div class="day-of-week">Tue</div></div></div>
@@ -1015,7 +1082,7 @@
         <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
     <div class="day-card" data-date="0318">
       <div class="day-header"><div><div class="day-date">18</div><div class="day-of-week">Wed</div></div></div>
@@ -1027,7 +1094,7 @@
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
     <div class="day-card" data-date="0319">
       <div class="day-header"><div><div class="day-date">19</div><div class="day-of-week">Thu</div></div></div>
@@ -1037,10 +1104,32 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
     <div class="day-card" data-date="0320">
       <div class="day-header"><div><div class="day-date">20</div><div class="day-of-week">Fri</div></div></div>
+    <div class="day-card" data-date="0321">
+      <div class="day-header"><div><div class="day-date">21</div><div class="day-of-week">Sat</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 제출 (110분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 5:30</div>
+    </div>
+    <div class="day-card" data-date="0322">
+      <div class="day-header"><div><div class="day-date">22</div><div class="day-of-week">Sun</div></div></div>
+      <div class="tasks">
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
+      </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
+      <div class="day-total">합계 6:30</div>
+    </div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
         <div class="task cover"><span class="task-icon">✏️</span>자소서 2시간</div>
@@ -1048,7 +1137,7 @@
         <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
     <div class="day-card weekend sunday">
       <div class="day-header"><div><div class="day-date" style="color:#4a7ab5;">21</div><div class="day-of-week">Sat</div></div></div>
@@ -1058,7 +1147,7 @@
         <div class="task study"><span class="task-icon">📤</span>칼럼분석① 제출 (110분)</div>
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
       </div>
-      <div class="day-total">합계 5.5h</div>
+      <div class="day-total">합계 5:30</div>
     </div>
     <div class="day-card weekend sunday">
       <div class="day-header"><div><div class="day-date" style="color:#c04848;">22</div><div class="day-of-week">Sun</div></div></div>
@@ -1068,7 +1157,7 @@
         <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.5h</div>
+      <div class="day-total">합계 6:30</div>
     </div>
   </div>
 </div>
@@ -1085,7 +1174,7 @@
         <div class="task study"><span class="task-icon">📡</span>칼럼분석① 화상 (2시간)</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.8h</div>
+      <div class="day-total">합계 6:50</div>
     </div>
     <div class="day-card" data-date="0324">
       <div class="day-header"><div><div class="day-date">24</div><div class="day-of-week">Tue</div></div></div>
@@ -1097,7 +1186,7 @@
         <div class="task milestone"><span class="task-icon">🏁</span>독서이력서 전체 완료!</div>
         <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
-      <div class="day-total">합계 6.3h</div>
+      <div class="day-total">합계 6:20</div>
     </div>
     <div class="day-card phase-end" data-date="0325">
       <div class="day-header"><div><div class="day-date">25</div><div class="day-of-week">Wed</div></div></div>
@@ -1106,31 +1195,29 @@
         <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
         <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
       </div>
-      <div class="day-total">합계 1h</div>
+      <div class="day-total">합계 1:00</div>
     </div>
     <div class="day-card" data-date="0326">
       <div class="day-header"><div><div class="day-date">26</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks"></div>
-      <div class="day-total">합계 0h</div>
+      <div class="day-total">합계 0:00</div>
     </div>
     <div class="day-card" data-date="0327">
       <div class="day-header"><div><div class="day-date">27</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks"></div>
-      <div class="day-total">합계 0h</div>
+      <div class="day-total">합계 0:00</div>
     </div>
     <div class="day-card" data-date="0328">
       <div class="day-header"><div><div class="day-date">28</div><div class="day-of-week">Sat</div></div></div>
       <div class="tasks"></div>
-      <div class="day-total">합계 0h</div>
+      <div class="day-total">합계 0:00</div>
     </div>
     <div class="day-card" data-date="0329">
       <div class="day-header"><div><div class="day-date">29</div><div class="day-of-week">Sun</div></div></div>
       <div class="tasks"></div>
-      <div class="day-total">합계 0h</div>
+      <div class="day-total">합계 0:00</div>
     </div>
   </div>
-</div>
-
 </div>
 <!-- 독서 리스트 -->
 
@@ -1973,9 +2060,95 @@
 // ══════════════════════════════════════════
 // Firebase 준비 콜백 헬퍼
 // ══════════════════════════════════════════
+
+// ── 메모 → 태스크 마이그레이션 ──
+function migrateMemoToTasks() {
+  var memos = loadMemos();
+  if (!memos || Object.keys(memos).length === 0) return;
+  Object.keys(memos).forEach(function(dateStr) {
+    var items = memos[dateStr];
+    if (!items || items.length === 0) return;
+    // data-date 형식: "0302" (dateStr은 "0302" 형식)
+    var card = document.querySelector('.day-card[data-date="' + dateStr + '"]');
+    if (!card) return;
+    var tasksDiv = card.querySelector('.tasks');
+    if (!tasksDiv) return;
+    items.forEach(function(item, idx) {
+      // 이미 마이그레이션된 태스크인지 확인
+      var migId = 'memo_' + dateStr + '_' + idx;
+      if (document.querySelector('[data-task-id="' + migId + '"]')) return;
+      var taskEl = document.createElement('div');
+      taskEl.className = 'task study' + (item.checked ? ' done' : '');
+      taskEl.setAttribute('data-task-id', migId);
+      taskEl.setAttribute('draggable', 'true');
+      var actions = document.createElement('div');
+      actions.className = 'task-actions';
+      actions.innerHTML =
+        '<button class="task-action-btn" title="편집" onclick="event.stopPropagation();openTaskModal(null,&quot;' + migId + '&quot;)">✏️</button>' +
+        '<button class="task-action-btn" title="이동" onclick="event.stopPropagation();openMoveModal(&quot;' + migId + '&quot;)">↗</button>' +
+        '<button class="task-action-btn" title="삭제" onclick="event.stopPropagation();deleteTask(&quot;' + migId + '&quot;)">✕</button>';
+      taskEl.innerHTML = '<span class="task-icon">📝</span><span class="task-text">' + item.text + '</span>';
+      taskEl.appendChild(actions);
+      taskEl.addEventListener('click', function(e) {
+        if (e.target.closest('.task-actions')) return;
+        taskEl.classList.toggle('done');
+        var s = loadTaskState(); s[migId] = taskEl.classList.contains('done'); saveTaskState(s);
+        onFbReady(function() { window.dbSync('dailyTasks', migId, { checked: taskEl.classList.contains('done') }); });
+      });
+      taskEl.addEventListener('dragstart', function(e) { e.dataTransfer.setData('text/plain', migId); });
+      tasksDiv.appendChild(taskEl);
+      // Firebase에도 저장
+      onFbReady(function() {
+        window.dbSync('dailyTasks', migId, {
+          text: item.text, type: 'study',
+          date: dateStr, deleted: false, checked: item.checked || false
+        });
+      });
+    });
+    // 마이그레이션 완료 후 메모 초기화
+    memos[dateStr] = [];
+  });
+  saveMemos(memos);
+  updateMemoBadges();
+}
+
+// ── 합계 hh:mm 변환 ──
+function minsToHHMM(totalMins) {
+  var h = Math.floor(totalMins / 60);
+  var m = totalMins % 60;
+  return h + ':' + (m < 10 ? '0' : '') + m;
+}
+
+
+function updateDateRange() {
+  var cards = document.querySelectorAll('.day-card[data-date]');
+  if (!cards.length) return;
+  var dates = Array.from(cards).map(function(c) {
+    return parseInt(c.getAttribute('data-date').slice(2));
+  }).filter(function(d) { return !isNaN(d); });
+  var lastDay = Math.max.apply(null, dates);
+  var el = document.querySelector('.subtitle');
+  if (el) el.textContent = '2026. 3. 2 — 3. ' + lastDay + ' · 독서이력서 35권 완주 + 자소서 + 서평';
+}
+
 function onFbReady(fn) {
-  if (window._fbReady) fn();
-  else { window._fbCallbacks = window._fbCallbacks || []; window._fbCallbacks.push(fn); }
+  if (window._fbReady) {
+    fn();
+  } else {
+    window._fbCallbacks = window._fbCallbacks || [];
+    window._fbCallbacks.push(fn);
+    if (!window._fbPoller) {
+      window._fbPoller = setInterval(function() {
+        if (window._fbReady) {
+          clearInterval(window._fbPoller);
+          window._fbPoller = null;
+          var cbs = window._fbCallbacks || [];
+          window._fbCallbacks = [];
+          cbs.forEach(function(f) { try { f(); } catch(e) {} });
+        }
+      }, 100);
+    }
+  }
 }
 
 // ══════════════════════════════════════════
@@ -2813,21 +2986,8 @@ function updateMemoBadges() {
 }
 
 function initMemoModal() {
-  // 날짜 카드 클릭
-  document.querySelectorAll('.day-card').forEach(function(card) {
-    card.addEventListener('click', function(e) {
-      // task 클릭은 모달 안 열기
-      if (e.target.closest('.task') || e.target.closest('.tasks')) return;
-      var dateEl = card.querySelector('.day-date');
-      var dowEl = card.querySelector('.day-of-week');
-      if (!dateEl) return;
-      var day = dateEl.textContent.trim();
-      var dow = dowEl ? dowEl.textContent.trim() : '';
-      var dateStr = '03' + day;
-      var label = '3/' + parseInt(day) + ' ' + dow;
-      openMemoModal(dateStr, label);
-    });
-  });
+  // 메모 데이터를 태스크로 마이그레이션
+  migrateMemoToTasks();
 
   // 항목 추가
   document.getElementById('memo-add-btn').addEventListener('click', function() {
@@ -2969,6 +3129,7 @@ window.addEventListener('DOMContentLoaded', function() {
   initFbPomoSync();
   wrapPomoRecord();
   initManualSessionBtn();
+  updateDateRange();
 
 });
 
