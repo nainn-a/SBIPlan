@@ -559,100 +559,7 @@
     font-size: 9px; background: #7a9ab5; color: #fff;
     border-radius: 10px; padding: 1px 6px; margin-left: 6px; vertical-align: middle;
   }
-
-  /* 태스크 추가/편집/삭제 */
-  .add-task-btn {
-    position: absolute; top: 8px; right: 8px;
-    width: 18px; height: 18px;
-    background: var(--border); color: var(--text-muted);
-    border-radius: 4px; border: none; font-size: 14px;
-    cursor: pointer; display: flex; align-items: center;
-    justify-content: center; z-index: 10; opacity: 0;
-    transition: opacity 0.15s;
-  }
-  .day-card:hover .add-task-btn { opacity: 1; }
-  .task-btns { display: none; gap: 2px; margin-left: auto; flex-shrink: 0; }
-  .task:hover .task-btns { display: flex; }
-  .task-btn { background: none; border: none; cursor: pointer; font-size: 10px; padding: 0 2px; line-height: 1; color: var(--text-muted); }
-  .task-btn:hover { color: var(--text); }
-  .task.done { opacity: 0.4; text-decoration: line-through; }
-  .task.drag-over { background: var(--surface2) !important; border: 2px dashed var(--accent4) !important; }
-  .day-card.drag-over { background: var(--surface2); border: 2px dashed var(--accent4); }
-
-  /* 태스크 모달 */
-  .task-modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45); z-index: 3000;
-    align-items: center; justify-content: center;
-  }
-  .task-modal-overlay.open { display: flex; }
-  .task-modal {
-    background: #fff; border-radius: 12px;
-    padding: 24px; width: 90%; max-width: 380px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-  }
-  .task-modal h3 { font-family: 'Noto Serif KR'; font-size: 15px; margin-bottom: 16px; }
-  .task-modal input, .task-modal select {
-    width: 100%; border: 1px solid var(--border);
-    border-radius: 7px; padding: 8px 10px;
-    font-size: 13px; margin-bottom: 10px;
-    font-family: 'Noto Sans KR';
-  }
-  .task-modal-btns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
-  .task-modal-btns button {
-    border-radius: 7px; padding: 7px 18px;
-    font-size: 12px; cursor: pointer; border: 1px solid var(--border);
-    background: var(--surface2); color: var(--text);
-  }
-  .task-modal-btns .btn-confirm {
-    background: #5a4a3a; color: #fff; border: none;
-  }
-
 </style>
-
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
-    authDomain: "glittery-ganache.firebaseapp.com",
-    projectId: "glittery-ganache",
-    storageBucket: "glittery-ganache.firebasestorage.app",
-    messagingSenderId: "105377509245",
-    appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // 전역 노출
-  window.fbDb = db;
-  window.fbSetDoc = setDoc;
-  window.fbGetDoc = getDoc;
-  window.fbDeleteDoc = deleteDoc;
-  window.fbDoc = doc;
-  window.fbCollection = collection;
-  window.fbOnSnapshot = onSnapshot;
-
-  // dbSync: Firestore에 데이터 저장
-  window.dbSync = async (col, id, data) => {
-    try {
-      await setDoc(doc(db, col, id), data, { merge: true });
-    } catch(e) { console.error('dbSync error:', e); }
-  };
-
-  // dbDel: Firestore에서 삭제
-  window.dbDel = async (col, id) => {
-    try {
-      await deleteDoc(doc(db, col, id));
-    } catch(e) { console.error('dbDel error:', e); }
-  };
-
-  // Firebase 준비 완료 이벤트
-  window.dispatchEvent(new Event('firebase-ready'));
-</script>
 </head>
 <body>
 
@@ -700,7 +607,7 @@
       <div style="font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted);">일별 기록</div>
       <button id="pomo-manual-btn" style="background:none; border:1px solid var(--border); border-radius:6px; padding:3px 10px; font-size:11px; cursor:pointer; color:var(--text-muted);">+ 세션 추가</button>
     </div>
-    <div id="pomo-log-list" style="display:grid; gap:6px;">
+    <div id="pomo-log-list" style="display:grid; gap:6px; max-height:180px; overflow-y:auto;">
       <div style="color:#bbb; font-size:12px;">아직 기록이 없어요</div>
     </div>
   </div>
@@ -725,7 +632,7 @@
         <input id="cfg-longbreak" type="number" min="1" max="120" value="30" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
       </label>
       <label style="font-size:12px; color:var(--text-muted);">총 세션 수
-        <input id="cfg-sessions" type="number" min="1" max="99" value="9" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
+        <input id="cfg-sessions" type="number" min="1" max="99" value="6" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
       </label>
       <label style="font-size:12px; color:var(--text-muted);">긴 휴식 간격 (집중 N회 후)
         <input id="cfg-interval" type="number" min="1" max="10" value="3" style="width:100%; margin-top:4px; border:1px solid #ddd; border-radius:7px; padding:7px 10px; font-size:13px; background:#fff;">
@@ -738,7 +645,7 @@
 <hr style="max-width:900px; margin:48px auto 0; border:none; border-top:1px solid var(--border);">
 <header style="margin-top:32px;">
   <h1>3월 세부 계획표</h1>
-  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 34권 완주 + 자소서</p>
+  <p class="subtitle">2026. 3. 2 — 3. 25 &nbsp;·&nbsp; 독서이력서 37권 완주 + 자소서</p>
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:#c9a96e"></div>독서이력서 (40분/권)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#b07d8f"></div>자소서 (1~2시간)</div>
@@ -754,7 +661,7 @@
   <div class="progress-title">독서이력서 목표 진도</div>
   <div style="display:flex; align-items:center; gap:24px; flex-wrap:wrap;">
     <div>
-      <div class="counter-num">34</div>
+      <div class="counter-num">37</div>
       <div class="counter-label">총 권수<br>이력서 작성 대상</div>
     </div>
     <div style="flex:1; min-width:200px;">
@@ -806,7 +713,7 @@
   <div class="week-grid">
 
     <!-- 3/2 월요일 (TODAY) -->
-    <div class="day-card" data-date="0302">
+    <div class="day-card">
       <div class="day-header">
         <div>
           <div class="day-date">02</div>
@@ -823,7 +730,7 @@
     </div>
 
     <!-- 3/3 화요일 -->
-    <div class="day-card" data-date="0303">
+    <div class="day-card">
       <div class="day-header">
         <div><div class="day-date">03</div><div class="day-of-week">Tue</div></div>
       </div>
@@ -838,7 +745,7 @@
     </div>
 
     <!-- 3/4 수요일 -->
-    <div class="day-card" data-date="0304">
+    <div class="day-card">
       <div class="day-header">
         <div><div class="day-date">04</div><div class="day-of-week">Wed</div></div>
       </div>
@@ -854,7 +761,7 @@
     </div>
 
     <!-- 3/5 목요일 -->
-    <div class="day-card" data-date="0305">
+    <div class="day-card">
       <div class="day-header">
         <div><div class="day-date">05</div><div class="day-of-week">Thu</div></div>
       </div>
@@ -868,7 +775,7 @@
     </div>
 
     <!-- 3/6 금요일 -->
-    <div class="day-card" data-date="0306">
+    <div class="day-card">
       <div class="day-header">
         <div><div class="day-date">06</div><div class="day-of-week">Fri</div></div>
       </div>
@@ -916,7 +823,7 @@
 <div class="week-section">
   <div class="week-label">2주차 · Mar 9 – 15</div>
   <div class="week-grid">
-    <div class="day-card" data-date="0309">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">09</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -926,34 +833,30 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card" data-date="0310">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">10</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『매끄러운 세계와 그 적들』(30분)</div>
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
-        <div class="task reading"><span class="task-icon">📚</span>독서 후 이력서『음악의 사물들』(1시간)</div>
-        <div class="task reading"><span class="task-icon">📚</span>독서 후 이력서『인공지능은 나의 읽기-쓰기를 어떻게 바꿀까』(1시간)</div>
-        <div class="task cover"><span class="task-icon">✏️</span>자소서 항목 1개 (30분)</div>
-        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
-        <div class="task study"><span class="task-icon">📝</span>칼럼분석① 과제 제출 (2시간)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study2"><span class="task-icon">📝</span>칼럼분석② 과제 제출 (110분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
       <div class="day-total">합계 6.3h</div>
     </div>
-    <div class="day-card" data-date="0311">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">11</div><div class="day-icon">Wed</div></div></div>
       <div class="tasks">
-        <div class="task korean"><span class="task-icon">✍️</span>시대에듀 어법특강 2강 (1시간 30분)</div>
-        <div class="task study"><span class="task-icon">📝</span>칼럼① 제출 (2시간)</div>
-        <div class="task study"><span class="task-icon">💬</span>칼럼① 피드백 (30분)</div>
-        <div class="task study2"><span class="task-icon">💬</span>칼럼② 피드백 (30분)</div>
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『음악의 사물들』(30분)</div>
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『돌이킬 수 있는』(30분)</div>
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『사라진 세계』(30분)</div>
-        <div class="task reading"><span class="task-icon">📖</span>독서이력서『어린이라는 세계』(30분)</div>
+        <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
+        <div class="task cover"><span class="task-icon">✏️</span>자소서 1시간</div>
+        <div class="task korean"><span class="task-icon">✍️</span>한국어 1시간</div>
+        <div class="task study"><span class="task-icon">💬</span>칼럼분석① 피드백 (30분)</div>
+        <div class="task study2"><span class="task-icon">💬</span>칼럼분석② 피드백 (30분)</div>
+        <div class="task book"><span class="task-icon">📚</span>책읽기 1권 (90분)</div>
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card" data-date="0312">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">12</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
@@ -963,7 +866,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card" data-date="0313">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">13</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1001,7 +904,7 @@
 <div class="week-section">
   <div class="week-label">3주차 · Mar 16 – 22</div>
   <div class="week-grid">
-    <div class="day-card" data-date="0316">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">16</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1011,7 +914,7 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card" data-date="0317">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">17</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1022,7 +925,7 @@
       </div>
       <div class="day-total">합계 6.3h</div>
     </div>
-    <div class="day-card" data-date="0318">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">18</div><div class="day-of-week">Wed</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1034,7 +937,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card" data-date="0319">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">19</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 3권 (120분)</div>
@@ -1044,7 +947,7 @@
       </div>
       <div class="day-total">합계 6.5h</div>
     </div>
-    <div class="day-card" data-date="0320">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">20</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1082,7 +985,7 @@
 <div class="week-section">
   <div class="week-label">4주차 · Mar 23 – 25 &nbsp;·&nbsp; 마무리 스프린트</div>
   <div class="week-grid">
-    <div class="day-card" data-date="0323">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">23</div><div class="day-of-week">Mon</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 (80분)</div>
@@ -1092,7 +995,7 @@
       </div>
       <div class="day-total">합계 6.8h</div>
     </div>
-    <div class="day-card" data-date="0324">
+    <div class="day-card">
       <div class="day-header"><div><div class="day-date">24</div><div class="day-of-week">Tue</div></div></div>
       <div class="tasks">
         <div class="task reading"><span class="task-icon">📖</span>독서이력서 2권 — 완주 🎯</div>
@@ -1134,9 +1037,9 @@
   <div class="booklist-header">
     <div class="booklist-title">📚 독서이력서 리스트</div>
     <div class="booklist-stats">
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 34 읽음</div>
-      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 34 진행중</div>
-      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 34 완성</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent2)"></div><span id="stat-read">0</span> / 37 읽음</div>
+      <div class="stat-item"><div class="stat-dot" style="background:var(--accent3)"></div><span id="stat-wip">0</span> / 37 진행중</div>
+      <div class="stat-item"><div class="stat-dot" style="background:#b07d8f"></div><span id="stat-history">0</span> / 37 완성</div>
     </div>
   </div>
 
@@ -1288,7 +1191,29 @@
         </label>
       </div>
     </div>
-
+    <div class="book-item" data-index="6">
+      <div class="book-info">
+        <div class="book-title">댈러웨이 부인</div>
+        <div class="book-author">버지니아 울프</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">솔</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="7" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="7" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="7" data-type="history">
+        </label>
+      </div>
+    </div>
     <div class="book-item" data-index="7">
       <div class="book-info">
         <div class="book-title">도파민네이션</div>
@@ -1866,7 +1791,29 @@
         </label>
       </div>
     </div>
-
+    <div class="book-item" data-index="33">
+      <div class="book-info">
+        <div class="book-title">컬티시 — 광신의 언어학</div>
+        <div class="book-author">어맨다 몬텔</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">아르테</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="34" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="34" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="34" data-type="history">
+        </label>
+      </div>
+    </div>
     <div class="book-item" data-index="34">
       <div class="book-info">
         <div class="book-title">트릭 미러</div>
@@ -1913,7 +1860,29 @@
         </label>
       </div>
     </div>
-
+    <div class="book-item" data-index="36">
+      <div class="book-info">
+        <div class="book-title">포지셔닝</div>
+        <div class="book-author">잭 트라우트 & 앨 리스 / 안진환 역</div>
+      </div>
+      <div class="book-publisher" style="font-size:10px; color:var(--text-muted); display:flex; align-items:center; justify-content:center; text-align:center; padding: 0 8px; white-space:nowrap;">을유문화사</div>
+      <div></div>
+      <div class="check-cell">
+        <label class="custom-cb type-read">
+          <input type="checkbox" data-i="37" data-type="read">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-wip">
+          <input type="checkbox" data-i="37" data-type="wip">
+        </label>
+      </div>
+      <div class="check-cell">
+        <label class="custom-cb type-history">
+          <input type="checkbox" data-i="37" data-type="history">
+        </label>
+      </div>
+    </div>
     <div class="book-item" data-index="37">
       <div class="book-info">
         <div class="book-title">희랍어 시간</div>
@@ -1941,308 +1910,6 @@
 </div>
 
 <script>
-
-// ===== Firebase 태스크 CRUD =====
-var _taskModalMode = 'add';   // 'add' | 'edit'
-var _taskModalDate = '';
-var _taskModalId = '';
-var _taskModalEl = null;
-
-var taskTypeIcons = {
-  reading: '📖', korean: '✍️', study: '📝',
-  cover: '✏️', book: '📚', milestone: '🚩', study2: '💬'
-};
-
-function openTaskModal(mode, dateOrId, el) {
-  _taskModalMode = mode;
-  var overlay = document.getElementById('task-modal-overlay');
-  var title = document.getElementById('task-modal-title');
-  var inp = document.getElementById('task-modal-text');
-  var sel = document.getElementById('task-modal-type');
-  if (mode === 'add') {
-    _taskModalDate = dateOrId;
-    _taskModalId = '';
-    _taskModalEl = null;
-    title.textContent = '태스크 추가';
-    inp.value = '';
-    sel.value = 'reading';
-  } else {
-    _taskModalId = dateOrId;
-    _taskModalEl = el;
-    title.textContent = '태스크 편집';
-    var span = el.querySelector('span');
-    inp.value = span ? span.textContent : '';
-    sel.value = el.className.split(' ')[1] || 'reading';
-  }
-  overlay.classList.add('open');
-  setTimeout(function() { inp.focus(); }, 50);
-}
-
-function closeTaskModal() {
-  document.getElementById('task-modal-overlay').classList.remove('open');
-}
-
-function confirmTaskModal() {
-  var text = document.getElementById('task-modal-text').value.trim();
-  var type = document.getElementById('task-modal-type').value;
-  if (!text) return;
-  var icon = taskTypeIcons[type] || '';
-
-  if (_taskModalMode === 'add') {
-    var id = 'task_' + _taskModalDate + '_' + Date.now();
-    var taskData = { text: text, type: type, date: _taskModalDate, deleted: false, checked: false };
-    if (window.dbSync) {
-      window.dbSync('dailyTasks', id, taskData).then(function() {
-        renderFirebaseTask(id, taskData);
-      });
-    }
-  } else {
-    var taskData2 = { text: text, type: type };
-    if (window.dbSync) window.dbSync('dailyTasks', _taskModalId, taskData2);
-    if (_taskModalEl) {
-      _taskModalEl.className = 'task ' + type;
-      var sp = _taskModalEl.querySelector('span');
-      if (sp) sp.textContent = icon + ' ' + text;
-    }
-  }
-  closeTaskModal();
-}
-
-function renderFirebaseTask(id, data) {
-  if (data.deleted) return;
-  var date = data.date;
-  var card = document.querySelector('.day-card[data-date="' + date + '"]');
-  if (!card) return;
-  var tasks = card.querySelector('.tasks');
-  if (!tasks) return;
-  // 이미 있으면 업데이트
-  var existing = tasks.querySelector('[data-task-id="' + id + '"]');
-  var icon = taskTypeIcons[data.type] || '';
-  var html = '<span>' + icon + ' ' + data.text + '</span>'
-    + '<div class="task-btns">'
-    + '<button class="task-btn" onclick="event.stopPropagation(); openTaskModal('edit','' + id + '',this.closest('.task'))">✏️</button>'
-    + '<button class="task-btn" onclick="event.stopPropagation(); deleteTask('' + id + '',this.closest('.task'))">✕</button>'
-    + '</div>';
-  if (existing) {
-    existing.className = 'task ' + data.type + (data.checked ? ' done' : '');
-    existing.innerHTML = html;
-  } else {
-    var div = document.createElement('div');
-    div.className = 'task ' + data.type + (data.checked ? ' done' : '');
-    div.setAttribute('data-task-id', id);
-    div.setAttribute('draggable', 'true');
-    div.innerHTML = html;
-    div.onclick = function(e) {
-      if (e.target.classList.contains('task-btn')) return;
-      var checked = !div.classList.contains('done');
-      div.classList.toggle('done', checked);
-      if (window.dbSync) window.dbSync('dailyTasks', id, { checked: checked });
-    };
-    setupDrag(div, id);
-    tasks.appendChild(div);
-  }
-}
-
-function deleteTask(id, el) {
-  if (el) el.remove();
-  if (window.dbSync) window.dbSync('dailyTasks', id, { deleted: true });
-}
-
-// ===== 드래그앤드롭 =====
-var _dragId = null;
-var _dragEl = null;
-
-function setupDrag(el, id) {
-  el.addEventListener('dragstart', function(e) {
-    _dragId = id;
-    _dragEl = el;
-    e.dataTransfer.effectAllowed = 'move';
-    setTimeout(function() { el.style.opacity = '0.4'; }, 0);
-  });
-  el.addEventListener('dragend', function() {
-    el.style.opacity = '';
-    document.querySelectorAll('.day-card').forEach(function(c) {
-      c.classList.remove('drag-over');
-    });
-  });
-}
-
-function initDragDrop() {
-  document.querySelectorAll('.day-card').forEach(function(card) {
-    card.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      card.classList.add('drag-over');
-    });
-    card.addEventListener('dragleave', function() {
-      card.classList.remove('drag-over');
-    });
-    card.addEventListener('drop', function(e) {
-      e.preventDefault();
-      card.classList.remove('drag-over');
-      if (!_dragEl || !_dragId) return;
-      var newDate = card.getAttribute('data-date');
-      var tasks = card.querySelector('.tasks');
-      if (tasks && _dragEl) {
-        tasks.appendChild(_dragEl);
-        if (window.dbSync) window.dbSync('dailyTasks', _dragId, { date: newDate });
-      }
-    });
-  });
-}
-
-// ===== + 버튼 추가 =====
-function initAddButtons() {
-  document.querySelectorAll('.day-card').forEach(function(card) {
-    // 이미 있으면 skip
-    if (card.querySelector('.add-task-btn')) return;
-    var date = card.getAttribute('data-date');
-    if (!date) return;
-    var btn = document.createElement('button');
-    btn.className = 'add-task-btn';
-    btn.innerHTML = '+';
-    btn.title = '태스크 추가';
-    btn.onclick = function(e) {
-      e.stopPropagation();
-      openTaskModal('add', date);
-    };
-    card.style.position = 'relative';
-    card.appendChild(btn);
-  });
-}
-
-// ===== 기존 정적 태스크에 편집/삭제 버튼 달기 =====
-function initStaticTasks() {
-  document.querySelectorAll('.day-card').forEach(function(card) {
-    var date = card.getAttribute('data-date');
-    card.querySelectorAll('.task').forEach(function(t, idx) {
-      if (t.querySelector('.task-btns')) return; // 이미 처리됨
-      var id = 'static_' + date + '_' + idx;
-      t.setAttribute('data-task-id', id);
-      t.setAttribute('draggable', 'true');
-      var origText = t.textContent.trim();
-      t.innerHTML = '<span>' + origText + '</span>'
-        + '<div class="task-btns">'
-        + '<button class="task-btn" onclick="event.stopPropagation(); openTaskModal('edit','' + id + '',this.closest('.task'))">✏️</button>'
-        + '<button class="task-btn" onclick="event.stopPropagation(); deleteTask('' + id + '',this.closest('.task'))">✕</button>'
-        + '</div>';
-      t.onclick = function(e) {
-        if (e.target.classList.contains('task-btn')) return;
-        t.classList.toggle('done');
-        if (window.dbSync) window.dbSync('dailyTasks', id, {
-          checked: t.classList.contains('done'),
-          text: t.querySelector('span').textContent,
-          type: t.className.split(' ')[1],
-          date: date, deleted: false
-        });
-      };
-      setupDrag(t, id);
-    });
-  });
-}
-
-// ===== Firebase 독서 체크박스 동기화 =====
-function initFirebaseBookSync() {
-  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
-  // 체크박스 변경 시 Firebase에 저장
-  document.querySelectorAll('#book-list input[type="checkbox"]').forEach(function(cb) {
-    cb.addEventListener('change', function() {
-      var key = 'book_' + cb.dataset.i + '_' + cb.dataset.type;
-      if (window.dbSync) window.dbSync('syncData', key, { checked: cb.checked });
-    });
-  });
-  // Firestore에서 체크 상태 수신
-  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'syncData'), function(snap) {
-    snap.forEach(function(d) {
-      var key = d.id; // book_N_type
-      var parts = key.split('_');
-      if (parts[0] !== 'book') return;
-      var i = parts[1]; var type = parts[2];
-      var cb = document.querySelector('#book-list input[data-i="' + i + '"][data-type="' + type + '"]');
-      if (cb && d.data().checked !== undefined) {
-        cb.checked = d.data().checked;
-      }
-    });
-    updateBookStats();
-  });
-}
-
-// ===== Firebase 포모도로 동기화 =====
-function initFirebasePomoSync() {
-  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
-  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'pomoLogs'), function(snap) {
-    var todayKey = getKSTDateStr();
-    snap.forEach(function(d) {
-      if (d.id === todayKey) {
-        var data = d.data();
-        // localStorage도 업데이트해서 기존 로직과 호환
-        var log = loadPomoLog();
-        log[todayKey] = { sessions: data.sessions || 0, minutes: data.minutes || 0 };
-        savePomoLog(log);
-        pomoState.focusDone = (data.sessions || 0) % pomoConfig.sessions;
-        updateDisplay();
-      }
-    });
-    renderPomoLog();
-  });
-}
-
-// ===== Firebase dailyTasks 수신 =====
-function initFirebaseTaskSync() {
-  if (!window.fbOnSnapshot || !window.fbCollection || !window.fbDb) return;
-  window.fbOnSnapshot(window.fbCollection(window.fbDb, 'dailyTasks'), function(snap) {
-    snap.forEach(function(d) {
-      var id = d.id;
-      var data = d.data();
-      if (!data.deleted && id.startsWith('task_')) {
-        // Firebase에서 추가된 동적 태스크만 렌더
-        renderFirebaseTask(id, data);
-      }
-      // 삭제된 태스크 숨기기
-      if (data.deleted) {
-        var el = document.querySelector('[data-task-id="' + id + '"]');
-        if (el) el.remove();
-      }
-      // 체크 상태 반영
-      if (data.checked !== undefined) {
-        var el2 = document.querySelector('[data-task-id="' + id + '"]');
-        if (el2) el2.classList.toggle('done', data.checked);
-      }
-    });
-  });
-}
-
-// ===== 포모도로 Firebase 저장 오버라이드 =====
-// 기존 recordFocusDone 함수 래핑
-var _origRecordFocusDone = null;
-function wrapRecordFocusDone() {
-  if (typeof recordFocusDone === 'function') {
-    _origRecordFocusDone = recordFocusDone;
-    window.recordFocusDone = function() {
-      _origRecordFocusDone();
-      // Firebase에도 저장
-      var todayKey = getKSTDateStr();
-      var log = loadPomoLog();
-      var d = log[todayKey] || { sessions: 0, minutes: 0 };
-      if (window.dbSync) window.dbSync('pomoLogs', todayKey, d);
-    };
-  }
-}
-
-// ===== 초기화 =====
-window.addEventListener('firebase-ready', function() {
-  initFirebaseBookSync();
-  initFirebasePomoSync();
-  initFirebaseTaskSync();
-  wrapRecordFocusDone();
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-  initAddButtons();
-  initStaticTasks();
-  initDragDrop();
-});
-
-
 const books = [
   { title: "거짓말 게임", author: "조무원", publisher: "민음사" },
   { title: "계속해보겠습니다", author: "황정은", publisher: "창비" },
@@ -2250,6 +1917,7 @@ const books = [
   { title: "깻잎 투쟁기", author: "우춘희", publisher: "교양인" },
   { title: "나인", author: "천선란", publisher: "창비" },
   { title: "난장이가 쏘아올린 작은 공", author: "조세희", publisher: "이성의힘" },
+  { title: "댈러웨이 부인", author: "버지니아 울프", publisher: "솔" },
   { title: "도파민네이션", author: "애나 램키", publisher: "흐름출판" },
   { title: "돌이킬 수 있는", author: "문목하", publisher: "아작" },
   { title: "마음 가면", author: "브레네 브라운", publisher: "웅진지식하우스" },
@@ -2275,8 +1943,10 @@ const books = [
   { title: "지금 우리 곁의 쓰레기", author: "홍수열", publisher: "슬로비" },
   { title: "진짜 게으른 사람이 쓴 게으름 탈출법", author: "지이", publisher: "마인드빌딩" },
   { title: "촉진하는 밤", author: "김소연", publisher: "문학과지성사" },
+  { title: "컬티시 — 광신의 언어학", author: "어맨다 몬텔", publisher: "아르테" },
   { title: "트릭 미러", author: "지아 톨렌티노", publisher: "생각의힘" },
   { title: "편집자란 무엇인가", author: "김학원", publisher: "휴머니스트" },
+  { title: "포지셔닝", author: "잭 트라우트 & 앨 리스 / 안진환 역", publisher: "을유문화사" },
   { title: "희랍어 시간", author: "한강", publisher: "문학동네" },
 ];
 
@@ -2410,8 +2080,6 @@ function initBookChecks() {
         s[k] = this.checked;
         saveBookState(s);
         updateBookStats();
-        // Firebase 동기화
-        if (window.dbSync) window.dbSync('syncData', 'book_' + cb.dataset.i + '_' + cb.dataset.type, { checked: cb.checked });
       });
     });
   });
@@ -2421,42 +2089,27 @@ function initBookChecks() {
 
 
 // ===== 포모도로 타이머 =====
-var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 9, interval: 3 };
+var pomoConfig = { focus: 50, breakT: 10, longBreak: 30, sessions: 6, interval: 3 };
 var pomoState = { mode: 'focus', running: false, timeLeft: 50*60, session: 0, focusDone: 0, endTime: null };
 var pomoTimer = null;
 
 function beep(type) {
   try {
     var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (type === 'start') {
-      // 집중 시작: 낮은 단음 한 번 (둔탁하게)
-      var osc = ctx.createOscillator();
-      var gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = 440;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(0.4, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.55);
-    } else {
-      // 휴식 시작(end): 높은 3연음 (경쾌하게)
-      var freqs = [880, 1100, 1320];
-      for (var i = 0; i < 3; i++) {
-        (function(idx) {
-          var osc = ctx.createOscillator();
-          var gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.frequency.value = freqs[idx];
-          osc.type = 'sine';
-          gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.2);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.2 + 0.15);
-          osc.start(ctx.currentTime + idx * 0.2);
-          osc.stop(ctx.currentTime + idx * 0.2 + 0.18);
-        })(i);
-      }
+    var count = type === 'end' ? 3 : 1;
+    for (var i = 0; i < count; i++) {
+      (function(idx) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.3, ctx.currentTime + idx * 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.35 + 0.2);
+        osc.start(ctx.currentTime + idx * 0.35);
+        osc.stop(ctx.currentTime + idx * 0.35 + 0.25);
+      })(i);
     }
   } catch(e) {}
 }
@@ -2490,9 +2143,8 @@ function updateDisplay() {
   var status = document.getElementById('pomo-status');
   if (status) {
     var modeLabel = pomoState.mode === 'focus' ? '집중' : (pomoState.mode === 'break' ? '휴식' : '긴 휴식');
-    var currentSession = (pomoState.mode === 'focus' && pomoState.running) ? pomoState.focusDone + 1 : pomoState.focusDone;
     status.textContent = modeLabel + ' ' + (pomoState.running ? '중' : '준비') +
-      ' · ' + currentSession + '/' + pomoConfig.sessions + ' 세션';
+      ' · ' + (pomoState.focusDone) + '/' + pomoConfig.sessions + ' 세션';
   }
 
   // 탭 활성화
@@ -2990,26 +2642,5 @@ window.addEventListener('DOMContentLoaded', function() {
   </div>
 </div>
 </div>
-
-<!-- 태스크 추가/편집 모달 -->
-<div id="task-modal-overlay" class="task-modal-overlay">
-  <div class="task-modal">
-    <h3 id="task-modal-title">태스크 추가</h3>
-    <input id="task-modal-text" type="text" placeholder="태스크 내용 입력" />
-    <select id="task-modal-type">
-      <option value="reading">📖 독서이력서</option>
-      <option value="korean">✍️ 한국어</option>
-      <option value="study">📝 칼럼/공부</option>
-      <option value="cover">✏️ 자소서</option>
-      <option value="book">📚 책읽기</option>
-      <option value="milestone">🚩 마일스톤</option>
-    </select>
-    <div class="task-modal-btns">
-      <button onclick="closeTaskModal()">취소</button>
-      <button class="btn-confirm" onclick="confirmTaskModal()">확인</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
