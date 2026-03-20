@@ -2330,11 +2330,21 @@ function initFbBookSync() {
           }
         });
       }
+      function applySnapAndUpdate() {
+        applySnap();
+        // Firebase 태스크 반영 후 계획/실행합계 재계산
+        setTimeout(function() {
+          document.querySelectorAll('.day-card').forEach(function(card) {
+            updatePlanTotal(card);
+            updateExecTotal(card);
+          });
+        }, 100);
+      }
       // initTaskChecks 완료 보장을 위해 약간 지연
       if (document.readyState === 'complete') {
-        applySnap();
+        applySnapAndUpdate();
       } else {
-        window.addEventListener('load', applySnap);
+        window.addEventListener('load', applySnapAndUpdate);
       }
     });
   });
