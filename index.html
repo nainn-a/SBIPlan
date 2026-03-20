@@ -2007,7 +2007,8 @@ function openTaskModal(btnOrEl, editId) {
         inp.value = clone.textContent.trim();
       }
       var cls = Array.from(_tModal.el.classList).find(function(c){ return c !== 'task' && c !== 'done'; });
-    sel.value = cls || 'reading';
+      sel.value = cls || 'reading';
+    }
   } else {
     // 추가 모드
     _tModal.mode = 'add';
