@@ -1,370 +1,292 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>출판학교 준비 계획표 - 실시간 동기화</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #f5f3ef; --surface: #ffffff; --surface2: #f0ede8; --border: #e2ddd6;
-            --text: #2a2724; --text-muted: #7a7570; --text-dim: #b0aba4;
-            --accent: #a07840; --accent2: #4a8c62; --accent3: #8c4f65; --accent4: #4a7a9c;
-            --red: #a04840; --today: #a0784015;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; padding: 40px 24px; }
-        
-        .container { max-width: 900px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        h1 { font-family: 'Noto Serif KR', serif; font-size: 32px; font-weight: 600; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>출판학교 준비 계획표 - 완벽 동기화</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef; --surface: #ffffff; --surface2: #f0ede8; --border: #e2ddd6;
+    --text: #2a2724; --text-muted: #7a7570; --text-dim: #b0aba4;
+    --accent: #a07840; --accent2: #4a8c62; --accent3: #8c4f65; --accent4: #4a7a9c;
+    --red: #a04840; --today: #a0784015;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; padding: 40px 24px; font-weight: 300; }
+  .container { max-width: 900px; margin: 0 auto; }
+  
+  /* 섹션 공통 */
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; }
+  
+  /* 타이머 */
+  #pomo-display { font-size: 52px; font-weight: 300; text-align: center; margin: 20px 0; font-variant-numeric: tabular-nums; }
+  .pomo-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+  .pomo-tab { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 11px; }
+  .pomo-tab.active { background: var(--surface2); font-weight: 600; }
+  .btn { padding: 10px 24px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 13px; }
+  .btn-primary { background: #5a4a3a; color: white; border: none; }
+  
+  /* 진행바 */
+  .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; margin-bottom: 15px; }
+  .progress-bar-fill { height: 100%; width: 0%; transition: width 0.6s ease; }
 
-        /* 섹션 공통 */
-        .section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+  /* 캘린더 */
+  .week-label { font-size: 11px; color: var(--text-dim); margin-bottom: 10px; letter-spacing: 1px; font-weight: 600; }
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
+  .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; min-height: 180px; cursor: pointer; position: relative; }
+  .day-card.today { border: 3px solid #7a9ab5; background: #f0f7ff; }
+  .day-date { font-size: 18px; font-family: 'Noto Serif KR'; font-weight: 600; }
+  
+  /* 태스크 스타일 */
+  .task { font-size: 10px; padding: 4px 6px; border-radius: 4px; margin-top: 4px; cursor: pointer; display: flex; align-items: flex-start; gap: 3px; }
+  .task.done { opacity: 0.3; text-decoration: line-through; }
+  .task.reading { background: #a0784012; border-left: 2px solid var(--accent); color: #7a5c2e; }
+  .task.korean { background: #4a8c6212; border-left: 2px solid var(--accent2); color: #366a4a; }
+  .task.study { background: #4a7a9c12; border-left: 2px solid var(--accent4); color: #365e78; }
+  .task.cover { background: #8c4f6512; border-left: 2px solid var(--accent3); color: #6e3a50; }
+  .task.milestone { background: #a0484012; border-left: 2px solid var(--red); color: var(--red); font-weight: 600; }
 
-        /* 포모도로 타이머 */
-        #pomo-display { font-size: 64px; font-weight: 300; margin: 20px 0; text-align: center; font-variant-numeric: tabular-nums; }
-        .pomo-btns { display: flex; justify-content: center; gap: 10px; }
-        .btn { padding: 10px 24px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 14px; transition: 0.2s; }
-        .btn-primary { background: #5a4a3a; color: white; border: none; }
-        .pomo-log-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+  /* 독서 리스트 컬럼 순서: 제목 - 출판사 - 읽음 - 진행 - 완성 */
+  .col-labels, .book-item { display: grid; grid-template-columns: 2.5fr 1fr 60px 60px 60px; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+  .col-label { font-size: 10px; color: var(--text-dim); text-align: center; font-weight: 600; }
+  .memo-badge { position: absolute; top: 5px; right: 5px; background: #7a9ab5; color: white; font-size: 9px; padding: 1px 5px; border-radius: 10px; }
 
-        /* 진행 바 (가로형) */
-        .progress-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px; color: var(--text-muted); }
-        .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 10px; overflow: hidden; margin-bottom: 16px; }
-        .progress-bar-fill { height: 100%; width: 0%; transition: width 0.6s cubic-bezier(0.1, 0, 0, 1); }
-
-        /* 캘린더 그리드 */
-        .week-label { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-bottom: 10px; letter-spacing: 1px; }
-        .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px; }
-        .day-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; min-height: 160px; cursor: pointer; position: relative; }
-        .day-card.today { border: 3px solid #7a9ab5; background: #f0f7ff; }
-        .day-date { font-size: 18px; font-family: 'Noto Serif KR'; font-weight: 600; }
-        .day-of-week { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
-        
-        /* 태스크 */
-        .task { font-size: 10px; padding: 4px 6px; border-radius: 4px; margin-top: 4px; cursor: pointer; transition: 0.2s; }
-        .task.done { opacity: 0.3; text-decoration: line-through; }
-        .task.reading { background: #a0784012; border-left: 2px solid var(--accent); color: #7a5c2e; }
-        .task.korean { background: #4a8c6212; border-left: 2px solid var(--accent2); color: #366a4a; }
-        .task.study { background: #4a7a9c12; border-left: 2px solid var(--accent4); color: #365e78; }
-        .task.cover { background: #8c4f6512; border-left: 2px solid var(--accent3); color: #6e3a50; }
-
-        /* 독서 리스트 테이블 */
-        .book-table-container { overflow-x: auto; }
-        .col-labels, .book-item { display: grid; grid-template-columns: 2.5fr 1.2fr 60px 60px 60px; gap: 10px; align-items: center; padding: 12px; border-bottom: 1px solid #eee; min-width: 600px; }
-        .col-label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-align: center; }
-        .book-title { font-size: 13px; font-weight: 500; }
-        .book-publisher { font-size: 11px; color: var(--text-muted); text-align: center; }
-        .check-cell { display: flex; justify-content: center; }
-        .book-item.all-done { opacity: 0.4; background: #f9f9f9; }
-
-        /* 메모 배지 */
-        .memo-badge { position: absolute; top: 6px; right: 6px; background: #7a9ab5; color: white; font-size: 9px; padding: 2px 6px; border-radius: 10px; }
-
-        /* 모달 */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
-        .modal-content { background: white; padding: 24px; border-radius: 12px; width: 90%; max-width: 400px; }
-        .memo-list-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 4px 0; border-bottom: 1px dotted #ddd; }
-
-        @media (max-width: 700px) {
-            .week-grid { grid-template-columns: repeat(2, 1fr); }
-            .col-labels, .book-item { grid-template-columns: 1.5fr 1fr 50px 50px 50px; }
-        }
-    </style>
+  @media (max-width: 700px) {
+    .week-grid { grid-template-columns: repeat(2, 1fr); }
+    .col-labels, .book-item { grid-template-columns: 2fr 1fr 50px 50px 50px; }
+  }
+</style>
 </head>
 <body>
-
 <div class="container">
-    <header>
-        <h1>출판학교 준비 계획표</h1>
-        <p style="color:var(--text-muted); margin-top:8px;">2026. 3. 2 — 3. 25 · 실시간 동기화 시스템</p>
-    </header>
+<header style="text-align:center; margin: 40px 0;">
+  <h1 style="font-family:'Noto Serif KR'; font-size:36px;">출판학교 준비</h1>
+  <p style="color:var(--text-muted); margin-top:8px;">2026. 03. 02 — 03. 30</p>
+</header>
 
-    <!-- 포모도로 -->
-    <section class="section">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 style="font-family:'Noto Serif KR'; font-size:20px;">🍅 포모도로 타이머</h2>
-            <div id="pomo-clock" style="font-size:14px; color:var(--text-muted);">00:00</div>
-        </div>
-        <div id="pomo-display">50:00</div>
-        <div class="pomo-btns">
-            <button id="pomo-start" class="btn btn-primary">시작</button>
-            <button id="pomo-reset" class="btn">리셋</button>
-        </div>
-        <div id="pomo-log-container" style="margin-top:24px; border-top:1px solid #eee; padding-top:16px;">
-            <div style="font-size:11px; color:var(--text-dim); margin-bottom:10px; letter-spacing:1px;">DAILY LOG</div>
-            <div id="pomo-log-list"></div>
-        </div>
-    </section>
+<!-- 포모도로 -->
+<section class="section">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h2 style="font-family:'Noto Serif KR'; font-size:22px;">🍅 포모도로 타이머</h2>
+    <div id="pomo-clock" style="font-size:14px; color:var(--text-muted);">00:00:00</div>
+  </div>
+  <div class="pomo-tabs">
+    <button class="pomo-tab active" data-mode="focus">집중</button>
+    <button class="pomo-tab" data-mode="break">휴식</button>
+    <button class="pomo-tab" data-mode="long">긴 휴식</button>
+  </div>
+  <div id="pomo-display">50:00</div>
+  <div style="display:flex; justify-content:center; gap:12px;">
+    <button id="pomo-start" class="btn btn-primary" style="width:120px;">시작</button>
+    <button id="pomo-reset" class="btn">리셋</button>
+  </div>
+  <div style="margin-top:24px; border-top:1px solid #eee; padding-top:16px;">
+    <div style="font-size:11px; color:var(--text-dim); margin-bottom:12px; letter-spacing:1px;">DAILY LOG</div>
+    <div id="pomo-log-list" style="max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;"></div>
+  </div>
+</section>
 
-    <!-- 진행 상황 (가로 바) -->
-    <section class="section">
-        <h2 style="font-family:'Noto Serif KR'; font-size:18px; margin-bottom:16px;">📊 목표 달성률</h2>
-        <div class="progress-label"><span>📖 독서 완료 (읽음)</span><span id="txt-read">0 / 34</span></div>
-        <div class="progress-bar-wrap"><div id="bar-read" class="progress-bar-fill" style="background:var(--accent2);"></div></div>
-        
-        <div class="progress-label"><span>🏆 이력서 완성 (최종)</span><span id="txt-hist">0 / 34</span></div>
-        <div class="progress-bar-wrap"><div id="bar-hist" class="progress-bar-fill" style="background:var(--accent3);"></div></div>
-    </section>
+<!-- 진행바 -->
+<section class="section">
+  <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+    <span>📖 독서 이력서 (읽음)</span><span id="txt-read">0 / 34</span>
+  </div>
+  <div class="progress-bar-wrap"><div id="bar-read" class="progress-bar-fill" style="background:var(--accent2);"></div></div>
+  <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px; margin-top:15px;">
+    <span>🏆 이력서 완성 (최종)</span><span id="txt-hist">0 / 34</span>
+  </div>
+  <div class="progress-bar-wrap"><div id="bar-hist" class="progress-bar-fill" style="background:var(--accent3);"></div></div>
+</section>
+<div id="calendar-root">
+  <!-- 1주차 -->
+  <div class="week-label">WEEK 01 (3/2 - 3/8)</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0302"><div class="day-date">02</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 한국어</div><div class="task study">📡 칼럼분석①</div></div></div>
+    <div class="day-card" data-date="0303"><div class="day-date">03</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서</div><div class="task korean">✍️ 한국어</div></div></div>
+    <div class="day-card" data-date="0304"><div class="day-date">04</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서</div><div class="task study">💬 피드백</div></div></div>
+    <div class="day-card" data-date="0305"><div class="day-date">05</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task korean">✍️ 한국어</div></div></div>
+    <div class="day-card" data-date="0306"><div class="day-date">06</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📝 과제제출</div></div></div>
+    <div class="day-card" data-date="0307"><div class="day-date" style="color:#4a7ab5;">07</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📤 칼럼제출</div></div></div>
+    <div class="day-card" data-date="0308"><div class="day-date" style="color:#c04848;">08</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task cover">✏️ 자소서</div></div></div>
+  </div>
 
-    <!-- 캘린더 (누락된 모든 날짜 포함) -->
-    <div id="calendar-root">
-        <!-- 1주차 -->
-        <div class="week-label">WEEK 01 (3/2 - 3/8)</div>
-        <div class="week-grid">
-            <div class="day-card" data-date="0302"><div class="day-date">02</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 한국어</div><div class="task study">📡 칼럼분석</div></div></div>
-            <div class="day-card" data-date="0303"><div class="day-date">03</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서</div></div></div>
-            <div class="day-card" data-date="0304"><div class="day-date">04</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">💬 칼럼피드백</div></div></div>
-            <div class="day-card" data-date="0305"><div class="day-date">05</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task korean">✍️ 한국어</div></div></div>
-            <div class="day-card" data-date="0306"><div class="day-date">06</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서</div></div></div>
-            <div class="day-card" data-date="0307"><div class="day-date" style="color:#4a7ab5;">07</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task study">📤 칼럼제출</div></div></div>
-            <div class="day-card" data-date="0308"><div class="day-date" style="color:#c04848;">08</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
-        </div>
-        <!-- 2주차 -->
-        <div class="week-label">WEEK 02 (3/9 - 3/15)</div>
-        <div class="week-grid">
-            <div class="day-card" data-date="0309"><div class="day-date">09</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📡 칼럼분석</div></div></div>
-            <div class="day-card" data-date="0310"><div class="day-date">10</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 한국어</div></div></div>
-            <div class="day-card" data-date="0311"><div class="day-date">11</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📝 칼럼제출</div></div></div>
-            <div class="day-card" data-date="0312"><div class="day-date">12</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task cover">✏️ 자소서</div></div></div>
-            <div class="day-card" data-date="0313"><div class="day-date">13</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 한국어</div></div></div>
-            <div class="day-card" data-date="0314"><div class="day-date" style="color:#4a7ab5;">14</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task study">📤 칼럼제출</div></div></div>
-            <div class="day-card" data-date="0315"><div class="day-date" style="color:#c04848;">15</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
-        </div>
-        <!-- 3-4주차 생략 로직은 script에서 처리하거나 HTML 추가 가능 -->
-    </div>
+  <!-- 2주차 -->
+  <div class="week-label">WEEK 02 (3/9 - 3/15)</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0309"><div class="day-date">09</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📡 칼럼분석①</div></div></div>
+    <div class="day-card" data-date="0310"><div class="day-date">10</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 어법특강</div></div></div>
+    <div class="day-card" data-date="0311"><div class="day-date">11</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📝 칼럼제출</div></div></div>
+    <div class="day-card" data-date="0312"><div class="day-date">12</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task cover">✏️ 자소서</div></div></div>
+    <div class="day-card" data-date="0313"><div class="day-date">13</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task korean">✍️ 어법특강</div></div></div>
+    <div class="day-card" data-date="0314"><div class="day-date" style="color:#4a7ab5;">14</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📤 칼럼제출</div></div></div>
+    <div class="day-card" data-date="0315"><div class="day-date" style="color:#c04848;">15</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div></div></div>
+  </div>
 
-    <!-- 독서 리스트 (헤더 복원) -->
-    <section class="section book-table-container">
-        <h2 style="font-family:'Noto Serif KR'; font-size:18px; margin-bottom:16px;">📚 독서이력서 리스트 (34권)</h2>
-        <div class="col-labels">
-            <div class="col-label" style="text-align:left;">제목 / 저자</div>
-            <div class="col-label">출판사</div>
-            <div></div>
-            <div class="col-label">읽음</div>
-            <div class="col-label">진행</div>
-            <div class="col-label">완성</div>
-        </div>
-        <div id="book-list-root"></div>
-    </section>
+  <!-- 3주차 -->
+  <div class="week-label">WEEK 03 (3/16 - 3/22)</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0316"><div class="day-date">16</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📡 화상강의</div></div></div>
+    <div class="day-card" data-date="0317"><div class="day-date">17</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서집중</div></div></div>
+    <div class="day-card" data-date="0318"><div class="day-date">18</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task cover">✏️ 자소서항목</div></div></div>
+    <div class="day-card" data-date="0319"><div class="day-date">19</div><div class="day-of-week">Thu</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task study">💬 칼럼피드백</div></div></div>
+    <div class="day-card" data-date="0320"><div class="day-date">20</div><div class="day-of-week">Fri</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task milestone">🚩 마감임박</div></div></div>
+    <div class="day-card" data-date="0321"><div class="day-date" style="color:#4a7ab5;">21</div><div class="day-of-week">Sat</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task study">📤 과제제출</div></div></div>
+    <div class="day-card" data-date="0322"><div class="day-date" style="color:#c04848;">22</div><div class="day-of-week">Sun</div><div class="tasks"><div class="task reading">📖 이력서 3권</div><div class="task milestone">🚩 전체검토</div></div></div>
+  </div>
+
+  <!-- 4주차 -->
+  <div class="week-label">WEEK 04 (3/23 - 3/30)</div>
+  <div class="week-grid">
+    <div class="day-card" data-date="0323"><div class="day-date">23</div><div class="day-of-week">Mon</div><div class="tasks"><div class="task reading">📖 이력서 2권</div><div class="task milestone">🏁 완주 목표</div></div></div>
+    <div class="day-card" data-date="0324"><div class="day-date">24</div><div class="day-of-week">Tue</div><div class="tasks"><div class="task milestone">🏁 이력서 끝!</div><div class="task cover">✏️ 자소서마감</div></div></div>
+    <div class="day-card" data-date="0325"><div class="day-date">25</div><div class="day-of-week">Wed</div><div class="tasks"><div class="task milestone">🚀 최종제출</div></div></div>
+    <div class="day-card" data-date="0326"><div class="day-date">26</div><div class="day-of-week">Thu</div><div class="tasks"></div></div>
+    <div class="day-card" data-date="0327"><div class="day-date">27</div><div class="day-of-week">Fri</div><div class="tasks"></div></div>
+    <div class="day-card" data-date="0328"><div class="day-date">28</div><div class="day-of-week">Sat</div><div class="tasks"></div></div>
+    <div class="day-card" data-date="0329"><div class="day-date">29</div><div class="day-of-week">Sun</div><div class="tasks"></div></div>
+  </div>
 </div>
+<section class="section">
+  <h2 style="font-family:'Noto Serif KR'; font-size:18px; margin-bottom:16px;">📚 독서 이력서 리스트 (34권)</h2>
+  <div class="col-labels">
+    <div class="col-label" style="text-align:left;">제목 / 저자</div>
+    <div class="col-label">출판사</div>
+    <div class="col-label">읽음</div>
+    <div class="col-label">진행</div>
+    <div class="col-label">완성</div>
+  </div>
+  <div id="book-list-root"></div>
+</section>
 
 <!-- 메모 모달 -->
-<div id="memo-overlay" class="modal-overlay">
-    <div class="modal-content">
-        <h3 id="memo-title" style="font-family:'Noto Serif KR'; margin-bottom:16px;">날짜 메모</h3>
-        <div id="memo-list" style="margin-bottom:16px; max-height:250px; overflow-y:auto;"></div>
-        <div style="display:flex; gap:8px;">
-            <input id="memo-input" type="text" placeholder="항목 추가..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px;">
-            <button id="memo-add-btn" class="btn btn-primary">추가</button>
-        </div>
-        <button onclick="document.getElementById('memo-overlay').style.display='none'" class="btn" style="width:100%; margin-top:12px;">닫기</button>
+<div id="memo-overlay" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center;">
+  <div style="background:white; padding:24px; border-radius:12px; width:90%; max-width:400px;">
+    <h3 id="memo-title" style="margin-bottom:15px; font-family:'Noto Serif KR';">메모</h3>
+    <div id="memo-items" style="margin-bottom:15px; max-height:200px; overflow-y:auto;"></div>
+    <div style="display:flex; gap:8px;">
+      <input id="memo-input" type="text" placeholder="항목 추가..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:8px;">
+      <button id="memo-add-btn" class="btn btn-primary">추가</button>
     </div>
+    <button onclick="document.getElementById('memo-overlay').style.display='none'" class="btn" style="width:100%; margin-top:10px;">닫기</button>
+  </div>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot, collection, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 1. Firebase 설정 (제공해주신 키 사용)
-    const firebaseConfig = {
-        apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
-        authDomain: "glittery-ganache.firebaseapp.com",
-        projectId: "glittery-ganache",
-        storageBucket: "glittery-ganache.firebasestorage.app",
-        messagingSenderId: "105377509245",
-        appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBdwU3wL6Ks4SV5YCQPMOENpXrMt8iUSrg",
+    authDomain: "glittery-ganache.firebaseapp.com",
+    projectId: "glittery-ganache",
+    storageBucket: "glittery-ganache.firebasestorage.app",
+    messagingSenderId: "105377509245",
+    appId: "1:105377509245:web:e4a2ee0f048cb7e4bde614"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    // 공통 동기화 함수
-    window.dbSync = async (col, id, data) => {
-        await setDoc(doc(db, col, id), data, { merge: true });
-    };
-    window.dbDel = async (col, id) => { await deleteDoc(doc(db, col, id)); };
+  window.dbSync = async (col, id, data) => await setDoc(doc(db, col, id), data, { merge: true });
+  window.dbDel = async (col, id) => await deleteDoc(doc(db, col, id));
 
-    // 2. 데이터 및 초기화
-    const bookData = [
-        {title:"거짓말 게임", author:"조무원", pub:"민음사"}, {title:"계속해보겠습니다", author:"황정은", pub:"창비"},
-        {title:"공정하다는 착각", author:"마이클 샌델", pub:"동아시아"}, {title:"깻잎 투쟁기", author:"우춘희", pub:"교양인"},
-        {title:"나인", author:"천선란", pub:"창비"}, {title:"난장이가 쏘아올린 작은 공", author:"조세희", pub:"이성의힘"},
-        {title:"도파민네이션", author:"애나 램키", pub:"흐름출판"}, {title:"돌이킬 수 있는", author:"문목하", pub:"아작"},
-        {title:"마음 가면", author:"브레네 브라운", pub:"웅진지식하우스"}, {title:"매끄러운 세계와 그 적들", author:"한나 렌", pub:"엘리"},
-        {title:"물욕의 세계", author:"누누 칼러", pub:"현암사"}, {title:"병원탐험기", author:"최준혁", pub:"고트"},
-        {title:"빨간 구두 꺼져!", author:"코니 윌리스", pub:"아작"}, {title:"사라진 세계", author:"톰 스웨터리치", pub:"허블"},
-        {title:"사람, 장소, 환대", author:"김현경", pub:"문학과지성사"}, {title:"세상은 이야기로 만들어졌다", author:"원더박스", pub:"원더박스"},
-        {title:"소설은 어떻게 작동하는가", author:"제임스 우드", pub:"창비"}, {title:"시녀 이야기", author:"마거릿 애트우드", pub:"황금가지"},
-        {title:"암컷들", author:"루시 쿡", pub:"웅진지식하우스"}, {title:"어린이라는 세계", author:"김소영", pub:"사계절"},
-        {title:"위대한 개츠비", author:"피츠제럴드", pub:"문학동네"}, {title:"음악의 사물들", author:"신예슬", pub:"워크룸프레스"},
-        {title:"이반 일리치의 죽음", author:"톨스토이", pub:"현대지성"}, {title:"이방인", author:"카뮈", pub:"민음사"},
-        {title:"인공지능은 나의 읽기쓰기를", author:"김성우", pub:"유유"}, {title:"자연에 이름 붙이기", author:"캐럴 계속 윤", pub:"윌북"},
-        {title:"절창", author:"구병모", pub:"문학동네"}, {title:"지구 생물체는 항복하라", author:"정보라", pub:"래빗홀"},
-        {title:"지금 우리 곁의 쓰레기", author:"홍수열", pub:"슬로비"}, {title:"진짜 게으른 사람", author:"지이", pub:"마인드빌딩"},
-        {title:"촉진하는 밤", author:"김소연", pub:"문학과지성사"}, {title:"트릭 미러", author:"지아 톨렌티노", pub:"생각의힘"},
-        {title:"편집자란 무엇인가", author:"김학원", pub:"휴머니스트"}, {title:"희랍어 시간", author:"한강", pub:"문학동네"}
-    ];
+  const books = [
+    {t:"거짓말 게임", a:"조무원", p:"민음사"}, {t:"계속해보겠습니다", a:"황정은", p:"창비"}, {t:"공정하다는 착각", a:"마이클 샌델", p:"동아시아"}, {t:"깻잎 투쟁기", a:"우춘희", p:"교양인"}, {t:"나인", a:"천선란", p:"창비"}, {t:"난장이가 쏘아올린 작은 공", a:"조세희", p:"이성의힘"}, {t:"도파민네이션", a:"애나 램키", p:"흐름출판"}, {t:"돌이킬 수 있는", a:"문목하", p:"아작"}, {t:"마음 가면", a:"브레네 브라운", p:"웅진지식하우스"}, {t:"매끄러운 세계와 그 적들", a:"한나 렌", p:"엘리"}, {t:"물욕의 세계", a:"누누 칼러", p:"현암사"}, {t:"병원탐험기", a:"최준혁", p:"고트"}, {t:"빨간 구두 꺼져!", a:"코니 윌리스", p:"아작"}, {t:"사라진 세계", a:"톰 스웨터리치", p:"허블"}, {t:"사람, 장소, 환대", a:"김현경", p:"문지"}, {t:"세상은 이야기로 만들어졌다", a:"원더박스", p:"원더박스"}, {t:"소설은 어떻게 작동하는가", a:"제임스 우드", p:"창비"}, {t:"시녀 이야기", a:"마거릿 애트우드", p:"황금가지"}, {t:"암컷들", a:"루시 쿡", p:"웅진"}, {t:"어린이라는 세계", a:"김소영", p:"사계절"}, {t:"위대한 개츠비", a:"피츠제럴드", p:"문학동네"}, {t:"음악의 사물들", a:"신예슬", p:"워크룸"}, {t:"이반 일리치의 죽음", a:"톨스토이", p:"현대지성"}, {t:"이방인", a:"카뮈", p:"민음사"}, {t:"인공지능은 나의 읽기쓰기를", a:"김성우", p:"유유"}, {t:"자연에 이름 붙이기", author:"캐럴 계속 윤", p:"윌북"}, {t:"절창", a:"구병모", p:"문학동네"}, {t:"지구 생물체는 항복하라", a:"정보라", p:"래빗홀"}, {t:"지금 우리 곁의 쓰레기", a:"홍수열", p:"슬로비"}, {t:"진짜 게으른 사람", a:"지이", p:"마인드빌딩"}, {t:"촉진하는 밤", a:"김소연", p:"문지"}, {t:"트릭 미러", a:"지아 톨렌티노", p:"생각의힘"}, {t:"편집자란 무엇인가", a:"김학원", p:"휴머니스트"}, {t:"희랍어 시간", a:"한강", p:"문학동네"}
+  ];
 
-    // 3. UI 렌더링 및 기능
-    function init() {
-        const bookRoot = document.getElementById('book-list-root');
-        bookData.forEach((b, i) => {
-            const item = document.createElement('div');
-            item.className = 'book-item';
-            item.innerHTML = `
-                <div class="book-info"><div class="book-title">${b.title}</div><div style="font-size:10px;color:#999">${b.author}</div></div>
-                <div class="book-publisher">${b.pub}</div><div></div>
-                <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked: this.checked})"></div>
-                <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked: this.checked})"></div>
-                <div class="check-cell"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked: this.checked})"></div>
-            `;
-            bookRoot.appendChild(item);
-        });
-
-        // 태스크 ID 부여
-        document.querySelectorAll('.day-card').forEach(card => {
-            const date = card.dataset.date;
-            card.querySelectorAll('.task').forEach((task, idx) => {
-                const id = `task_${date}_${idx}`;
-                task.dataset.taskId = id;
-                task.onclick = () => {
-                    const isDone = !task.classList.contains('done');
-                    window.dbSync('syncData', id, {checked: isDone});
-                };
-            });
-            // 일별 블록 클릭 시 메모 열기
-            card.addEventListener('click', (e) => {
-                if(e.target.classList.contains('task')) return;
-                openMemo(date);
-            });
-        });
-    }
-
-    // 4. 동기화 리스너
-    onSnapshot(collection(db, "syncData"), (snap) => {
-        snap.docChanges().forEach(change => {
-            const id = change.doc.id;
-            const data = change.doc.data();
-            const el = document.querySelector(`[data-task-id="${id}"]`) || document.querySelector(`input[data-sync-id="${id}"]`);
-            if(el) {
-                if(el.type === 'checkbox') el.checked = data.checked;
-                else data.checked ? el.classList.add('done') : el.classList.remove('done');
-            }
-        });
-        updateProgress();
+  window.onload = async () => {
+    const root = document.getElementById('book-list-root');
+    books.forEach((b, i) => {
+      const item = document.createElement('div');
+      item.className = 'book-item';
+      item.innerHTML = `<div style="font-size:12px;font-weight:500;">${b.t}<div style="font-size:10px;color:#999">${b.a}</div></div><div style="font-size:11px;text-align:center;color:#666">${b.p}</div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_read" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_wip" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div><div style="display:flex;justify-content:center"><input type="checkbox" data-sync-id="book_${i}_hist" onchange="window.dbSync('syncData', this.dataset.syncId, {checked:this.checked})"></div>`;
+      root.appendChild(item);
     });
 
-    onSnapshot(collection(db, "pomoLogs"), (snap) => {
-        const list = document.getElementById('pomo-log-list');
-        list.innerHTML = '';
-        snap.forEach(doc => {
-            const d = doc.data();
-            list.innerHTML += `<div class="pomo-log-item"><span>📅 ${doc.id}</span> <span>🍅 ${d.sessions} 세션</span></div>`;
-        });
+    document.querySelectorAll('.day-card').forEach(card => {
+      const date = card.dataset.date;
+      card.querySelectorAll('.task').forEach((task, idx) => {
+        task.dataset.taskId = `task_${date}_${idx}`;
+        task.onclick = () => window.dbSync('syncData', task.dataset.taskId, {checked:!task.classList.contains('done')});
+      });
+      card.onclick = (e) => { if(!e.target.closest('.task')) openMemo(date); };
     });
 
-    onSnapshot(collection(db, "dayMemos"), (snap) => {
-        updateMemoBadges(snap);
-        if(window.currentDate) renderMemos(window.currentDate, snap);
+    // 마이그레이션 로직 (기존 로컬스토리지 로그 복구)
+    const localLogs = JSON.parse(localStorage.getItem('pomo_log_v1') || '{}');
+    for (const [date, data] of Object.entries(localLogs)) await window.dbSync('pomoLogs', date, data);
+  };
+
+  onSnapshot(collection(db, "syncData"), (snap) => {
+    snap.docChanges().forEach(c => {
+      const d = c.doc.data(), id = c.doc.id;
+      const el = document.querySelector(`[data-task-id="${id}"]`) || document.querySelector(`input[data-sync-id="${id}"]`);
+      if(el) el.type === 'checkbox' ? el.checked = d.checked : (d.checked ? el.classList.add('done') : el.classList.remove('done'));
     });
+    const total = 34;
+    const r = document.querySelectorAll('input[data-sync-id*="_read"]:checked').length;
+    const h = document.querySelectorAll('input[data-sync-id*="_hist"]:checked').length;
+    document.getElementById('bar-read').style.width = (r/total*100)+'%'; document.getElementById('txt-read').innerText = `${r}/${total}`;
+    document.getElementById('bar-hist').style.width = (h/total*100)+'%'; document.getElementById('txt-hist').innerText = `${h}/${total}`;
+  });
 
-    // 5. 부가 기능
-    function updateProgress() {
-        const total = 34;
-        const read = document.querySelectorAll('input[data-sync-id*="_read"]:checked').length;
-        const hist = document.querySelectorAll('input[data-sync-id*="_hist"]:checked').length;
-        document.getElementById('txt-read').innerText = `${read} / ${total}`;
-        document.getElementById('txt-hist').innerText = `${hist} / ${total}`;
-        document.getElementById('bar-read').style.width = (read/total*100)+'%';
-        document.getElementById('bar-hist').style.width = (hist/total*100)+'%';
+  onSnapshot(collection(db, "pomoLogs"), (snap) => {
+    const list = document.getElementById('pomo-log-list'); list.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      list.innerHTML += `<div style="display:flex;justify-content:space-between;font-size:12px;padding:4px;background:#f9f9f9;border-radius:4px"><span>📅 ${doc.id}</span><span>🍅 ${d.sessions} 세션</span></div>`;
+    });
+  });
+
+  onSnapshot(collection(db, "dayMemos"), (snap) => {
+    const counts = {};
+    snap.forEach(doc => { const d = doc.data(); if(!d.checked) counts[d.date] = (counts[d.date] || 0) + 1; });
+    document.querySelectorAll('.day-card').forEach(card => {
+      const d = card.dataset.date, old = card.querySelector('.memo-badge');
+      if(old) old.remove();
+      if(counts[d]) { const b = document.createElement('span'); b.className='memo-badge'; b.innerText=counts[d]; card.appendChild(b); }
+    });
+    if(window.currentDate) renderMemos(window.currentDate, snap);
+  });
+
+  function openMemo(date) {
+    window.currentDate = date;
+    document.getElementById('memo-title').innerText = `3월 ${date.substring(2)}일 메모`;
+    document.getElementById('memo-overlay').style.display = 'flex';
+  }
+
+  document.getElementById('memo-add-btn').onclick = async () => {
+    const i = document.getElementById('memo-input'); if(!i.value.trim()) return;
+    await window.dbSync('dayMemos', `${window.currentDate}_${Date.now()}`, {date:window.currentDate, text:i.value, checked:false});
+    i.value = '';
+  };
+
+  function renderMemos(date, snap) {
+    const list = document.getElementById('memo-items'); list.innerHTML = '';
+    snap.forEach(doc => {
+      const d = doc.data();
+      if(d.date === date) {
+        const div = document.createElement('div'); div.style.display='flex'; div.style.alignItems='center'; div.style.marginBottom='8px';
+        div.innerHTML = `<input type="checkbox" ${d.checked?'checked':''} onchange="window.dbSync('dayMemos','${doc.id}',{checked:this.checked})"><span style="flex:1;margin-left:8px;font-size:13px;${d.checked?'text-decoration:line-through;opacity:0.5':''}">${d.text}</span><button onclick="window.dbDel('dayMemos','${doc.id}')" style="background:none;border:none;color:#ccc;cursor:pointer">✕</button>`;
+        list.appendChild(div);
+      }
+    });
+  }
+
+  // 타이머
+  let timeLeft = 3000, timer = null;
+  document.getElementById('pomo-start').onclick = function() {
+    if(timer) { clearInterval(timer); timer = null; this.innerText = '시작'; }
+    else {
+      timer = setInterval(() => {
+        timeLeft--;
+        const m = Math.floor(timeLeft/60), s = timeLeft%60;
+        document.getElementById('pomo-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if(timeLeft <= 0) { clearInterval(timer); alert("세션 종료!"); }
+      }, 1000);
+      this.innerText = '일시정지';
     }
-
-    // 마이그레이션 및 초기 실행
-    window.onload = async () => {
-        init();
-        // 기존 LocalStorage 기록이 있다면 Firebase로 마이그레이션
-        const localLogs = JSON.parse(localStorage.getItem('pomo_log_v1') || '{}');
-        for (const [date, data] of Object.entries(localLogs)) {
-            await window.dbSync('pomoLogs', date, data);
-        }
-    };
-
-    // 메모 모달 관련
-    window.openMemo = (date) => {
-        window.currentDate = date;
-        document.getElementById('memo-title').innerText = `3월 ${date.substring(2)}일 메모`;
-        document.getElementById('memo-overlay').style.display = 'flex';
-    };
-
-    document.getElementById('memo-add-btn').onclick = async () => {
-        const input = document.getElementById('memo-input');
-        if(!input.value.trim()) return;
-        const id = `${window.currentDate}_${Date.now()}`;
-        await window.dbSync('dayMemos', id, {date: window.currentDate, text: input.value, checked: false});
-        input.value = '';
-    };
-
-    function renderMemos(date, snap) {
-        const list = document.getElementById('memo-list');
-        list.innerHTML = '';
-        snap.forEach(doc => {
-            const d = doc.data();
-            if(d.date === date) {
-                const item = document.createElement('div');
-                item.className = 'memo-list-item';
-                item.innerHTML = `
-                    <input type="checkbox" ${d.checked ? 'checked' : ''} onchange="window.dbSync('dayMemos', '${doc.id}', {checked: this.checked})">
-                    <span style="${d.checked ? 'text-decoration:line-through;opacity:0.5':''}">${d.text}</span>
-                    <button onclick="window.dbDel('dayMemos', '${doc.id}')" style="margin-left:auto;background:none;border:none;color:#ccc;cursor:pointer;">✕</button>
-                `;
-                list.appendChild(item);
-            }
-        });
-    }
-
-    function updateMemoBadges(snap) {
-        const counts = {};
-        snap.forEach(doc => {
-            const d = doc.data();
-            if(!d.checked) counts[d.date] = (counts[d.date] || 0) + 1;
-        });
-        document.querySelectorAll('.day-card').forEach(card => {
-            const date = card.dataset.date;
-            const old = card.querySelector('.memo-badge');
-            if(old) old.remove();
-            if(counts[date]) {
-                const badge = document.createElement('span');
-                badge.className = 'memo-badge';
-                badge.innerText = counts[date];
-                card.appendChild(badge);
-            }
-        });
-    }
-
-    // 포모도로 타이머 로직
-    let timeLeft = 50 * 60;
-    let pomoTimer = null;
-    document.getElementById('pomo-start').onclick = function() {
-        if(pomoTimer) {
-            clearInterval(pomoTimer); pomoTimer = null; this.innerText = '시작';
-        } else {
-            pomoTimer = setInterval(() => {
-                timeLeft--;
-                const m = Math.floor(timeLeft/60);
-                const s = timeLeft%60;
-                document.getElementById('pomo-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                if(timeLeft <= 0) {
-                    clearInterval(pomoTimer);
-                    alert("세션 종료!");
-                }
-            }, 1000);
-            this.innerText = '일시정지';
-        }
-    };
-    document.getElementById('pomo-reset').onclick = () => {
-        timeLeft = 50 * 60; document.getElementById('pomo-display').innerText = "50:00";
-    };
+  };
 </script>
 </body>
 </html>
