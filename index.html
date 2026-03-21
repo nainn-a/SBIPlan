@@ -2360,6 +2360,7 @@ function initFbPomoSync() {
       // localStorage 갱신
       var log = loadPomoLog();
       snap.forEach(function(d) {
+        if (d.id === '_timerState') return; // 타이머 상태는 제외
         log[d.id] = d.data();
       });
       savePomoLog(log);
@@ -2666,7 +2667,9 @@ function getKSTDateStr() {
 }
 function renderPomoLog() {
   var log = loadPomoLog();
-  var keys = Object.keys(log).sort().reverse();
+  var keys = Object.keys(log).filter(function(k) {
+    return /^\d{4}-\d{2}-\d{2}$/.test(k); // YYYY-MM-DD 형식만
+  }).sort().reverse();
   var el = document.getElementById('pomo-log-list');
   if (!el) return;
   if (keys.length === 0) {
@@ -3183,8 +3186,11 @@ function restoreTimerState(state) {
   }
 
   // 아직 진행 중 → 남은 시간으로 복원
+  if (pomoTimer) clearInterval(pomoTimer); // 중복 타이머 방지
   pomoState.timeLeft = remaining;
   pomoState.endTime = state.endTime;
+  pomoState.mode = state.mode || 'focus';
+  pomoState.focusDone = state.focusDone || 0;
   pomoState.running = true;
   pomoTimer = setInterval(tick, 500);
   document.getElementById('pomo-start').textContent = '일시정지';
