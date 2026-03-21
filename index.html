@@ -2680,9 +2680,10 @@ function renderPomoLog() {
     var timeStr = h > 0 ? h + '시간' + (m > 0 ? ' ' + m + '분' : '') : m + '분';
     var parts = k.split('-');
     var dateShort = parseInt(parts[1]) + '월 ' + parseInt(parts[2]) + '일';
+    var partialStr = d.partial ? ' · 진행중 ' + d.partial + '분' : '';
     return '<div style="display:flex; justify-content:space-between; align-items:center; padding:5px 10px; background:#f5f2ee; border-radius:7px; font-size:12px; gap:8px;">'
       + '<span style="color:#5a4a3a; font-weight:500; min-width:32px;">' + dateShort + '</span>'
-      + '<span style="color:var(--text-muted); flex:1;">🍅 ' + d.sessions + '세션&nbsp;·&nbsp;⏱ ' + timeStr + '</span>'
+      + '<span style="color:var(--text-muted); flex:1;">🍅 ' + d.sessions + '세션&nbsp;·&nbsp;⏱ ' + timeStr + partialStr + '</span>'
       + '<button class="pomo-del-btn" data-key="' + k + '" style="background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:0 2px; line-height:1;" title="삭제">✕</button>'
       + '</div>';
   }).join('');
@@ -2712,6 +2713,7 @@ function nextMode() {
   clearInterval(pomoTimer);
   pomoState.running = false;
   pomoState.endTime = null;
+  clearPomoSession();
 
   if (pomoState.mode === 'focus') {
     recordFocusDone();
@@ -2736,6 +2738,8 @@ function nextMode() {
   pomoTimer = setInterval(tick, 500);
   pomoState.running = true;
   document.getElementById('pomo-start').textContent = '일시정지';
+  saveTimerState();
+  startPeriodicSave();
 }
 
 function tick() {
@@ -2761,24 +2765,33 @@ function initPomo() {
   }
   pomoState.timeLeft = getDuration('focus');
   updateDisplay();
+  // 이전 세션 복원 (브라우저 종료 후 재진입)
+  restorePomoSession();
 
   document.getElementById('pomo-start').addEventListener('click', function() {
     if (pomoState.running) {
       clearInterval(pomoTimer);
       pomoState.running = false;
       this.textContent = '시작';
+      clearPomoSession();
     } else {
       pomoState.endTime = Date.now() + pomoState.timeLeft * 1000;
       pomoTimer = setInterval(tick, 500);
       pomoState.running = true;
       this.textContent = '일시정지';
       beep('start');
+      saveTimerState();
+      startPeriodicSave();
+      savePomoSession();
+      startPartialSave();
     }
   });
 
   document.getElementById('pomo-reset').addEventListener('click', function() {
     clearInterval(pomoTimer);
     pomoState.running = false;
+    stopPeriodicSave();
+    clearTimerState();
     pomoState.timeLeft = getDuration(pomoState.mode);
     document.getElementById('pomo-start').textContent = '시작';
     updateDisplay();
@@ -3101,7 +3114,248 @@ function initTaskChecks() {
 }
 
 
+
+// ══════════════════════════════════════════
+// 포모도로 타이머 지속성 (브라우저 종료 복원)
+// ══════════════════════════════════════════
+var POMO_STATE_KEY = 'pomo_running_state';
+
+function saveTimerState() {
+  if (!pomoState.running || !pomoState.endTime) return;
+  var state = {
+    running: true,
+    endTime: pomoState.endTime,
+    mode: pomoState.mode,
+    focusDone: pomoState.focusDone,
+    savedAt: Date.now()
+  };
+  // localStorage에 저장
+  try { localStorage.setItem(POMO_STATE_KEY, JSON.stringify(state)); } catch(e) {}
+  // Firebase에도 저장
+  onFbReady(function() {
+    window.dbSync('pomoLogs', '_timerState', state);
+  });
+}
+
+function clearTimerState() {
+  try { localStorage.removeItem(POMO_STATE_KEY); } catch(e) {}
+  onFbReady(function() {
+    window.dbSync('pomoLogs', '_timerState', { running: false });
+  });
+}
+
+function restoreTimerState(state) {
+  if (!state || !state.running || !state.endTime) return false;
+  var now = Date.now();
+  var remaining = Math.round((state.endTime - now) / 1000);
+
+  pomoState.mode = state.mode || 'focus';
+  pomoState.focusDone = state.focusDone || 0;
+
+  if (remaining <= 0) {
+    // 세션이 이미 끝남 → 경과 시간만큼 세션 완료 처리
+    if (state.mode === 'focus') {
+      // 포커스 세션 완료 기록
+      var log = loadPomoLog();
+      var key = getKSTDateStr();
+      if (!log[key]) log[key] = { sessions: 0, minutes: 0 };
+      // 중복 방지: savedAt 기준으로 같은 세션인지 확인
+      var lastSaved = state.savedAt || 0;
+      if (!log[key]._lastRestored || log[key]._lastRestored < lastSaved) {
+        log[key].sessions++;
+        log[key].minutes += pomoConfig.focus;
+        log[key]._lastRestored = Date.now();
+        savePomoLog(log);
+        renderPomoLog();
+      }
+      pomoState.focusDone++;
+      if (pomoState.focusDone >= pomoConfig.sessions) {
+        pomoState.focusDone = 0;
+      }
+    }
+    // 타이머는 정지 상태로 복원 (다음 모드 준비)
+    pomoState.running = false;
+    pomoState.mode = 'focus';
+    pomoState.timeLeft = getDuration('focus');
+    clearTimerState();
+    updateDisplay();
+    return true;
+  }
+
+  // 아직 진행 중 → 남은 시간으로 복원
+  pomoState.timeLeft = remaining;
+  pomoState.endTime = state.endTime;
+  pomoState.running = true;
+  pomoTimer = setInterval(tick, 500);
+  document.getElementById('pomo-start').textContent = '일시정지';
+  updateDisplay();
+  // 5분 주기 저장 재시작
+  startPeriodicSave();
+  return true;
+}
+
+var _periodicSaveTimer = null;
+function startPeriodicSave() {
+  if (_periodicSaveTimer) clearInterval(_periodicSaveTimer);
+  _periodicSaveTimer = setInterval(function() {
+    if (pomoState.running) {
+      saveTimerState();
+    } else {
+      clearInterval(_periodicSaveTimer);
+      _periodicSaveTimer = null;
+    }
+  }, 60 * 1000); // 1분
+}
+
+function stopPeriodicSave() {
+  if (_periodicSaveTimer) {
+    clearInterval(_periodicSaveTimer);
+    _periodicSaveTimer = null;
+  }
+}
+
+function initTimerRestore() {
+  // _timerState를 onSnapshot으로 구독
+  // → 다른 기기에서 시작/정지 시 실시간 반영
+  onFbReady(function() {
+    var stateRef = window.fbDoc(window.fbDb, 'pomoLogs', '_timerState');
+    var _firstSnapshot = true;
+    window.fbOnSnapshot(stateRef, function(doc) {
+      if (doc.exists()) {
+        var state = doc.data();
+        if (_firstSnapshot) {
+          // 페이지 첫 로드: 진행 중이면 복원
+          _firstSnapshot = false;
+          if (state.running) {
+            restoreTimerState(state);
+          } else {
+            // Firebase에 없으면 localStorage fallback
+            try {
+              var local = JSON.parse(localStorage.getItem(POMO_STATE_KEY));
+              if (local && local.running) restoreTimerState(local);
+            } catch(e) {}
+          }
+        } else {
+          // 이후 변경: 다른 기기에서 상태 변경됨
+          if (state.running && !pomoState.running) {
+            // 다른 기기가 타이머 시작 → 이 기기도 동기화
+            restoreTimerState(state);
+          } else if (!state.running && pomoState.running) {
+            // 다른 기기가 정지/리셋 → 이 기기도 정지
+            clearInterval(pomoTimer);
+            stopPeriodicSave();
+            pomoState.running = false;
+            pomoState.timeLeft = getDuration(pomoState.mode);
+            document.getElementById('pomo-start').textContent = '시작';
+            updateDisplay();
+          }
+        }
+      } else {
+        // 문서 없음: localStorage fallback (첫 로드 시)
+        if (_firstSnapshot) {
+          _firstSnapshot = false;
+          try {
+            var local = JSON.parse(localStorage.getItem(POMO_STATE_KEY));
+            if (local && local.running) restoreTimerState(local);
+          } catch(e) {}
+        }
+      }
+    }, function(err) {
+      // onSnapshot 실패 시 localStorage fallback
+      console.error('timerState snapshot error:', err);
+      try {
+        var local = JSON.parse(localStorage.getItem(POMO_STATE_KEY));
+        if (local && local.running) restoreTimerState(local);
+      } catch(e) {}
+    });
+  });
+}
+
 // ── 실행 합계 계산 ──
+
+// ── 포모도로 세션 지속성 (브라우저 종료 대비) ──
+var POMO_SESSION_KEY = 'pomo_session_v1';
+var _pomoPartialTimer = null;
+
+function savePomoSession() {
+  if (!pomoState.running || pomoState.mode !== 'focus') return;
+  try {
+    localStorage.setItem(POMO_SESSION_KEY, JSON.stringify({
+      endTime: pomoState.endTime,
+      mode: pomoState.mode,
+      focusDone: pomoState.focusDone,
+      savedAt: Date.now()
+    }));
+  } catch(e) {}
+}
+
+function clearPomoSession() {
+  try { localStorage.removeItem(POMO_SESSION_KEY); } catch(e) {}
+  if (_pomoPartialTimer) { clearInterval(_pomoPartialTimer); _pomoPartialTimer = null; }
+}
+
+// 5분마다 진행된 집중 시간 부분 저장
+function startPartialSave() {
+  if (_pomoPartialTimer) clearInterval(_pomoPartialTimer);
+  _pomoPartialTimer = setInterval(function() {
+    if (!pomoState.running || pomoState.mode !== 'focus') { clearPomoSession(); return; }
+    savePomoSession();
+    // 경과 시간 계산 후 pomoLog에 누적
+    var elapsed = Math.floor((pomoConfig.focus * 60 - pomoState.timeLeft) / 60); // 경과 분
+    if (elapsed < 1) return;
+    var key = getKSTDateStr();
+    var log = loadPomoLog();
+    if (!log[key]) log[key] = { sessions: 0, minutes: 0, partial: 0 };
+    log[key].partial = elapsed; // 현재 세션의 경과분 (누적 아님)
+    savePomoLog(log);
+    renderPomoLog();
+  }, 60 * 1000); // 1분
+}
+
+function stopPartialSave() {
+  if (_pomoPartialTimer) { clearInterval(_pomoPartialTimer); _pomoPartialTimer = null; }
+}
+
+// 페이지 로드 시 이전 세션 복원
+function restorePomoSession() {
+  try {
+    var saved = JSON.parse(localStorage.getItem(POMO_SESSION_KEY));
+    if (!saved || !saved.endTime) return;
+    var now = Date.now();
+    var remaining = Math.round((saved.endTime - now) / 1000);
+
+    if (remaining <= 0) {
+      // 세션이 이미 종료됨 → 경과 시간만큼 기록에 반영
+      var elapsed = pomoConfig.focus; // 전체 세션 완료로 간주
+      var key = getKSTDateStr();
+      var log = loadPomoLog();
+      if (!log[key]) log[key] = { sessions: 0, minutes: 0 };
+      // partial이 있으면 그것만큼만 기록 (중복 방지)
+      var partial = log[key].partial || 0;
+      if (partial > 0 && !log[key]._partialRecorded) {
+        log[key].minutes = (log[key].minutes || 0) + partial;
+        log[key]._partialRecorded = true;
+        delete log[key].partial;
+        savePomoLog(log);
+        renderPomoLog();
+      }
+      clearPomoSession();
+      return;
+    }
+
+    // 세션이 아직 진행 중 → 타이머 재개
+    pomoState.mode = saved.mode || 'focus';
+    pomoState.focusDone = saved.focusDone || 0;
+    pomoState.timeLeft = remaining;
+    pomoState.endTime = saved.endTime;
+    pomoState.running = true;
+    pomoTimer = setInterval(tick, 500);
+    document.getElementById('pomo-start').textContent = '일시정지';
+    updateDisplay();
+    startPartialSave();
+  } catch(e) { clearPomoSession(); }
+}
+
 function parseMinutes(text) {
   var total = 0;
   var h = text.match(/(\d+)시간/); if (h) total += parseInt(h[1]) * 60;
@@ -3144,6 +3398,7 @@ function updateExecTotal(card) {
 window.addEventListener('DOMContentLoaded', function() {
   applyToday();
   applyDeletedTasks();
+  initTimerRestore();
   initTaskChecks();
   // 페이지 로드 시 이미 done인 태스크 실행합계 반영
   document.querySelectorAll('.day-card').forEach(function(card) {
