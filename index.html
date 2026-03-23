@@ -216,6 +216,8 @@
 
   .task.study2 { background: #d9eaf5; color: #4e5359; }
 
+  .task.lecture { background: #e8eef5; color: #4e5359; }
+  .task.lecture.done { border: 1.5px solid #b0c4d8 !important; }
   .task.milestone { background: #fde8e8; border-left: 3px solid #95393e; color: #4e5359; font-weight: 600; }
 
   .day-total {
@@ -761,6 +763,7 @@
     <div class="legend-item"><div class="legend-dot" style="background:#ceefe4"></div>한국어 공부</div>
     <div class="legend-item"><div class="legend-dot" style="background:#d9eaf5;"></div>칼럼 분석①</div>
     <div class="legend-item"><div class="legend-dot" style="background:#d9eaf5;"></div>칼럼 분석②</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e8eef5"></div>인터넷 강의</div>
     <div class="legend-item"><div class="legend-dot" style="background:#fde8e8"></div>마일스톤</div>
   </div>
 </header>
@@ -2065,7 +2068,7 @@ function onFbReady(fn) {
 // 태스크 CRUD
 // ══════════════════════════════════════════
 var _tModal = { mode: 'add', date: '', id: '', el: null };
-var TYPE_ICONS = { reading:'📖', korean:'✍️', study:'📝', cover:'✏️', book:'📚', milestone:'🚩', study2:'💬' };
+var TYPE_ICONS = { reading:'📖', korean:'✍️', study:'📝', cover:'✏️', book:'📚', lecture:'🖥️', milestone:'🚩', study2:'💬' };
 
 function openTaskModal(btnOrEl, editId) {
   var overlay = document.getElementById('task-modal-overlay');
@@ -3497,6 +3500,7 @@ window.addEventListener('DOMContentLoaded', function() {
       <option value="study">📝 칼럼 분석</option>
       <option value="cover">✏️ 자소서</option>
       <option value="book">📚 책 읽기</option>
+      <option value="lecture">🖥️ 인터넷 강의</option>
       <option value="milestone">🚩 마일스톤</option>
     </select>
     <div class="task-modal-btns">
