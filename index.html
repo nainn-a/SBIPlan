@@ -1096,6 +1096,7 @@
         <div class="task study"><span class="task-icon">📡</span>칼럼 분석① 화상 (2시간)</div>
         <div class="task book"><span class="task-icon">📚</span>책 읽기 1권 (90분)</div>
       </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 6:50</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card" data-date="0324">
@@ -1108,6 +1109,7 @@
         <div class="task milestone"><span class="task-icon">🏁</span>독서 이력서 전체 완료!</div>
         <div class="task book"><span class="task-icon">📚</span>책 읽기 1권 (90분)</div>
       </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 6:20</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card phase-end" data-date="0325">
@@ -1117,26 +1119,31 @@
         <div class="task study"><span class="task-icon">💬</span>칼럼 분석① 피드백 (30분)</div>
         <div class="task study2"><span class="task-icon">💬</span>칼럼 분석② 피드백 (30분)</div>
       </div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 1:00</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card" data-date="0326">
       <div class="day-header"><div><div class="day-date">26</div><div class="day-of-week">Thu</div></div></div>
       <div class="tasks"></div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 0:00</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card" data-date="0327">
       <div class="day-header"><div><div class="day-date">27</div><div class="day-of-week">Fri</div></div></div>
       <div class="tasks"></div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 0:00</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card" data-date="0328">
       <div class="day-header"><div><div class="day-date">28</div><div class="day-of-week">Sat</div></div></div>
       <div class="tasks"></div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 0:00</span><span class="total-exec">실행 0:00</span></div>
     </div>
     <div class="day-card" data-date="0329">
       <div class="day-header"><div><div class="day-date">29</div><div class="day-of-week">Sun</div></div></div>
       <div class="tasks"></div>
+      <button class="add-task-btn" onclick="openTaskModal(this)">+</button>
       <div class="day-total"><span class="total-plan">계획 0:00</span><span class="total-exec">실행 0:00</span></div>
     </div>
   </div>
@@ -2197,8 +2204,12 @@ function _renderTask(id, data, append) {
   if (data.deleted) {
     var existing = document.querySelector('[data-task-id="' + id + '"]');
     if (existing) existing.remove();
+    // localStorage에도 삭제 기록
+    var dl = loadDeletedTasks(); dl[id] = true; saveDeletedTasks(dl);
     return;
   }
+  // localStorage에 삭제된 것으로 기록된 경우 렌더 스킵
+  if (loadDeletedTasks()[id]) return;
   var card = document.querySelector('.day-card[data-date="' + data.date + '"]');
   if (!card) return;
   var tasksDiv = card.querySelector('.tasks');
@@ -2317,10 +2328,10 @@ function initFbBookSync() {
                 el.style.display = 'none';
                 el.classList.add('deleted');
                 var d = loadDeletedTasks(); d[id] = true; saveDeletedTasks(d);
-              } else {
+              } else if (!loadDeletedTasks()[id]) {
+                // localStorage에 삭제된 것으로 기록된 경우 show 스킵
                 el.style.display = '';
                 el.classList.remove('deleted');
-                var d2 = loadDeletedTasks(); delete d2[id]; saveDeletedTasks(d2);
                 if (data.checked !== undefined) {
                   el.classList.toggle('done', !!data.checked);
                   updateExecTotal(el.closest('.day-card'));
