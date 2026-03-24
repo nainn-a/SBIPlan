@@ -2029,6 +2029,65 @@ function updateDateRange() {
 }
 
 
+
+// ══════════════════════════════════════════
+// 정적 태스크 → Firebase 마이그레이션 (최초 1회)
+// ══════════════════════════════════════════
+var MIGRATED_KEY = 'static_tasks_migrated_v1';
+
+function migrateStaticTasks() {
+  // 이미 마이그레이션됐으면 스킵
+  if (localStorage.getItem(MIGRATED_KEY)) return;
+
+  var tasks = document.querySelectorAll('.day-card .task');
+  var batch = [];
+
+  tasks.forEach(function(task) {
+    var card = task.closest('.day-card');
+    if (!card) return;
+    var date = card.getAttribute('data-date');
+
+    // 타입 추출 (class에서)
+    var type = Array.from(task.classList).find(function(c) {
+      return c !== 'task' && c !== 'done' && c !== 'deleted';
+    }) || 'reading';
+
+    // 텍스트 추출 (task-icon 제외)
+    var iconEl = task.querySelector('.task-icon');
+    var text = task.textContent || '';
+    if (iconEl) text = text.replace(iconEl.textContent, '').trim();
+
+    if (!text || !date) return;
+
+    // fb_ ID 생성 (정적 태스크는 날짜+인덱스 기반으로 고정)
+    var idx = Array.from(card.querySelectorAll('.task')).indexOf(task);
+    var id = 'fb_static_' + date + '_' + idx;
+
+    batch.push({ id: id, date: date, type: type, text: text });
+  });
+
+  // Firebase에 일괄 저장
+  onFbReady(function() {
+    batch.forEach(function(item) {
+      window.dbSync('dailyTasks', item.id, {
+        text: item.text,
+        type: item.type,
+        date: item.date,
+        deleted: false,
+        checked: false
+      });
+    });
+    // 마이그레이션 완료 플래그
+    localStorage.setItem(MIGRATED_KEY, '1');
+    // 정적 태스크 DOM 숨김 (onSnapshot이 fb_static_ 태스크로 대체 렌더)
+    document.querySelectorAll('.day-card .task').forEach(function(t) {
+      if (!t.dataset.taskId || !t.dataset.taskId.startsWith('fb_')) {
+        t.style.display = 'none';
+      }
+    });
+  });
+}
+
 // ── 삭제된 태스크 localStorage 캐시 ──
 var DELETED_KEY = 'deleted_tasks_v1';
 function loadDeletedTasks() {
@@ -2224,6 +2283,18 @@ function _renderTask(id, data, append) {
 
   if (!el) {
     el = document.createElement('div');
+    // fb_static_ 태스크: 기존 task_ 상태 이어받기 (마이그레이션 직후 1회)
+    if (id.startsWith('fb_static_') && !data.checked) {
+      var parts = id.split('_'); // fb_static_MMDD_idx
+      var oldId = 'task_' + parts[2] + '_' + parts[3];
+      var oldState = loadTaskState();
+      if (oldState[oldId]) {
+        data.checked = true;
+        doneClass = ' done';
+        // Firebase에도 업데이트
+        onFbReady(function() { window.dbSync('dailyTasks', id, { checked: true }); });
+      }
+    }
     el.className = 'task ' + data.type + doneClass;
     el.setAttribute('data-task-id', id);
     el.setAttribute('draggable', 'true');
@@ -2242,16 +2313,20 @@ function _renderTask(id, data, append) {
   el.onclick = function(e) {
     if (e.target.closest('.task-actions')) return;
     var iconEl2 = el.querySelector('.task-icon');
+    var s = loadTaskState();
     if (el.classList.contains('done')) {
       el.classList.remove('done');
+      delete s[id];
       if (iconEl2 && iconEl2.dataset.origIcon) iconEl2.textContent = iconEl2.dataset.origIcon;
     } else {
       el.classList.add('done');
+      s[id] = true;
       if (iconEl2) {
         if (!iconEl2.dataset.origIcon) iconEl2.dataset.origIcon = iconEl2.textContent;
         iconEl2.textContent = '☑️';
       }
     }
+    saveTaskState(s);
     updateExecTotal(el.closest('.day-card'));
     updatePlanTotal(el.closest('.day-card'));
     onFbReady(function() { window.dbSync('dailyTasks', id, { checked: el.classList.contains('done') }); });
@@ -2325,21 +2400,10 @@ function initFbBookSync() {
           if (id.startsWith('fb_')) {
             _renderTask(id, data, false);
           } else {
-            var el = document.querySelector('[data-task-id="' + id + '"]');
-            if (el) {
-              if (data.deleted) {
-                el.style.display = 'none';
-                el.classList.add('deleted');
-                var d = loadDeletedTasks(); d[id] = true; saveDeletedTasks(d);
-              } else if (!loadDeletedTasks()[id]) {
-                // localStorage에 삭제된 것으로 기록된 경우 show 스킵
-                el.style.display = '';
-                el.classList.remove('deleted');
-                if (data.checked !== undefined) {
-                  el.classList.toggle('done', !!data.checked);
-                  updateExecTotal(el.closest('.day-card'));
-                }
-              }
+            // fb_static_ 포함 fb_ 이외 prefix는 _renderTask로 처리
+            // (하위호환: 이전 task_/memo_ prefix 태스크는 무시)
+            if (id.startsWith('fb_')) {
+              _renderTask(id, data, false);
             }
           }
         });
@@ -3068,66 +3132,17 @@ function saveTaskState(s) {
 }
 
 function initTaskChecks() {
-  var taskState = loadTaskState();
-  var tasks = document.querySelectorAll('.day-card .task');
-  tasks.forEach(function(task, idx) {
-    var card = task.closest('.day-card');
-    var dateEl = card ? card.querySelector('.day-date') : null;
-    var date = dateEl ? dateEl.innerText.trim() : 'x';
-    var fullDate = card ? (card.getAttribute('data-date') || ('03' + (date.length===1?'0':'')+date)) : '';
-    var taskId = 'task_' + fullDate + '_' + idx;
-    task.dataset.taskId = taskId;
-    task.setAttribute('draggable', 'true');
-    if (taskState[taskId]) {
-      task.classList.add('done');
-      var ic = task.querySelector('.task-icon');
-      if (ic && !ic.dataset.origIcon) { ic.dataset.origIcon = ic.textContent; ic.textContent = '☑️'; }
-    }
-
-    // CRUD 버튼 추가 (아직 없는 경우만)
-    if (!task.querySelector('.task-actions')) {
-      var actions = document.createElement('div');
-      actions.className = 'task-actions';
-      actions.innerHTML =
-        '<button class="task-action-btn" title="편집" onclick="event.stopPropagation();openTaskModal(null,&quot;' + taskId + '&quot;)">✏️</button>' +
-        
-        '<button class="task-action-btn" title="삭제" onclick="event.stopPropagation();deleteTask(&quot;' + taskId + '&quot;)">✕</button>';
-      task.appendChild(actions);
-    }
-
-    // 드래그
-    task.addEventListener('dragstart', function(e) {
-      e.dataTransfer.setData('text/plain', taskId);
+  // 마이그레이션 완료 후: 정적 태스크 숨김 (onSnapshot이 fb_static_으로 대체)
+  if (localStorage.getItem(MIGRATED_KEY)) {
+    document.querySelectorAll('.day-card .task').forEach(function(t) {
+      if (!t.dataset.taskId || !t.dataset.taskId.startsWith('fb_')) {
+        t.style.display = 'none';
+      }
     });
-
-    // 클릭: task-actions 영역 제외
-    ['click', 'touchend'].forEach(function(evt) {
-      task.addEventListener(evt, function(e) {
-        if (e.target.closest('.task-actions')) return;
-        e.preventDefault();
-        var id = this.dataset.taskId;
-        var s = loadTaskState();
-        var iconEl = this.querySelector('.task-icon');
-        if (this.classList.contains('done')) {
-          this.classList.remove('done');
-          delete s[id];
-          if (iconEl && iconEl.dataset.origIcon) iconEl.textContent = iconEl.dataset.origIcon;
-        } else {
-          this.classList.add('done');
-          s[id] = true;
-          if (iconEl) {
-            if (!iconEl.dataset.origIcon) iconEl.dataset.origIcon = iconEl.textContent;
-            iconEl.textContent = '☑️';
-          }
-        }
-        saveTaskState(s);
-        updateExecTotal(task.closest('.day-card'));
-        onFbReady(function() {
-          window.dbSync('dailyTasks', id, { checked: task.classList.contains('done') });
-        });
-      });
-    });
-  });
+  } else {
+    // 최초 1회 마이그레이션
+    migrateStaticTasks();
+  }
 }
 
 
@@ -3419,6 +3434,20 @@ window.addEventListener('DOMContentLoaded', function() {
   applyToday();
   applyDeletedTasks();
   initTimerRestore();
+  // 기존 task_ prefix 삭제 기록을 fb_static_ 키로 변환
+  (function() {
+    var deleted = loadDeletedTasks();
+    var updated = false;
+    Object.keys(deleted).forEach(function(k) {
+      if (k.startsWith('task_')) {
+        var parts = k.split('_'); // task_MMDD_idx
+        var newKey = 'fb_static_' + parts[1] + '_' + parts[2];
+        if (!deleted[newKey]) { deleted[newKey] = true; updated = true; }
+      }
+    });
+    if (updated) saveDeletedTasks(deleted);
+  })();
+
   initTaskChecks();
   // 페이지 로드 시 이미 done인 태스크 실행합계 반영
   document.querySelectorAll('.day-card').forEach(function(card) {
